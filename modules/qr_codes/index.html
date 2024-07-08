@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>QR Code Scanner</title>
+    <script src="https://cdn.jsdelivr.net/npm/instascan@1.0.1/instascan.min.js"></script>
+</head>
+
+<body>
+    <h1>QR Code Scanner</h1>
+    <video id="scanner"></video>
+    <button id="printButton">Print ID</button>
+    <p id="scannedId"></p>
+
+    <script>
+        const scanner = new Instascan.Scanner({video: document.getElementById('scanner')});
+        scanner.addListener('scan', function (content) {
+            document.getElementById('scannedId').innerText = content;
+        });
+        Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]);
+            } else {
+                console.error('No cameras found.');
+            }
+        });
+
+        const printButton = document.getElementById('printButton');
+        printButton.addEventListener('click', function () {
+            const scannedId = document.getElementById('scannedId').innerText;
+            if (scannedId) {
+                // You can replace this line with code to send the ID to a printer
+                console.log(`Printing ID: ${scannedId}`);
+            }
+        });
+    </script>
+</body>
+
+</html>

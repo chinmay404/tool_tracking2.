@@ -1,0 +1,24 @@
+[
+    {
+        "TransporterCode": 1010000001,
+        "TransporterName": "OWN VEHICLE",
+        "PinNo": 0,
+        "TransId": "27BBIPP3690R1ZO",
+        "GstIn": "27BBIPP3690R1ZO",
+        "GpsId": null,
+        "CityName": "KOLHAPUR",
+        "Phone1": "",
+        "Phone2": "0000000000"
+    },
+    {
+        "TransporterCode": 1010000002,
+        "TransporterName": "DTDC EXPRESS LTD",
+        "PinNo": 416122,
+        "TransId": "88AAACD8017H1ZX",
+        "GstIn": "88AAACD8017H1ZX",
+        "GpsId": null,
+        "CityName": "KOLHAPUR",
+        "Phone1": "",
+        "Phone2": "9763444849"
+    }
+]

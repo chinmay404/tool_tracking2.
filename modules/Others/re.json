@@ -1,0 +1,72 @@
+[
+    {
+        "OrderNo": "102232490113020699",
+        "OrderDate": "24/02/2024",
+        "CustomerName": "E. D. STEELS PVT LTD",
+        "PartyPoNo": "004712",
+        "PartyPoDate": "17/02/2024",
+        "CompanyShortName": "HTECH",
+        "ItemSummary": [
+            {
+                "MaterialName": "SPARE TS 40 B 100 I",
+                "MaterialUom": "NOS",
+                "PoQty": 20.000
+            }
+        ]
+    },
+    {
+        "OrderNo": "102232490113020715",
+        "OrderDate": "25/02/2024",
+        "CustomerName": "KASTURI FOUNDRY PVT LTD",
+        "PartyPoNo": "004880",
+        "PartyPoDate": "08/02/2024",
+        "CompanyShortName": "HTECH",
+        "ItemSummary": [
+            {
+                "MaterialName": "ROTTERY CUTTER - C 4",
+                "MaterialUom": "NOS",
+                "PoQty": 10.000
+            },
+            {
+                "MaterialName": "ROTARY CUTTER - A 3",
+                "MaterialUom": "NOS",
+                "PoQty": 5.000
+            }
+        ]
+    },
+    {
+        "OrderNo": "102232490113020718",
+        "OrderDate": "25/02/2024",
+        "CustomerName": "KASTURI FOUNDRY PVT. LTD. KAGAL UNIT",
+        "PartyPoNo": "010081",
+        "PartyPoDate": "07/02/2024",
+        "CompanyShortName": "HTECH",
+        "ItemSummary": [
+            {
+                "MaterialName": "CT PORT TOOL DIA34XDIA34.3XDIA 46XFL60XOAL120XSH32 JD",
+                "MaterialUom": "NOS",
+                "PoQty": 3.000
+            }
+        ]
+    },
+    {
+        "OrderNo": "102232490113020723",
+        "OrderDate": "25/02/2024",
+        "CustomerName": "SHRIRAM FOUNDRY PVT LTD",
+        "PartyPoNo": "006949",
+        "PartyPoDate": "09/02/2024",
+        "CompanyShortName": "HTECH",
+        "ItemSummary": [
+            {
+                "MaterialName": "SOLID CARBIDE NTC RH DRILL DIA 27.17 X FL 35 X OAL 75 X SH D 20",
+                "MaterialUom": "NOS",
+                "PoQty": 2.000
+            },
+            {
+                "MaterialName": "FLAT SOLID CARBIDE NTC RH DRILL DIA 27.17 X FL 35 X OAL 75 X SH D 20",
+                "MaterialUom": "NOS",
+                "PoQty": 5.000
+            }
+        ]
+    }
+]

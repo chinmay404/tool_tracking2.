@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>QR Code Scanner</title>
+</head>
+
+<body>
+    <h1>QR Code Scanner</h1>
+
+    <input type="hidden" id="qr_code_input" name="qr_code_data" />
+
+    <button type="button" id="scan_qr_code_button">Scan QR Code</button>
+
+    <script>
+        const scanButton = document.querySelector('#scan_qr_code_button');
+
+        // Scan the QR code and submit the form
+        scanButton.addEventListener('click', () => {
+            const scanner = new ZXing.BrowserQRCodeReader();
+            scanner.decodeFromCamera((result, error) => {
+                if (result) {
+                    document.querySelector('#qr_code_input').value = result.text;
+                    document.querySelector('#qr_code_input').form.submit();
+                } else if (error) {
+                    alert('Invalid QR code');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
