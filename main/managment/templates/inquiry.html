@@ -1,0 +1,164 @@
+{% extends 'base1.html' %}
+{% block content %}
+<style>
+  body {
+    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    font-family: "Inter", sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .page-header {
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+
+  .box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+  }
+
+  .input {
+    flex: 1;
+    height: 50px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    font-size: 16px;
+    outline: none;
+  }
+
+  button {
+    height: 50px;
+    width: 60px;
+    border: none;
+    background-color: #764ba2;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #5f3e7e;
+  }
+
+  .cardbody {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .cardbody:hover {
+    /* transform: scale(1.05); */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .link {
+    color: #764ba2;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 10px;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+
+  .link:hover {
+    color: #5f3e7e;
+  }
+
+  .collapse {
+    display: none;
+    transition: all 0.3s ease;
+  }
+
+  .collapse.show {
+    display: block;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .pulse-animation {
+    animation: pulse 2s infinite;
+  }
+</style>
+<div class="container">
+  <div class="page-header">Inquiry</div>
+  <form method="post" class="box">
+    {% csrf_token %}
+    <input type="text" name="query" id="query" class="input" placeholder="Search by ID, Batch ID, Product Name, Status, etc." />
+    <button type="submit" class="pulse-animation">Search</button>
+  </form>
+</div>
+<div id="inquiry-results" class="container">
+  {% if search_results %}
+    <h5 style="color: #333;">Search Results:</h5>
+    {% for item in search_results %}
+      <div class="cardbody">
+        <strong>ID:</strong> <a href="{% url 'get_product_details_master' item.uuid  %}">{{item.uuid }}</a> <br />
+        <strong>Batch ID:</strong> {{ item.batch_id }}<br />
+        <strong>Product Name:</strong> {{ item.product.name }}<br />
+        <strong>Status:</strong> {{ item.status }}<br />
+        <strong>Added Date:</strong> {{ item.added_date }}<br />
+        <strong>Received By:</strong>
+        <span style="text-transform: capitalize">{{item.received_by }}</span><br />
+        <div class="link">
+          <a class="link" data-bs-toggle="collapse" href="#{{item.uuid}}" aria-expanded="false" aria-controls="collapseExample">
+            View Inlet Data >>
+          </a>
+        </div>
+        <ul class="collapse grid" id="{{item.uuid}}">
+          {% for key,value in item.data_json.items %}
+            {% for sub_key, sub_value in value.items %}
+              <li><strong>{{ sub_key }}:</strong> {{ sub_value }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  {% else %}
+    <center>
+      <p>No matching items found.</p>
+    </center>
+  {% endif %}
+</div>
+<script>
+  var buttons = document.querySelectorAll(".grid");
+
+  buttons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      this.classList.toggle("show");
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,352 @@
+{% extends 'base1.html' %}
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+  /* Global Styles */
+  body {
+    background-color: #f5f7fb;
+    font-family: "Inter", sans-serif;
+    margin-bottom: 100px;
+  }
+
+  .box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  /* Typography */
+  h4,
+  h1,
+  p {
+    margin-bottom: 10px;
+  }
+
+  .box-heading {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  /* Form Styles */
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .btn-container {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  /* Map Styles */
+  #map {
+    margin-top: 20px;
+    height: 40vh;
+    width: 100%;
+    /* Adjust as needed */
+  }
+
+  /* Vehicle Route Styles */
+  .route-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 2px;
+    background-color: transparent;
+    border-top: 2px dotted #000;
+    transform-origin: left;
+    transform: translate(-50%, -1px);
+    z-index: -1;
+  }
+
+  /* Table Styles */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th,
+  td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    /* Add borders between table cells */
+  }
+
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+
+  /* No Vehicle Message Styles */
+  .no-vehicle {
+    color: red;
+    font-weight: bold;
+  }
+
+  #route-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    position: relative;
+  }
+
+  .route-marker {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .route-line {
+    stroke-dasharray: 5;
+    stroke-width: 2;
+  }
+
+  .route-line.true {
+    stroke: red;
+  }
+</style>
+<div class="box" style="display: flex; justify-content: space-around;">
+  <div class="box324">
+    <h4>Tracking ID:</h4>
+    <h1><strong>{{ vh.tracking_id }}</strong></h1>
+    <!-- <p><strong>Address:</strong> {{ unit.address }}</p> -->
+  </div>
+  <div class="box234">
+    <h4>Vehicle No:</h4>
+    <h1><strong>{{ vh.vehicle }}</strong></h1>
+  </div>
+</div>
+<hr>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-5">
+      <div class="box">
+        <div class="box-heading">Information Details</div>
+        <form method="post" class="mt-4">
+          {% csrf_token %}
+          <div class="form-row">
+            {% if sale_order_group.vehicle %}
+            <div class="form-group col-md-12">
+              <label for="vehicleSelect"><strong>Select Vehicle</strong></label>
+              <select class="form-control" id="vehicleSelect" name="vehicle_no">
+                <option value="">Select a Vehicle</option>
+                {% for vehicle in vehicles %}
+                <option value="{{ vehicle.id }}">{{ vehicle.vehicle_number }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            {% else %}
+            <div class="form-group col-md-12">
+              <label for="vehicleSelect"><strong>Company Name:</strong></label>
+              <p>{{ vh.unit }}</p>
+              <label for="vehicleSelect"><strong>Destination:</strong></label>
+              <p>{{ unit.address }}</p>
+              {% if vh.vehicle %}
+              <label for="vehicleSelect"><strong>Selected Vehicle:</strong></label>
+              <p>{{ vh.vehicle }}</p>
+              {% else %}
+              <div class="form-group col-md-12">
+                <label for="vehicleType"><strong>Select Vehicle Type:</strong></label>
+                <select class="form-control" id="vehicleTypeSelect" name="vehicle_type">
+                  <option value="own_vehicle">Own Vehicle</option>
+                  <option value="dtdc">DTDC</option>
+                </select>
+              </div>
+
+              <div id="ownVehicleInput" style="display: none;">
+                <div class="form-group col-md-12">
+                  <label for="ownVehicleSelect"><strong>Select Vehicle:</strong></label>
+                  <select class="form-control" id="ownVehicleSelect" name="vehicle_no">
+                    <option value="">Select a Vehicle</option>
+                    {% for vehicle in vehicles %}
+                    <option value="{{ vehicle.id }}">{{ vehicle.vehicle_number }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div id="dtdcInput" style="display: none;">
+                <div class="form-group col-md-12">
+                  <label for="dtdcVehicleNo"><strong>Enter DTDC Vehicle No:</strong></label>
+                  <input type="text" class="form-control" id="dtdcVehicleNo" name="dtdc_vehicle_no"
+                    placeholder="Enter DTDC Vehicle No">
+                </div>
+              </div>
+              {% endif %}
+            </div>
+            {% endif %}
+
+
+          </div>
+          <div class="form-group col-md-12">
+            <label for="driverName"><strong>Vehicle Driver Name:</strong></label>
+            <p>{{ vh.driver_name }}</p>
+            {% if vh.driver_name %}
+            <p>{{ vh.driver_name }}</p>
+            {% else %}
+            <input type="text" class="form-control" id="driverName" name="vehicle_driver_name"
+              placeholder="Enter Driver Name" {% if sale_order_group.driver_name %}
+              value="{{ sale_order_group.driver_name }}" disabled {% endif %}>
+            {% endif %}
+          </div>
+          {% if sale_order_group.vehicle %}
+          <div>P</div>
+          {% else %}
+          <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+          {% endif %}
+
+        </form>
+      </div>
+    </div>
+
+    <div class="col-md-7">
+      <div class="box">
+        <div class="box-heading">Vehicle Details</div>
+        <div class="selected-vehicle-details">
+          {% if vh.vehicle %}
+          <p><strong>Vehicle No:</strong> {{ vh.vehicle.vehicle_number }}</p>
+          <p><strong>Driver Name:</strong> {{ vh.vehicle.driver_name }}</p>
+          <p><strong>Destination:</strong> {{ unit.address }}</p>
+          <div class="col-12 col-md-6 map-container">
+            <center>
+              <h4>Live Location</h4>
+            </center>
+            <div id="map" style="height: 360px; " class="card mb-4"></div>
+          </div>
+          {% else %}
+          <p class="no-vehicle">No vehicle selected</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<!-- <div id="route-container" class="box" style="display: flex; justify-content: space-around; margin-top: 20px;">
+  <div id="route-container" class="box"></div>
+</div> -->
+<hr>
+<table id="sale_order_groups_table" class="display">
+  <thead>
+    <tr>
+      <th>Group ID</th>
+      <th>Unit</th>
+      <th>Destination</th>
+      <th>Vehicle</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sale_order_group in vh.order_groups.all %}
+    <tr>
+      <td><a href="{% url 'sale_order_group_detail' group_id=sale_order_group.group_id %}">G-{{sale_order_group.group_id  }}</a></td>
+      <td>{{ sale_order_group.unit }}</td>
+      <td>{{ sale_order_group.destination }}</td>
+      <td><p>{{ vh.vehicle }}</p></td>
+      <!-- <td class="no-vehicle"><strong>No Vehicle Assigned Yet</strong></td> -->
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+  $(document).ready(function () {
+    $('#sale_order_groups_table').DataTable();
+  });
+
+  var map = tt.map({
+    key: 'BwaXSyJqAhFR7WWNNsGuconXGrmAobPr',
+    container: 'map',
+    center: [{{vehicle.longitude}}, {{vehicle.latitude}}],
+  zoom: 15
+  });
+
+  map.addControl(new tt.FullscreenControl());
+  map.addControl(new tt.NavigationControl());
+
+  // Sample data
+  const data = {
+    "routes": {
+      "ACCURATE ENGINEERING WORKS": false,
+      "SHRIRAM FOUNDRY PVT LTD - UTTARANCHAL": false,
+      "Another Location": true // Example of a true route
+    }
+  };
+
+  // Function to draw routes
+  function drawRoutes(data) {
+    const routeContainer = document.getElementById('route-container');
+    routeContainer.innerHTML = ''; // Clear previous drawings
+
+    const locations = Object.keys(data.routes);
+    locations.forEach((location, index) => {
+      if (index < locations.length - 1) {
+        const nextLocation = locations[index + 1];
+        const isConnected = data.routes[location] && data.routes[nextLocation];
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', '0');
+        line.setAttribute('y1', '0');
+        line.setAttribute('x2', '100%');
+        line.setAttribute('y2', '100%');
+        line.classList.add('route-line');
+        if (isConnected) {
+          line.classList.add('true');
+        }
+        const marker = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        marker.setAttribute('class', 'route-marker');
+        marker.innerHTML = `<line x1="0" y1="0" x2="0" y2="0" stroke-width="5" stroke="transparent"/>`;
+        marker.style.top = `calc(${index * (100 / (locations.length - 1))}% - 2.5px)`;
+        routeContainer.appendChild(marker);
+        marker.appendChild(line);
+      }
+    });
+  }
+
+  // Check if data is available
+  const routeData = data.routes;
+  if (Object.keys(routeData).length > 0) {
+    drawRoutes({routes: routeData});
+  } else {
+    document.getElementById('route-container').innerHTML = '<p>No route data available</p>';
+  }
+
+
+
+  document.getElementById('vehicleTypeSelect').addEventListener('change', function () {
+    var ownVehicleInput = document.getElementById('ownVehicleInput');
+    var dtdcInput = document.getElementById('dtdcInput');
+
+    if (this.value === 'own_vehicle') {
+      ownVehicleInput.style.display = 'block';
+      dtdcInput.style.display = 'none';
+    } else if (this.value === 'dtdc') {
+      ownVehicleInput.style.display = 'none';
+      dtdcInput.style.display = 'block';
+    }
+  });
+
+</script>
+<script>
+  document.getElementById('vehicleTypeSelect').addEventListener('change', function () {
+    var ownVehicleInput = document.getElementById('ownVehicleInput');
+    var dtdcInput = document.getElementById('dtdcInput');
+
+    if (this.value === 'own_vehicle') {
+      ownVehicleInput.style.display = 'block';
+      dtdcInput.style.display = 'none';
+    } else if (this.value === 'dtdc') {
+      ownVehicleInput.style.display = 'none';
+      dtdcInput.style.display = 'block';
+    }
+  });
+</script>
+{% endblock %}

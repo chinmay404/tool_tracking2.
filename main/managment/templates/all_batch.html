@@ -1,0 +1,423 @@
+{% extends 'base1.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #f8f8f8;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .heading-section {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+    }
+
+    .search-bar input {
+        font-size: 14px;
+        border: 1px solid #cccccc73;
+        border-radius: 1px;
+    }
+
+    .sorting-dropdown {
+        text-align: right;
+    }
+
+    .heading-section {
+        text-align: left;
+        color: #333;
+        margin-top: 20px;
+        margin-left: 20px;
+        padding: 10px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .container h1 {
+        text-align: center;
+        /* Center-align the text */
+        font-weight: bold;
+        /* Make the text bold */
+        font-size: 32px;
+        /* Adjust the font size as needed */
+    }
+
+    .sorting-dropdown label {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    .table {
+        width: 98%;
+        margin: auto;
+        margin-top: 10px;
+        border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px;
+        text-align: left;
+    }
+
+    .table th {
+        padding: 8px;
+        font-size: 16px;
+        text-align: left;
+        background-color: #f0f0f0;
+        color: rgb(74, 81, 88);
+        border-bottom: 1px solid rgb(254, 241, 213);
+        /* Add bottom border */
+    }
+
+
+    .table tbody tr:nth-child(odd) {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .table a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container">
+    <h1 style="font-size: 32px;">All Batches</h1>
+    <div class="tabel-container"
+        style="max-width: 98%; margin: auto; background-color: white; box-shadow: 0 0 0.875rem 0 rgba(33,37,41,.05);">
+        <div class="heading-section">
+            <h2 style="font-size: 22px;">Product Index List</h2>
+        </div>
+        <div class="search-bar">
+            <label for="s">Search: </label>
+            <div id="s" style="flex-grow: 1;">
+                <input type="text" id="searchInput" placeholder="Search...">
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    sort
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><button class="dropdown-item" type="button"><a class="dropdown-item"
+                                href="?sort_by=arrive_date">Arrival Date (New First)</a></button></li>
+                    <li><button class="dropdown-item" type="button"><a class="dropdown-item"
+                                href="?sort_by=-arrive_date">Arrival Date (Old First)</a></button></li>
+                    <!-- <li><button class="dropdown-item" type="button">Something else here</button></li> -->
+                </ul>
+            </div>
+
+
+        </div>
+
+
+
+        <table class="table">
+
+            <thead class="thead-light">
+                <tr>
+                    <th data-sort="id">ID</th>
+                    <th data-sort="product">Product</th>
+                    <th data-sort="quantity_requested">Quantity Requested</th>
+                    <th data-sort="quantity_received">Quantity Received</th>
+                    <th data-sort="batch_id">Batch ID</th>
+                    <th data-sort="status">Status</th>
+                    <th data-sort="received_by">Received By</th>
+                    <th data-sort="arrive_date">Arrival Date</th>
+            </thead>
+            <tbody>
+                {% for product_index in product_indexes %}
+                {% if product_index.status=='in_progress' %}
+                <tr style="color: rgb(249, 173, 173);">
+                    <td>{{ product_index.id }}</td>
+                    <td><a href="{% url 'product_batch' product_index.batch_id %}">{{ product_index.product.name }}</a>
+                    </td>
+                    <td>{{ product_index.quantity_requested }}</td>
+                    <td>{{ product_index.quantity_received }}</td>
+                    <td>{{ product_index.batch_id }}</td>
+                    <td>{{ product_index.status }}</td>
+                    <td>{{ product_index.received_by }}</td>
+                    <td>{{ product_index.arrive_date }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const table = document.querySelector('.table');
+        const tbody = table.querySelector('tbody');
+        function filterTable(searchValue) {
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.forEach(row => {
+                const rowData = Array.from(row.querySelectorAll('td')).map(cell => cell.textContent.toLowerCase());
+                if (rowData.some(data => data.includes(searchValue.toLowerCase()))) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        searchInput.addEventListener('input', () => {
+            const searchValue = searchInput.value.trim();
+            filterTable(searchValue);
+        });
+
+    });
+</script>
+
+
+{% endblock %}
+{% extends 'base2.html' %} {% block content %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}" />
+<style>
+    body {
+        background-color: #F5F7FB;
+        font-family: "Inter", sans-serif;
+    }
+
+    .container {
+        margin: 40px auto;
+        padding: 20px 0px;
+    }
+
+    .heading-section {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    /* TABLE STYLE GOES HERE */
+
+    .newtable {
+        background-color: rgb(255, 255, 255);
+        width: 100%;
+        margin: auto;
+        margin-top: 20px;
+        margin-bottom: 50px;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+
+    }
+
+    .newtable tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .newtable th,
+    .newtable td {
+        padding: 15px 12px;
+        text-align: center;
+        height: 30px;
+    }
+
+    .newtable th {
+        font-size: 14px;
+        text-align: center;
+        color: rgb(255, 255, 255);
+        vertical-align: middle;
+        font-weight: 600;
+        background-color: #4a4646;
+    }
+
+    .newtable a,
+    .name {
+        text-decoration: none;
+        color: rgb(54, 117, 225);
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .heading-section {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+    }
+
+    .search-bar input {
+        font-size: 14px;
+        border: 1px solid rgba(69, 64, 64, 0.621);
+        border-radius: 2px;
+        padding: 5px 10px;
+        height: 38px;
+        width: 210px;
+        margin-right: 5px;
+        color: #000000;
+    }
+
+    .search-bar input:focus {
+        outline: none;
+    }
+
+    #searchInput {
+        border: none;
+        background-color: transparent;
+    }
+
+    .sorting-dropdown {
+        text-align: right;
+    }
+
+    .searchdiv {
+        border: 1px solid #847d7d;
+        display: inline-block;
+        padding-left: 8px;
+        background-color: white;
+        border-radius: 2px;
+    }
+
+    .sorting-dropdown label {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    #clearBtn {
+        border: 1px solid #007bff;
+        font-size: 14px;
+        border: 1px solid #312f2f73;
+        border-radius: 2px;
+        padding: 8px 10px;
+        height: 37px;
+    }
+
+    .req {
+        width: 90px;
+    }
+
+    .res {
+        width: 90px;
+    }
+
+    #dropdownMenu2 {
+        background-color: gray;
+        height: 35px;
+        width: 80px;
+        margin-right: 15px;
+        font-size: 16px;
+    }
+
+    /* TABLE STYLE ENDS HERE */
+</style>
+
+<div class="container">
+    <div class="page-header">Inlet Home</div>
+    <div class="tabel-container">
+        <div class="search-bar">
+            <div id="s" style="flex-grow: 1">
+                <div class="searchdiv">
+                    <i class="fas fa-search" style="color: #a59d9d;font-size: 16px;"></i>
+                    <input type="text" id="searchInput" placeholder="Search for items here..." />
+                </div>
+                <button id="clearBtn">Clear</button>
+
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    sort
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li>
+                        <button class="dropdown-item" type="button">
+                            <a class="dropdown-item" href="?sort_by=arrive_date">Arrival Date (New First)</a>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item" type="button">
+                            <a class="dropdown-item" href="?sort_by=-arrive_date">Arrival Date (Old First)</a>
+                        </button>
+                    </li>
+                    <!-- <li><button class="dropdown-item" type="button">Something else here</button></li> -->
+                </ul>
+            </div>
+        </div>
+        <table class="newtable">
+            <thead>
+                <tr>
+                    <th data-sort="id">ID</th>
+                    <th data-sort="product">Product</th>
+                    <th class="req" data-sort="quantity_requested">Quantity Requested</th>
+                    <th class="res" data-sort="quantity_received">Quantity Received</th>
+                    <th data-sort="batch_id">Batch ID</th>
+                    <th data-sort="status">Status</th>
+                    <th data-sort="received_by">Received By</th>
+                    <th class="last_col" data-sort="arrive_date">Arrival Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product_index in product_indexes %}
+                {% if product_index.status=='in_progress' %}
+                <tr style="color: rgb(249, 173, 173);">
+                    <td>{{ product_index.id }}</td>
+                    <td>
+                        <a href="{% url 'product_batch' product_index.batch_id %}">{{ product_index.product.name }}</a>
+                    </td>
+                    <td>{{ product_index.quantity_requested }}</td>
+                    <td>{{ product_index.quantity_received }}</td>
+                    <td>{{ product_index.batch_id }}</td>
+                    <td>{{ product_index.status }}</td>
+                    <td>{{ product_index.received_by }}</td>
+                    <td>{{ product_index.arrive_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const table = document.querySelector(".table");
+        const tbody = document.querySelector("tbody");
+        const btn = document.getElementById("clearBtn");
+
+        btn.addEventListener("click", () => {
+            searchInput.value = "";
+            const searchValue = searchInput.value.trim();
+            filterTable(searchValue);
+        });
+        function filterTable(searchValue) {
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+
+            rows.forEach((row) => {
+                const rowData = Array.from(row.querySelectorAll("td")).map((cell) =>
+                    cell.textContent.toLowerCase()
+                );
+                if (rowData.some((data) => data.includes(searchValue.toLowerCase()))) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+        searchInput.addEventListener("input", () => {
+            const searchValue = searchInput.value.trim();
+            filterTable(searchValue);
+        });
+    });
+</script>
+
+{% endblock %}

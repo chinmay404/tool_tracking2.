@@ -1,0 +1,206 @@
+{% extends 'base1.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #f5f7fb;
+        font-family: "Inter", sans-serif;
+    }
+
+    .container {
+        margin: 40px auto;
+        padding: 0;
+    }
+
+    /* TABLE STYLE GOES HERE */
+
+    .newtable {
+        background-color: rgb(255, 255, 255);
+        width: 100%;
+        margin: auto;
+        margin-top: 15px;
+        margin-bottom: 50px;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        overflow-x: auto; /* Added for horizontal scrolling */
+    }
+
+    .newtable th,
+    .newtable td {
+        padding: 15px 12px;
+        text-align: center;
+        height: 30px;
+        white-space: nowrap; /* Added to prevent text wrapping */
+    }
+
+    .newtable th {
+        font-size: 15px;
+        text-align: center;
+        color: rgb(255, 255, 255);
+        vertical-align: middle;
+        font-weight: 600;
+        background-color: #4a4646;
+        cursor: pointer; /* Added cursor for sorting */
+    }
+
+    .newtable th:hover {
+        background-color: #555; /* Added hover effect for sorting */
+    }
+
+    .newtable tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .newtable a,
+    .name {
+        text-decoration: none;
+        color: rgb(54, 117, 225);
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .page-header {
+        font-size: 36px;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 80px;
+    }
+
+    .search-bar {
+        margin-bottom: 20px;
+    }
+
+    .search-bar input {
+        font-size: 14px;
+        border: 1px solid #ddd; /* Added border for input */
+        border-radius: 4px;
+        padding: 8px;
+        width: 200px;
+    }
+
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const table = document.querySelector(".newtable");
+        const tbody = table.querySelector("tbody");
+        const headers = table.querySelectorAll("th");
+
+        function filterTable(searchValue) {
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+
+            rows.forEach((row) => {
+                const rowData = Array.from(row.querySelectorAll("td")).map((cell) =>
+                    cell.textContent.toLowerCase()
+                );
+                if (rowData.some((data) => data.includes(searchValue.toLowerCase()))) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        function sortTable(columnIndex, ascending) {
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+
+            const sortedRows = rows.sort((a, b) => {
+                const aValue = a.children[columnIndex].textContent.trim();
+                const bValue = b.children[columnIndex].textContent.trim();
+
+                if (!isNaN(aValue) && !isNaN(bValue)) {
+                    return ascending ? aValue - bValue : bValue - aValue;
+                } else {
+                    return ascending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                }
+            });
+
+            tbody.innerHTML = "";
+            sortedRows.forEach((row) => {
+                tbody.appendChild(row);
+            });
+        }
+
+        headers.forEach((header, index) => {
+            header.addEventListener("click", () => {
+                const ascending = !header.classList.contains("ascending");
+                headers.forEach((h) => h.classList.remove("ascending", "descending"));
+                header.classList.add(ascending ? "ascending" : "descending");
+                sortTable(index, ascending);
+            });
+        });
+
+        searchInput.addEventListener("input", () => {
+            const searchValue = searchInput.value.trim();
+            filterTable(searchValue);
+        });
+    });
+</script>
+<div class="container">
+    <div class="page-header">All Slae Orders</div>
+    <h4>Sale Orders:</h4>
+    <form method="get" action="{% url 'sale_orders' %}" class="search-bar">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Search...">
+        <button type="submit">Search</button>
+    </form>
+    <table class="newtable">
+        <thead>
+            <tr>
+                <th>Order No</th>
+                <th>PO Number</th>
+                <th>Vehicle No</th>
+                <th>Status</th>
+                <th>Total Quantity</th>
+                <th>Actions</th> <!-- Added a new column for actions -->
+                <th>Status</th> <!-- Added a new column for actions -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale_order in sale_orders %}
+                <tr>
+                    <td>
+                        <a href="{% url 'sale_order_detail' sale_order.order_no %}">
+                            {{ sale_order.order_no }}
+                        </a>
+                    </td>
+                    <td>{{ sale_order.po_number }}</td>
+                    <td>{{ sale_order.vehicle_no }}</td>
+                    <td>{{ sale_order.status }}</td>
+                    <td>{{ sale_order.total_quantity }}</td>
+                    <td>
+                        {% if sale_order.status == 'complete' or sale_order.status == 'done' or sale_order.status == 'out'  %}
+
+                            <p></p>
+                        {% elif sale_order.status == 'recived' %}
+                        <p style="color: green;"> Recived</p>
+
+                        {% else %}
+                            <p style="color: brown;">Not Completed</p>
+                        {% endif %}
+                    </td>
+                    <td>{{ sale_order.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination" style="text-align: right; margin-top: 10px;">
+        <span class="step-links">
+            {% if sale_orders.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ sale_orders.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ sale_orders.number }} of {{ sale_orders.paginator.num_pages }}.
+            </span>
+
+            {% if sale_orders.has_next %}
+                <a href="?page={{ sale_orders.next_page_number }}">next</a>
+                <a href="?page={{ sale_orders.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

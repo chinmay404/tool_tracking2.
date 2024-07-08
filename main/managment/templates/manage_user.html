@@ -1,0 +1,150 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<style>
+    h1 {
+        color: #333;
+    }
+
+    form {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    h2 {
+        color: #333;
+        margin-top: 20px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    button {
+        padding: 12px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    #permissions-dropdowns {
+        max-width: 600px;
+        margin-top: 20px;
+    }
+
+    details {
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        padding: 12px;
+    }
+
+    summary {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    details ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    details li {
+        margin-bottom: 8px;
+    }
+</style>
+
+<h1>Manage User: {{ user.username }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    <h2>User Groups:</h2>
+    <ul>
+        {% for group in user_groups %}
+            <li>{{ group.name }}</li>
+        {% endfor %}
+        <li>{{ user_groups }}</li>
+    </ul>
+
+    <h2>User Permissions:</h2>
+    <ul>
+        {% for permission in user_permissions %}
+            <li>{{ permission.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Available Groups:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Group Name</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in groups %}
+                <tr>
+                    <td>{{ group.name }}</td>
+                    <td><input type="checkbox" name="groups" value="{{ group.id }}" {% if group in user_groups %}checked{% endif %}></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Available Permissions:</h2>
+    <div id="permissions-dropdowns">
+        {% for category, permission_list in sorted_permissions.items %}
+            <details>
+                <summary>{{ category }}</summary>
+                <ul>
+                    {% for permission in permission_list %}
+                        <li><input type="checkbox" name="permissions" value="{{ permission.id }}" {% if permission in user_permissions %}checked{% endif %}> {{ permission.name }}</li>
+                    {% endfor %}
+                </ul>
+            </details>
+        {% endfor %}
+    </div>
+
+    <button type="submit">Update User</button>
+</form>
+<script>
+    // JavaScript to toggle visibility of permission dropdowns
+    document.addEventListener('DOMContentLoaded', function () {
+        var dropdowns = document.querySelectorAll('details');
+        dropdowns.forEach(function (dropdown) {
+            dropdown.addEventListener('toggle', function () {
+                dropdown.classList.toggle('open', dropdown.open);
+            });
+        });
+    });
+</script>
+{% endblock %}

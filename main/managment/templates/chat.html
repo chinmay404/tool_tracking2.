@@ -1,0 +1,222 @@
+{% extends 'base1.html' %}
+{% block content %}
+<style>
+    /* Custom CSS for styling and animations */
+    .card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+        background-color: #25D366;
+        /* WhatsApp green */
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #128C7E;
+        /* Darker green on hover */
+    }
+
+    .form-control {
+        border-radius: 25px;
+        /* Rounder input fields */
+    }
+
+    #responseBox {
+        animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Custom styling for response box */
+    .response-box {
+        background-color: #f2f2f2;
+        /* Light gray background */
+        border-radius: 15px;
+        padding: 15px;
+        margin-top: 20px;
+        border-left: 4px solid #25D366;
+        /* WhatsApp green border */
+    }
+
+    /* Adjustments for better spacing and alignment */
+    .container {
+        padding-top: 50px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .mb-4 {
+        margin-bottom: 20px;
+        /* Slightly reduced margin */
+    }
+
+    /* Custom styling for chat bubbles */
+    .chat-bubble {
+        background-color: #fff;
+        /* White background for chat bubbles */
+        border-radius: 20px;
+        /* Rounder bubbles */
+        padding: 15px 20px;
+        /* Slightly increased padding */
+        margin-bottom: 10px;
+        max-width: 80%;
+        /* Slightly wider bubbles */
+        position: relative;
+        /* Required for arrow positioning */
+        animation: fadeInLeft 0.5s ease;
+    }
+
+    .user-bubble {
+        background-color: #DCF8C6;
+        /* Light green for user messages */
+        color: #000;
+        /* Black text */
+        align-self: flex-end;
+        /* Align user messages to the right */
+        animation: fadeInRight 0.5s ease;
+    }
+
+    /* Style for chat bubble arrow */
+    .chat-bubble::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        border-style: solid;
+        border-width: 10px;
+        border-color: transparent;
+    }
+
+    .user-bubble::after {
+        border-right-color: #DCF8C6;
+        /* Match user bubble background color */
+        right: -18px;
+        /* Adjust arrow position */
+        bottom: 0;
+    }
+
+    .response-bubble::after {
+        border-left-color: #fff;
+        /* Match response bubble background color */
+        left: -18px;
+        /* Adjust arrow position */
+        bottom: 0;
+    }
+
+    /* Adjustments for inline input and button */
+    .input-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .input-group .form-control {
+        flex: 1;
+        margin-right: 10px;
+        /* Spacing between input and button */
+    }
+
+    /* Additional animations */
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .loading-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        display: none;
+        /* Initially hidden */
+    }
+</style>
+<div class="loading-popup" id="loadingPopup">
+    <p>Thinking...</p>
+</div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8" style="min-width: 75vw;">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">   AI Chat</h2>
+                    <div class="chat-container">
+                        <!-- User input form -->
+                        <form action="{% url 'chat' %}" method="post">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="userInput" name="user_input"
+                                    placeholder="Type your message here...">
+                                <button type="submit" class="btn btn-primary">Send</button>
+                            </div>
+                        </form>
+                        <!-- Response display -->
+                        {% if response %}
+                        <div class="response-box mt-4">
+                            <h4>Response : </h4>
+                            <div class="chat-bubble response-bubble">
+                                <p style="margin-top: none;">{{ response }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // JavaScript to show loading popup while page is loading
+    document.addEventListener("DOMContentLoaded", function () {
+        // Show loading popup
+        document.getElementById("loadingPopup").style.display = "block";
+
+        // Hide loading popup after page is loaded
+        window.onload = function () {
+            document.getElementById("loadingPopup").style.display = "none";
+        };
+    });
+</script>
+{% endblock %}

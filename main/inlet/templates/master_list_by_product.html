@@ -1,0 +1,222 @@
+{% extends 'base1.html' %}
+{% block content %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .box-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+
+  .box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-width: 80vw;
+  }
+
+  .pageheader {
+    font-family: Verdana, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    padding-bottom: 30px;
+  }
+
+  .tablecontainer {
+    background-color: white;
+    padding: 20px;
+    min-height: 90vh;
+    position: relative;
+  }
+
+  #responsiveTable {
+    padding-top: 15px;
+  }
+
+  #responsiveTable tbody tr td span.green {
+    color: greenyellow;
+  }
+
+  #responsiveTable tbody tr td span.orange {
+    color: orange;
+  }
+
+  .custom-pagination {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .product-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .product-info {
+    flex: 0.5;
+    padding-right: 20px;
+  }
+
+  .pie-chart {
+    flex: 0.5;
+  }
+</style>
+
+<div class="page-container">
+  <div class="box-container">
+    <div class="box product-details" style="min-width: 80vw;">
+      <div class="product-info">
+        <div class="pageheader">PRODUCT DETAILS</div>
+        <p>Name: {{ product.name }}</p>
+        <p>Product ID: {{ product.product_id }}</p>
+        <p>Supplier Name: {{ product.supplier_name }}</p>
+        <p>Supplier GSTIN: {{ product.supplier_gstin }}</p>
+        <p>Description: {{ product.description }}</p>
+      </div>
+      <div class="pie-chart" >
+        <div class="chart-container" style="max-height: 40vh;">
+          <canvas id="productPieChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="box product-details">
+      <div class="count-box">
+        <p>Active Count: {{ product.active_count }}</p>
+        <p>In Progress Count: {{ product.in_progress_masters_count }}</p>
+        <p>Deactive Count: {{ product.deactive_count }}</p>
+        <p>Break Count: {{ product.break_count }}</p>
+      </div>
+    </div> -->
+  </div>
+
+  <div class="box">
+    <div class="tablecontainer">
+      <table id="responsiveTable" class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th class="px-9" scope="col">Unique ID</th>
+            <th class="px-9" scope="col">Product</th>
+            <th class="px-9" scope="col">Status</th>
+            <th class="px-9" scope="col">Batch ID</th>
+            <th class="px-9" scope="col">Added Date</th>
+            <th class="px-9" scope="col">Received By</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for master in masters %}
+          <tr>
+            <td class="px-9 py-3 border-0">
+              <a href="{% url 'view_product' master.uuid %}">{{ master.uuid }}</a>
+            </td>
+            <td class="px-9 py-3 border-0">{{ master.product.name }}</td>
+            <td class="px-9 py-3 border-0"><span
+                class="{% if master.status == 'active' %}green{% elif  master.status == 'in_progress' %}orange {% else %}blue{% endif %}">{{ master.status }}</span>
+            </td>
+            <td class="px-9 py-3 border-0">{{ master.batch_id }}</td>
+            <td class="px-9 py-3 border-0">{{ master.added_date|date:"F d, Y H:i:s" }}</td>
+            <td class="px-9 py-3 border-0" style="text-transform: capitalize;">{{ master.received_by }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Custom pagination -->
+      <div class="pagination">
+        <span class="step-links">
+          {% if masters.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <a href="?page={{ masters.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+            Page {{ masters.number }} of {{ masters.paginator.num_pages }}.
+          </span>
+
+          {% if masters.has_next %}
+          <a href="?page={{ masters.next_page_number }}">next</a>
+          <a href="?page={{ masters.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('#responsiveTable').DataTable({
+      "paging": false,
+      "ordering": true,
+      "info": true,
+      "searching": false,
+      "responsive": true
+    });
+
+    // Get counts from Django context and create data for the pie chart
+    var activeCount = {{ product.active_count }};
+    var inProgressCount = {{ product.in_progress_masters_count }};
+    var deactiveCount = {{ product.deactive_count }};
+    var breakCount = {{ product.break_count }};
+    // // var breakCount = {{ product.break_count }};
+    // var activeCount = 100;
+    // var inProgressCount = 90;
+    // var deactiveCount = 10;
+    // var breakCount = 23;
+
+
+    var pieData = {
+      labels: ['Active', 'In Progress', 'Deactive', 'Break'],
+      datasets: [{
+        data: [activeCount, inProgressCount, deactiveCount, breakCount],
+        backgroundColor: ['green', 'orange', 'red', 'black']
+      }]
+    };
+
+    // Create pie chart with customization options
+    var pieChartCanvas = document.getElementById('productPieChart').getContext('2d');
+    var pieChart = new Chart(pieChartCanvas, {
+      type: 'pie',
+      data: pieData,
+      options: {
+        responsive: true,
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: 'Product Status Overview'
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true
+        },
+        tooltips: {
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var dataset = data.datasets[tooltipItem.datasetIndex];
+              var total = dataset.data.reduce(function (previousValue, currentValue) {
+                return previousValue + currentValue;
+              });
+              var currentValue = dataset.data[tooltipItem.index];
+              var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+              return percentage + "%";
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
+
+
+{% endblock %}

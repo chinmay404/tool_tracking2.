@@ -1,0 +1,244 @@
+
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Tool Tracking</title>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      />
+      
+      
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+        crossorigin="anonymous"
+      />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+      <style>
+  /* BASE.CSS  */
+  * {
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      width: 100%;
+      font-family: Inter, sans-serif;
+      height: 100%;
+    }
+
+    .navbar {
+      padding: 15px;
+      display: flex;
+      height: 60px;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      position: fixed;
+      border-bottom: 1px solid rgb(205, 197, 197);
+      top: 0;
+      width: 100%;
+      z-index: 1;
+      font-weight: 500;
+      font-size: 18px;
+    }
+
+   
+
+    .userinfo {
+      font-weight: 400;
+      background-color: white;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 10px 20px;
+      border-radius: 5px;
+      position: absolute;
+      right: 15px;
+      top: 70px;
+      display: none;
+      z-index: 9999;
+      position: fixed;
+    }
+
+    .userinfo button {
+      margin-top: 5px;
+      background-color: transparent;
+      border: none;
+      text-decoration: underline;
+      outline: none;
+    }
+
+    .userinfo button a {
+      color: red;
+      outline: none;
+    }
+    .bottom {
+      display:flex
+    }
+    .bpart1{
+      width:17%;
+      position: fixed;
+    }
+    .bpart2{
+      width: 80%;
+      padding: 10px;
+      margin-left: 18%; 
+    }
+    .menubar{
+      margin-top: 25px;
+      background-color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      justify-content: center;
+      padding-left: 20px;
+      border: 1px solid #d1cdcd;
+      z-index: 999;
+    }
+ 
+    .menubar a{
+      color: rgb(0, 0, 0);
+      text-decoration: none;
+      font-weight: 500;
+      min-width: 150px;
+    }
+    .one{
+      padding-left: 10px;
+     
+    }
+    .active{
+      background-color:#CDE1CD;
+      color: white;
+      border-radius: 5px;
+      padding: 10px 0;
+    }     
+  
+  
+.userinfo{
+  font-weight: 400;
+  background-color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding:10px 20px ;
+  border-radius: 5px;
+  position: absolute;
+  right: 15px;
+  top:70px;
+  display: none;
+}
+.userinfo button{
+  margin-top: 5px;
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
+  outline: none;
+}
+.userinfo button a{
+  color: red;
+  outline: none;
+}
+#account{
+  border: 1px solid  #000;
+  font-size: 16px;
+  padding: 5px 10px;
+  user-select: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+</style>
+<body>
+  <nav class="navbar">
+    <div>
+      <span class="title"> Tool Tracking </span>
+    </div>
+    <div class="part2" id="account" style="text-transform: capitalize;">  {{user.username}} <i class="fas fa-chevron-down admin"></i></div>
+  </nav>
+  <div class="userinfo">
+    <div> Username : {{ user.username }}</div> 
+    <div> Email : {{ user.email }}</div> 
+    <div> Group : {{ user.groups.first.name }}</div> 
+    <button><a  href="{% url 'logout' %}">Logout</a></button>
+</div>
+<div class="bottom">
+      <div class="bpart1">
+            <div class="menubar">
+              {% if user.groups.first.name == 'admins' or user.groups.first.name == 'inlet_user' %}
+              <a href="{% url 'inlet_home' %}" > <div class="one">Inlet Home</div></a>
+              <a href="{% url 'create_product_index' %}" > <div class="one">Create Batch</div></a>
+              <a href="{% url 'list_product_index' %}" > <div class="one">List Products</div></a>
+              <a href="{% url 'list_masters' %}" > <div class="one">List Master</div></a>
+              <a href="{% url 'api_home' %}" > <div class="one">Product Activation API</div></a>
+              {% endif %} 
+              {% if user.groups.first.name == 'admins' or user.groups.first.name == 'managment_user' %}
+              <a href="{% url 'managment_home_black' %}"> <div class="one">Management Home</div></a>
+              <a href="{% url 'list_batch' %}"> <div class="one">All Batches</div></a>
+              <a href="{% url 'inquiry' %}" ><div class="one">Inquiry</div></a>
+              <a href="{% url 'api_home' %}" > <div class="one">Activation</div></a>
+            {% endif %} 
+            {% if user.groups.first.name == 'admins' or user.groups.first.name == 'outlet_user' %}
+            <a href="{% url 'outlet_home' %}" ><div class="one">Outlet Home</div></a>
+            {% endif %}
+            {% if user.groups.first.name == 'activators' %}
+            <a href="{% url 'list_batch' %}" ><div class="one">List Batches</div></a>
+            {% endif %}
+            {% if user.groups.first.name == 'admins' %}
+            <a href="{% url 'admin_only' %}" class="one">Admin Only</a>
+            {% endif %}
+            </div>
+      </div>
+      <div class="bpart2"> 
+        {% block content %}{% endblock %}
+      </div>
+   </div>
+
+      <script>
+         document.addEventListener("DOMContentLoaded", function() {
+      var menuItems = document.querySelectorAll('.menubar a');
+        var currentPage = window.location.pathname;
+
+     menuItems.forEach(function(item) {
+        // Check if the href attribute matches the current page
+        if (item.getAttribute('href') === currentPage) {
+            item.classList.add('active');
+        }
+    });
+}); 
+  
+      
+        const account = document.getElementById("account");
+        const bottom = document.querySelector(".bottom");
+        const userinfo = document.querySelector(".userinfo");
+  
+       
+      
+        account.addEventListener("click", (e)=>{
+          if(userinfo.style.display == "none"){
+            userinfo.style.display="block";
+            document.querySelector(".admin").classList.remove('fa-chevron-down');
+            document.querySelector(".admin").classList.add('fa-chevron-up');
+          } 
+          else{
+            userinfo.style.display="none";
+            document.querySelector(".admin").classList.add('fa-chevron-down');
+            document.querySelector(".admin").classList.remove('fa-chevron-up');
+          }
+        });
+
+       
+      </script>
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"
+      ></script>
+    </body>
+  </html>

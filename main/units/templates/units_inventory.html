@@ -1,0 +1,68 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">{{ unit }}'s {{ request.user.unit.name }} Inventory</div>
+
+  <div class="card card1">
+    <div class="data-container">
+      <div class="data-column">
+        <div class="data1">
+          <h2>Product Names in Unit:</h2>
+          <table id="inventoryTable" class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Product Name</th>
+                <th scope="col">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for product_info in product_data %}
+                <tr>
+                  <td>
+                    <a href="{% url 'units_product' product_info.product_name %}" class="product-link" data-product="{{ product_info.product_name }}">
+                      {{ product_info.product_name }}
+                    </a>
+                  </td>
+                  <td>{{ product_info.masters_count }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          
+          <!-- Pagination -->
+          <div class="pagination">
+            <span class="step-links">
+                {% if product_data.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ product_data.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ product_data.number }} of {{ product_data.paginator.num_pages }}.
+                </span>
+
+                {% if product_data.has_next %}
+                    <a href="?page={{ product_data.next_page_number }}">next</a>
+                    <a href="?page={{ product_data.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    $('#inventoryTable').DataTable({
+      "paging": false,
+      "ordering": true,
+      "info": true,
+      "searching": true,
+      "responsive": true
+    });
+  });
+</script>
+{% endblock %}

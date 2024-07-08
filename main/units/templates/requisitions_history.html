@@ -1,0 +1,78 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4" style="color: rgb(250, 98, 98);">Requisitions in {{ object_list }}</h2>
+    <table id="requisitionsTable" class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Requisition Number</th>
+          <th scope="col">Machine Name</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Tool</th>
+          <th scope="col">Date</th>
+          <th scope="col">Job</th>
+          <th scope="col">Operation</th>
+          <th scope="col">Completed</th>
+          <!-- Add more columns as needed -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for requisition in requisitions %}
+          <tr>
+            <td><a href="{% url 'master_allocation' requisition.id %}">{{ requisition.req_no }}</a></td>
+            <td>{{ requisition.machine.name }}</td>
+            <td>{{ requisition.quantity }}</td>
+            <td>{{ requisition.tool | length }}</td>
+            <td>{{ requisition.date }}</td>
+            <td>{{ requisition.job }}</td>
+            <td>{{ requisition.operation }}</td>
+            <td>{{ requisition.is_completed }}</td>
+            <!-- Add more columns as needed -->
+          </tr>
+        {% endfor %}
+        {% if completed_requisitions %}
+          <!-- Additional row for completed requisitions -->
+          <tr>
+            <td colspan="7">
+              <h5 class="text-success">Completed Requisitions</h5>
+            </td>
+          </tr>
+          {% for requisition in completed_requisitions %}
+            <tr>
+              <td><a href="{% url 'master_allocation' requisition.id %}">{{ requisition.req_no }}</a></td>
+              <td>{{ requisition.machine.name }}</td>
+              <td>{{ requisition.quantity }}</td>
+              <td>{{ requisition.tool | length }}</td>
+              <td>{{ requisition.date }}</td>
+              <td>{{ requisition.job }}</td>
+              <td>{{ requisition.operation }}</td>
+              <!-- Add more columns as needed -->
+            </tr>
+          {% endfor %}
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      $('#requisitionsTable').DataTable({
+        "paging": true,
+        "ordering": true,
+        "info": true,
+        "searching": true,
+        "responsive": true
+      });
+    });
+
+    function openPrompt(reqNo, productUuid) {
+      var userInput = prompt('Enter the UUID for requisition ' + reqNo + ' and product ' + productUuid + ':');
+      // You can handle the userInput (UUID) as needed, for example, submit it via AJAX or redirect to another page.
+      if (userInput !== null) {
+        // Handle the user input (UUID) here
+        console.log('User entered UUID:', userInput);
+      }
+    }
+  </script>
+{% endblock %}

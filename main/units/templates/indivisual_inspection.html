@@ -1,0 +1,77 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<h1>Products from Sale Order: {{ sale_order.bill_no }}</h1>
+<style>
+  /* Table Styling */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  /* Custom Pagination Styling */
+  .custom-pagination {
+    position: absolute;
+    bottom: 10px;  /* Adjust the distance from the bottom */
+    right: 10px;   /* Adjust the distance from the right */
+  }
+</style>
+<form method="post" action="">
+    {% csrf_token %}
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <!-- <th>State</th> -->
+                <th>Count</th>
+                <th>Verified Count</th>
+                <th>Input Box</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+          <form method="post" >
+            {% for item in products_with_count %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.description }}</td> 
+                <td>{{ item.master_count }}</td>
+                <td>{{ item.verified_masters_count }}</td>
+                {% if item.master_count == 0 %}
+                    <td style="color: green;">Verified</td>
+                    <td style="color: green;">No Action</td>
+                {% else %}
+                <td><input type="text" name="uuid_{{ item.product.name }}" placeholder="Scan QR on each product"></td>
+                <td><button type="submit">Submit Inspection</button></td>
+                {% endif %}
+            </tr>
+          </form>
+            {% endfor %}
+        </tbody>
+    </table>
+</form>
+
+
+<script>
+  $(document).ready(function () {
+    $('#productTable').DataTable({
+      "paging": true,
+      "ordering": true,
+      "info": true,
+      "searching": true,
+      "responsive": true
+    });
+  });
+</script>
+{% endblock %}

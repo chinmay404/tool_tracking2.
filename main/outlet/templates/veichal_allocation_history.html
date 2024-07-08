@@ -1,0 +1,107 @@
+{% extends 'base1.html' %}
+{% block content %}
+<style>
+  .container {
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 90vw;
+  }
+
+  h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  a:hover {
+    color: #0056b3;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  ul li {
+    margin-bottom: 5px;
+  }
+
+  /* Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  tr {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+</style>
+
+<div class="container">
+  <center><h2>Vehicle Allocation History</h2></center>
+  <table id="vehicleTable" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Tracking ID</th>
+        <th>Vehicle</th>
+        <th>Sale Order Groups</th>
+        <th>Transporter Name</th>
+        <th>Dispatch Time</th>
+        <th>Created Time</th>
+        <th>Reached Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for vehicle_sale_order in all_vehicle_sale_orders %}
+      <tr>
+        <td><a href="{% url 'veichal_allocation_details' vehicle_sale_order.tracking_id %}">{{ vehicle_sale_order.tracking_id }}</a></td>
+        <td>{{ vehicle_sale_order.vehicle }}</td>
+        <td>
+          <ul>
+            {% for sale_order_group in vehicle_sale_order.order_groups.all %}
+            <li><a href="{% url 'sale_order_group_detail' sale_order_group %}">G-{{ sale_order_group }},</a></li>
+            {% endfor %}
+          </ul>
+        </td>
+        <td>{{ vehicle_sale_order.TransporterName }}</td>
+        <td>{{ vehicle_sale_order.driver_name }}</td>
+        <td>{{ vehicle_sale_order.arrive_date }}</td>
+        <td>{{ vehicle_sale_order.driver_name }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3">No vehicle allocation history found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<script>
+  $(document).ready(function() {
+    $('#vehicleTable').DataTable();
+  });
+</script>
+{% endblock %}

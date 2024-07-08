@@ -1,0 +1,186 @@
+{% extends 'base1.html' %} {% block content %}
+<script>
+  $(document).ready(function () {
+    $('#responsiveTable').DataTable({
+      "paging": true,
+      "ordering": true,
+      "info": true,
+      "searching": true,
+      "responsive": true
+    });
+  });
+</script>
+
+
+
+<style>
+  body {
+    background-color: #f5f7fb;
+    font-family: "Inter", sans-serif;
+  }
+
+  .container {
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+  }
+
+  .page-header {
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+  }
+
+  .name {
+    margin-top: 20px;
+    text-align: center;
+    padding: 10px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+  }
+
+  .block {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+  }
+
+  .main {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    line-height: 1.6;
+    text-transform: capitalize;
+  }
+
+  .main div {
+    flex: 1;
+  }
+
+  .bold {
+    font-weight: 600;
+    color: brown;
+  }
+
+  .newtable {
+    background-color: #fff;
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .newtable th,
+  .newtable td {
+    padding: 15px 12px;
+    text-align: left;
+    height: 30px;
+    border: none;
+  }
+
+  .newtable th {
+    font-size: 14px;
+    text-align: left;
+    color: #333;
+    vertical-align: middle;
+    font-weight: 600;
+    background-color: #ffffff;
+  }
+
+  .newtable a {
+    text-decoration: none;
+    color: rgb(54, 117, 225);
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
+<div class="container">
+  <div class="name">
+    <span class="page-header">Products from Batch : <span class="bold">{{ batch_id_info }}</span></span>
+  </div>
+  <div class="block">
+    <span style="font-weight: 600; font-size: 20px">Details:</span>
+    <div class="main">
+      <div>Received By : <span class="bold">{{ Received_By }}</span></div>
+      <div>Received Date : <span class="bold">{{ Received_Date }}</span></div>
+      {% if product_counts %}
+      {% for count_item in product_counts %}
+      <div>{{ count_item.status }}: <span class="bold">{{ count_item.count }}</span></div>
+      {% endfor %}
+    {% endif %}
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $('#responsiveTable1').DataTable({
+        "paging": true,
+        "ordering": true,
+        "info": true,
+        "searching": true,
+        "responsive": true
+      });
+    });
+  </script>
+
+  <div class="container second mt-4">
+    <div class="product-index-items">
+      <h3>Product Index Batch</h3>
+      <table id="responsiveTable1" class="table table-striped table-hover newtable" >
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Small UUID</th>
+            <th>Quantity Requested</th>
+            <th>Quantity Recived</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in product_index.productindexitem_set.all %}
+          <tr>
+            <td class="py-3 border-0">{{ item.product.name }}</td>
+            <td class="py-3 border-0">{{ item.short_uuid }}</td>
+            <td class="py-3 border-0">{{ item.quantity_requested }}</td>
+            <td class="py-3 border-0">{{ item.quantity_received }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="container">
+    <h3>Product Index Items</h3>
+  <table id="responsiveTable" class=" table table-striped table-hover newtable">
+    <thead>
+      <tr>
+        <th scope="col">Product</th>
+        <th scope="col">Unique ID</th>
+        <th scope="col">Status</th>
+        <th scope="col">Added Date</th>
+        <th scope="col">Received By</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for master in products %}
+      <tr>
+        <td class="py-3 border-0">{{ master.product }}</td>
+        <td class="py-3 border-0">
+          <a href="{% url 'view_product' master.uuid %}">{{ master.uuid }}</a>
+        </td>
+        <td class="py-3 border-0">{{ master.status }}</td>
+        <td class="py-3 border-0">{{ master.added_date }}</td>
+        <td class="py-3 border-0">{{ master.received_by }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

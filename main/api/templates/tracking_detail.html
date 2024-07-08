@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Detail</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.5s ease-in;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            font-size: 55px;
+            margin-bottom: 20px;
+            color: #525252;
+            flex: 1 1 100%;
+        }
+
+        .map-container {
+            width: 300px; /* Set width to 200px */
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .map-container p {
+            font-style: italic;
+            color: #888;
+        }
+
+        table {
+            flex: 1 1 100%;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #555;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .material-details {
+            margin-top: 20px;
+        }
+
+        .material-details th,
+        .material-details td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .material-details th {
+            background-color: #f2f2f2;
+        }
+
+        .material-details tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="map_and_details" style="  display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        min-width: 90vw;">
+            <div class="details-container">
+                <h1>Tracking : {{ vehicle_sale_order_group.tracking_id }}</p></h1>
+                <p><strong>Tracking ID:</strong> {{ vehicle_sale_order_group.tracking_id }}</p>
+                <p><strong>Transporter Name:</strong> {{ vehicle_sale_order_group.TransporterName }}</p>
+                <p><strong>Vehicle:</strong> {{ vehicle_sale_order_group.vehicle }}</p>
+                <p><strong>Driver Name:</strong> {{ vehicle_sale_order_group.driver_name }}</p>
+                <p><strong>Arrival Date:</strong> {{ vehicle_sale_order_group.arrive_date }}</p>
+            </div>
+            <div class="map-container" style="border: 1px solid #555;">
+                <p>Map Unavailable</p>
+            </div>
+        </div>
+        <hr width="100%" size="2" style="margin-top: 40px;">
+        <h2 style="margin: auto;
+        margin-top: 50px;
+        margin-bottom: 50px;">Sale Order Details</h2>
+        <table id="sale-order-details-table">
+            <thead>
+                <tr>
+                    <th>Order No</th>
+                    <th>Status</th>
+                    <th>Order Date</th>
+                    <th>PO Number</th>
+                    <th>Party PO Date</th>
+                    <th>Total Quantity</th>
+                    <th>Material Name</th>
+                    <th>Material Code</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in vehicle_sale_order_group.order_groups.all %}
+                {% for sale_order in group.sale_orders.all %}
+                {% for product in sale_order.products.all %}
+                <tr>
+                    {% if forloop.first %}
+                    <td rowspan="{{ sale_order.products.count }}">{{ sale_order.order_no }}</td>
+                    <td rowspan="{{ sale_order.products.count }}">{{ sale_order.status }}</td>
+                    <td rowspan="{{ sale_order.products.count }}">{{ sale_order.order_date }}</td>
+                    <td rowspan="{{ sale_order.products.count }}">{{ sale_order.po_number }}</td>
+                    <td rowspan="{{ sale_order.products.count }}">{{ sale_order.party_po_date }}</td>
+                    <td rowspan="{{ sale_order.products.count }}">{{ sale_order.total_quantity }}</td>
+                    {% endif %}
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.MaterialCode }}</td>
+                    <td>{{ product.quantity }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/3.5.1/jquery.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#sale-order-details-table').DataTable();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+creat_batch : url(http://127.0.0.1:8000/api/creat_bach/)
+  {
+    "gate_inward_No": "GI123456",
+    "products": [
+      {
+        "product_id": "your_product_id_here",
+        "quantity_requested": 10,
+        "quantity_received": 10
+      },
+      {
+        "product_id": "another_product_id_here",
+        "quantity_requested": 5,
+        "quantity_received": 5
+      }
+    ],
+    "status": "your_system_generated_status",
+    "party_challan_no": 12345,
+    "part_bill_no": 54321,
+    "part_date": "2023-01-01",
+    "UOM": "your_unit_of_measurement",
+    "po_no": "PO123",
+    "rate": 50,
+    "amount": 500,
+    "received_by": 1 
+  }
+
+
+
+create_sale_order : url(http://127.0.0.1:8000/api/sale_order/)
+
+
+{
+  "status": "pending",
+  "grn_number": "GRN1231",
+  "po_number": "PO4565",
+  "bill_no": "BILL7896",
+  "vehicle_no": "VEH1231",
+  "products": [
+    {
+      "product": "CCMT 307 308",
+      "quantity": 12
+    },
+    {
+      "product": "CCMT 307 308",
+      "quantity": 5
+    }
+  ]
+}

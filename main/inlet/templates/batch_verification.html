@@ -1,0 +1,368 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+{% load static %}
+
+
+
+<style>
+   /* General Styles */
+   body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+
+  .pageheader {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 20px; /* Primary color */
+  }
+
+  p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+  }
+
+  /* Form Styles */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .search-bar input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+  }
+
+  .search-bar button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+  }
+
+  .search-bar button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Table Styles */
+  #responsiveTable {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-top: 20px;
+  }
+
+  #responsiveTable th,
+  #responsiveTable td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  #responsiveTable th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  #responsiveTable tbody tr:hover {
+    background-color: #f9f9f9;
+  }
+
+  .pagination {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .pagination a {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 0 4px;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .pagination a.active {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+  }
+
+  .pagination a:hover {
+    background-color: #ddd;
+  }
+
+  /* Dark Mode */
+  .dark-mode {
+    background-color: #333;
+    color: #fff;
+  }
+
+  .dark-mode .container {
+    background-color: #444;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  .dark-mode .pageheader {
+    color: #fff;
+  }
+
+  .dark-mode p {
+    color: #ccc;
+  }
+
+  .dark-mode .search-bar input[type="text"] {
+    border-color: #666;
+    background-color: #555;
+    color: #fff;
+  }
+
+  .dark-mode .search-bar button {
+    background-color: #555;
+    border-color: #666;
+  }
+
+  .dark-mode #responsiveTable th {
+    background-color: #222;
+    color: #fff;
+  }
+
+  .dark-mode #responsiveTable tbody tr:hover {
+    background-color: #555;
+  }
+
+  .dark-mode .pagination a {
+    color: #fff;
+    border-color: #666;
+  }
+
+  .dark-mode .pagination a.active {
+    background-color: #007bff;
+    border: 1px solid #007bff;
+  }
+  /* Styling for Sorting Options */
+.sorting-options {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sorting-options label,
+.sorting-options select {
+  margin-right: 10px;
+}
+
+.select-sorting,
+.select-date-range {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.custom-date-fields {
+  display: none;
+  margin-top: 10px;
+}
+
+.date-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.export-btn {
+  padding: 8px 20px;
+  background-color: #007bff; /* Primary color */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.export-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Animation for Custom Date Fields */
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.custom-date-fields.show {
+  animation: slideIn 0.5s ease forwards;
+}
+
+</style>
+
+<div class="container">
+  <!-- <button onclick="toggleDarkMode()">Toggle Dark Mode</button> -->
+
+  <div class="pageheader">Batch Verification</div>
+  <p>To see all verified batches <a href="{% url 'batch_verification_history' %}">click here</a>.</p>
+  <form method="get" enctype="multipart/form-data" class="search-bar">
+    <!-- <input type="text" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="Search by Party Name">
+    <button type="submit">Search</button>
+  </form> -->
+  <form method="get" enctype="multipart/form-data" class="search-bar">
+    <input type="text" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="Search by Party Name , GRN No , BATCH ID , PARTY CHALLAN DATE">
+    <button type="submit">Search</button>
+  </form>
+
+  <div class="sorting-options">
+    <select id="sort_by" name="sort_by" class="select-sorting">
+      <label for="sort_by">Sort By:</label>
+      <option value="arrive_date" {% if sort_by == 'arrive_date' %}selected{% endif %}>Arrival Date</option>
+      <option value="party_name" {% if sort_by == 'party_name' %}selected{% endif %}>Party Name</option>
+    </select>
+    <!-- EXPORT DATA  -->
+    <form method="get" action="{% url 'export_data' 'ProductIndex' 'inlet' %}" class="export-form">
+      <input type="hidden" name="q" value="{% if query %}{{ query }}{% endif %}">
+      <label for="date_range">Select Date Range:</label>
+      <select id="date_range" name="date_range" class="select-date-range">
+        <option value="today">Today</option>
+        <option value="this_week">This Week</option>
+        <option value="this_month">This Month</option>
+        <option value="custom">Custom</option>
+      </select>
+      <div id="custom_date_fields" class="custom-date-fields">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" class="date-input">
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" class="date-input">
+      </div>
+  
+      <button type="submit" class="export-btn">Export Data</button>
+    </form>
+    <!-- EXPORT DATA END  -->
+  </div>
+
+  <table id="responsiveTable">
+    <thead>
+      <tr>
+        <th>Party Name</th>
+        <th>Compony Name</th>
+        <th>GRN No</th>
+        <th>GRN Date</th>
+        <th>Batch ID</th>
+        <!-- <th>PO Number</th> -->
+        <th>Challan No</th>
+        <th>PO Date</th>
+        <th>Created Date</th>
+        <th>Party Challan Date</th>
+        <th>Status</th>
+        <th>Action</th>
+        <th>QR Print</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product_index in unverified_product_indexes %}
+      <tr>
+        <td>{{ product_index.party_name }}</td>
+        <td>{{ product_index.compny_name }}</td>
+        <td>{{ product_index.grn_no }}</td>
+        <td>{{ product_index.grn_date }}</td>
+        <td><a href="{% url 'batch_detail' product_index.batch_id %}">{{product_index.batch_id }}</a></td>
+        <!-- <td>{{ product_index.po_number }}</td> -->
+        <td>{{ product_index.party_challan_no }}</td>
+        <td>{{ product_index.po_date }}</td>
+        <td>{{ product_index.arrive_date }}</td>
+        <td>{{ product_index.party_challan_date }}</td>
+        <td>{{ product_index.status }}</td>
+        <td>
+          <form action="{% url 'download_qr' product_index.batch_id product_index.grn_no %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="download-link">Download</button>
+          </form>
+        </td>
+        <td>
+          <button class="print-link" data-batch-id="{{ product_index.batch_id }}">Print</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if unverified_product_indexes.has_previous %}
+      <a href="?page=1">&laquo; First</a>
+      <a href="?page={{ unverified_product_indexes.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ unverified_product_indexes.number }} of {{ unverified_product_indexes.paginator.num_pages }}.
+      </span>
+
+      {% if unverified_product_indexes.has_next %}
+      <a href="?page={{ unverified_product_indexes.next_page_number }}">Next</a>
+      <a href="?page={{ unverified_product_indexes.paginator.num_pages }}">Last &raquo;</a>
+      {% endif %}
+    </span>
+   
+  </div>
+</div>
+<script>
+  function toggleDarkMode() {
+    var element = document.body;
+    element.classList.toggle("dark-mode");
+  }
+
+  $('#responsiveTable').on('click', '.print-link', function () {
+    var batchId = $(this).closest('tr').find('td:nth-child(5) a').text(); // Adjusted index for Batch ID
+    var grnNo = $(this).closest('tr').find('td:nth-child(3)').text();
+    var qrUrl = "{% url 'print_qr' '__batch_id__' '__grn_no__' '__size__' %}".replace('__batch_id__', batchId).replace('__grn_no__', grnNo).replace('__size__', 150);
+    var printWindow = window.open('', '_blank');
+    printWindow.document.write('<img src="' + qrUrl + '">');
+    printWindow.document.close();
+    printWindow.onload = function () {
+      printWindow.print();
+    };
+  });
+  document.getElementById("date_range").addEventListener("change", function() {
+    var customDateFields = document.getElementById("custom_date_fields");
+    if (this.value === "custom") {
+      customDateFields.style.display = "block";
+    } else {
+      customDateFields.style.display = "none";
+    }
+  });
+</script>
+
+{% endblock %}

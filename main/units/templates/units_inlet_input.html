@@ -1,0 +1,23 @@
+
+{% extends 'base1.html' %}
+{% block content %}
+<style>
+    #scanQrContainer {
+        background-color: #ffffff;
+        padding: 20px;
+        border-bottom: 2px solid #ccc;
+        width: 80vw;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+</style>
+<h3>{{ unit }}</h3>
+<div id="scanQrContainer">
+    <form method="post" action="">
+        {% csrf_token %}
+        <label for="group_id">Scan The QR :</label>
+        <input type="text" id="group_id" name="group_id" required autocomplete="off">
+        <button type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

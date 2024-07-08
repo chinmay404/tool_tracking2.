@@ -1,0 +1,170 @@
+{% extends 'base1.html' %} {% block content %}
+<style>
+  body {
+    background-color: #f5f7fb;
+    font-family: "Inter", sans-serif;
+  }
+  /* TABLE STYLE GOES HERE */
+  .newtable {
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 50px;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+  }
+  .newtable tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  .newtable th,
+  .newtable td {
+    padding: 15px 12px;
+    text-align: center;
+    height: 30px;
+  }
+  .newtable th {
+    font-size: 14px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    vertical-align: middle;
+    font-weight: 600;
+    background-color: #4a4646;
+  }
+
+  .newtable a,
+  .name {
+    text-decoration: none;
+    color: rgb(54, 117, 225);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .search-bar {
+    display: flex;
+    align-items: center;
+  }
+
+  .search-bar input {
+    font-size: 14px;
+    border: 1px solid rgba(69, 64, 64, 0.621);
+    border-radius: 2px;
+    padding: 5px 10px;
+    height: 38px;
+    width: 210px;
+    margin-right: 5px;
+    color: #000000;
+  }
+  .search-bar input:focus {
+    outline: none;
+  }
+  .sorting-dropdown {
+    text-align: right;
+  }
+
+  .sorting-dropdown label {
+    margin-right: 10px;
+    font-weight: bold;
+  }
+  #clearBtn {
+    border: 1px solid #007bff;
+    font-size: 14px;
+    border: 1px solid #312f2f73;
+    border-radius: 2px;
+    padding: 5px 10px;
+    height: 37px;
+  }
+  .req {
+    width: 90px;
+  }
+  .res {
+    width: 90px;
+  }
+  #dropdownMenu2 {
+    background-color: gray;
+    height: 35px;
+    width: 80px;
+    margin-right: 15px;
+    font-size: 16px;
+  }
+  /* TABLE STYLE ENDS HERE */
+  .page-header {
+    font-size: 36px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 80px;
+  }
+  .count {
+    font-size: 18px;
+    background-color: #4caf50;
+    padding: 5px 12px;
+    margin-top: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    color: white;
+  }
+  .block {
+    background-color: rgb(255, 255, 255);
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 30px;
+  }
+  .main {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0px;
+    line-height: 1.6;
+    text-transform: capitalize;
+  }
+</style>
+<div class="container">
+  <div class="page-header">
+    Products and Their Master Records<br />
+    <div class="count" style="background-color: #64d467;">Active COUNT : {{ active_masters_count }}</div>
+    <div class="count" style="background-color: rgb(233, 131, 131);">In Progress COUNT : {{ in_progress_masters_count }}</div>
+    <div class="count" style="background-color: #4a464683; color: white;">TOTAL COUNT : {{ masters_count }}</div>
+  </div>
+  <div class="box"></div>
+  
+  <!-- <p>stats : {{ stats }}</p> -->
+
+  <div class="block">
+    <span style="font-weight: 600; font-size: 20px">Product Details:</span>
+    <div class="main">
+      <div>Product Name : <span class="bold">{{ product.name }}</span></div>
+      <div>Product ID : <span class="bold">{{ product.product_id }}</span></div>
+      <div>
+        supplier name : <span class="bold">{{ product.supplier_name }}</span>
+      </div>
+      <div></div>
+    </div>
+    <div class="desc">Description:{{ product.description }}</div>
+  </div>
+
+  <table class="newtable">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Master UUID</th>
+        <th>Status</th>
+        <th>Added Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for master in masters %}
+      <tr>
+        <td>{{ master.product.name }}</td>
+        <td>
+          <a href="{% url 'view_product' master.uuid %}">{{ master.uuid }}</a>
+        </td>
+        <td>{{ master.status }}</td>
+        <td>{{ master.added_date }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

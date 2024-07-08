@@ -1,0 +1,172 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="name">
+        <h2 class="page-header">Product: <span class="bold">{{ product.name }}</span></h2>
+        <hr>
+        <h2 class="page-header">Batch: <span class="bold">{{ batch_id }}</span></h2>
+    </div>
+
+    <div class="block">
+
+        <center>
+            <div class="back-link">
+                <a class="menura" href="{% url 'activate_via_batch' product_index.batch_id %}">
+                    <i class="fas fa-home"></i> Back To Main Page
+                </a>
+            </div>
+        </center>
+        <!-- <h3 style="font-weight: 600; font-size: 20px">Details:</h3> -->
+        <center>
+            <div class="main">
+                <div>Active : <span class="bold1" style="color: green;">{{ active_count }}</span></div>
+                <div>In Progress : <span class="bold1" style="color: red;">{{ product_index_item.unactive_count }}</span></div>
+                <div>Total : <span class="bold1" style="color: black;">{{ total_count }}</span></div>
+            </div>
+        </center>
+    </div>
+    
+    {% if in_progress_count %}
+    <center><h3 style="color: rgb(255, 28, 28); margin: revert; margin-top: 130px;">*** JUST SCAN THE QR CODE ***</h3></center>
+    <center><h4 style="color: rgb(253, 118, 118);  margin: revert">If Product didnt get activat. just Refresh Page and scan qr again without clicking anywhere else</h4></center>
+    <form method="post"
+        action="{% url 'activate_via_btach_single_product' batch_id=batch_id MaterialCode=product.MaterialCode %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="new_uuids" style="opacity: 0; position: absolute; left: -9999px;">New UUIDs:</label>
+            <input type="text" name="new_uuids" id="new_uuids" class="form-control new-uuid-input" rows="3"
+                data-product-id="{{ product.product_id }}" placeholder="Enter new UUIDs"
+                style="opacity: 0; position: absolute; left: -9999px;"></input>
+
+            <button type="submit" class="btn btn-primary" style="opacity: 0; position: absolute; left: -9999px;">Submit</button>
+    </form>
+    {% else %}
+    <center>
+        <h2 style="color: green; margin-top: 60px;" >All Activation Done</h2>
+    </center>
+    {% endif %}
+</div>
+
+<script>
+    // JavaScript to set focus on the textarea when the page loads
+    window.onload = function () {
+        document.getElementById("new_uuids").focus();
+    };
+
+    // JavaScript to submit form on Enter key press
+    // document.getElementById("new_uuids").addEventListener("keydown", function(event) {
+    //     if (event.key === "Enter") {
+    //         event.preventDefault(); // Prevent default action (e.g. newline in textarea)
+    //         document.querySelector("form").submit();
+    //     }
+    // });
+</script>
+
+<style>
+    /* Add your custom CSS styles here
+    body {
+        background-color: #f5f7fb;
+        font-family: "Inter", sans-serif;
+    } */
+    .bold1{
+        font-size: 50px;
+    }
+    .container {
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+    }
+
+    .page-header {
+        font-size: 28px;
+        font-weight: 600;
+        text-align: center;
+        color: #333;
+    }
+
+    .name {
+        margin-top: 20px;
+        text-align: center;
+        padding: 10px;
+        background-color: #f2f2f2;
+        border-radius: 5px;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        /* Ensure it's above other elements */
+    }
+
+    .block {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+    }
+
+    .main {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        line-height: 1.6;
+        text-transform: capitalize;
+    }
+
+    .main div {
+        flex: 1;
+    }
+
+    .bold {
+        font-weight: 600;
+        color: brown;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+
+    .back-link {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .back-link a {
+        color: rgb(255, 0, 0);
+        font-weight: bold;
+        font-size: larger;
+        text-decoration: none;
+        background-color: #ffeb3b00;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: 2px solid #f44336;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .back-link a:hover {
+        background-color: #5c5c5c;
+        color: #fff;
+    }
+</style>
+
+{% endblock %}

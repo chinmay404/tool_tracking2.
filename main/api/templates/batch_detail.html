@@ -1,0 +1,384 @@
+{% extends 'base1.html' %}
+{% block content %}
+<style>
+  body {
+    background-color: #f5f7fb;
+    font-family: "Inter", sans-serif;
+    height: 100vh;
+    margin-bottom: 100px;
+  }
+
+  .page-header {
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #fff;
+    padding: 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .parta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .box {
+    border: 1px solid #000;
+    padding: 10px;
+    color: #fff;
+    background-color: #4CAF50;
+    text-align: center;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .number {
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .second {
+    display: flex;
+    /* flex-direction: column; */
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .newtable {
+    background-color: #fff;
+    width: 85%;
+    margin: auto;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+  }
+
+  .newtable th,
+  .newtable td {
+    padding: 15px 12px;
+    text-align: center;
+    height: 30px;
+  }
+
+  .newtable th {
+    font-size: 14px;
+    text-align: center;
+    color: #fff;
+    vertical-align: middle;
+    font-weight: 600;
+    background-color: #4a4646;
+  }
+
+  .product-index-items {
+    margin-top: 20px;
+  }
+
+  .product-index-items h3 {
+    margin-bottom: 10px;
+  }
+
+  .product-index-items table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .product-index-items th,
+  .product-index-items td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+
+  .product-index-items th {
+    background-color: #4a4646;
+    color: #fff;
+  }
+
+  .qr-code-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .qr-code-image {
+    cursor: pointer;
+    width: 200px;
+  }
+
+  .verification-section {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .verification-section label {
+    font-weight: 600;
+    margin-right: 10px;
+  }
+
+  .verification-section input {
+    padding: 8px;
+    margin-right: 10px;
+  }
+
+  .submit-button {
+    margin-top: 20px;
+    text-align: center;
+  }
+</style>
+
+{% if user.groups.first.name == 'gate_user' %}
+
+<div class="container">
+  <div class="parta">
+    <div class="item">Party Name: <b>{{ product_index.party_name }}</b></div>
+    <div class="item">Gate Inward No: <b>{{ product_index.gate_inward_No }}</b></div>
+    <div class="item">GRN No: <b>{{ product_index.grn_no }}</b></div>
+    <div class="item">Party Challan No: <b>{{ product_index.party_challan_no }}</b></div>
+    <div class="item">Arrival Date: <b>{{ product_index.arrive_date }}</b></div>
+    <div class="item">Party Challan No: <b>{{ product_index.party_challan_no }}</b></div>
+    <div class="item">Part Bill No: <b>{{ product_index.part_bill_no }}</b></div>
+    <div class="item">Batch ID : <b>{{ product_index.batch_id}}</b></div>
+    <div class="item">Status: <b
+        style="color: {% if product_index.status == 'unverified' %}red{% else %}#4CAF50{% endif %};">{{ product_index.status }}</b></div>
+  </div>
+  <div class="qr-code-container">
+    {% if qr_code %}
+    <img class="qr-code-image" src="data:image/png;base64,{{ qr_code }}" alt="QR Code" onclick="downloadQrCode()">
+    <p style="font-size: small;">Click To Download</p>
+    {% else %}
+    <p>No QR code available</p>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+
+<div class="page-header">Batch Details</div>
+<form method="post" action="{% url 'batch_activation' batch_id=product_index.batch_id %}" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="container">
+    <div class="parta">
+      <div class="item">Party Name: <b>{{ product_index.party_name }}</b></div>
+      <div class="item">Gate Inward No: <b>{{ product_index.gate_inward_No }}</b></div>
+      <div class="item">GRN No: <b>{{ product_index.grn_no }}</b></div>
+      <div class="item">Party Challan No: <b>{{ product_index.party_challan_no }}</b></div>
+      <div class="item">Arrival Date: <b>{{ product_index.arrive_date }}</b></div>
+      <div class="item">Party Challan No: <b>{{ product_index.party_challan_no }}</b></div>
+      <div class="item">Part Bill No: <b>{{ product_index.part_bill_no }}</b></div>
+      <div class="item">Batch ID : <b>{{ product_index.batch_id}}</b></div>
+      <div class="item">Status: <b
+          style="color: {% if product_index.status == 'unverified' %}red{% else %}#4CAF50{% endif %};">{{ product_index.status }}</b></div>
+    </div>
+    <div class="qr-code-container">
+      {% if qr_code %}
+      <img class="qr-code-image" src="data:image/png;base64,{{ qr_code }}" alt="QR Code" onclick="downloadQrCode()">
+      <p style="font-size: small;">Click To Download</p>
+      {% else %}
+      <p>No QR code available</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="container second mt-4" style="background-color: #f5f7fb; box-shadow: none;">
+    <div class="product-index-items" style="min-width: 80vw;">
+      <center>
+        <h3>Product Index Items</h3>
+      </center>
+      <table class="newtable">
+        <thead style="background-color: #4a4646;">
+          <tr>
+            <th>Product Name</th>
+            <th>PO Qty</th>
+            <th>GRN Qty</th>
+            {% if product_index.status != 'verified' %}
+            <th>Inspection Qty</th>
+            {% endif %}
+            
+            {% if product_index.status == 'verified' %}
+            <th>Short Quantity</th>
+            <!-- <th>Short Quantity</th> -->
+            <!-- <th>Report</th> -->
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in product_index.productindexitem_set.all %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity_requested }}</td>
+            <td>{{ item.quantity_received }}</td>
+            {% if product_index.status == 'verified' %}
+            <td>
+                {{ item.short_quantity }}
+            </td>
+            {% endif %}
+
+
+            {% if product_index.status != 'verified' %}
+            {% if item.product.is_insert %}
+            <td>
+              <input type="text" name="received_quantities_{{ item.id }}" placeholder="Enter quantity received">
+              <input type="hidden" name="quantity_per_box_{{ item.id }}" id="quantity_per_box_{{ item.id }}">
+              <!-- Set a default value, e.g., 5 -->
+              <hr>
+              <label for="quantity_per_box_select_{{ item.id }}">Inserts in Per Box:</label>
+              <select name="quantity_per_box_select_{{ item.id }}" id="quantity_per_box_select_{{ item.id }}"
+                onchange="updateHiddenField(this)">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+              </select>
+            </td>
+            {% else %}
+            <td>
+              <input type="text" name="received_quantities_{{ item.id }}" placeholder="Enter Inspection Quantity">
+            </td>
+            {% endif %}
+            <!-- <td> -->
+            <!-- <input type="text" name="short_quantities_{{ item.id }}" placeholder="Enter short quantity"> -->
+            <!-- </td> -->
+            <!-- {% if item.product.is_unique_reports %} -->
+            <td> Reports Will be added At the Time of activation</td>
+            <!-- {% else %}
+            <td>
+              <p><strong>Balancing -</strong> <input type="file" name="balancing_report_{{ item.id }}"></p>
+              <hr>
+              <p><strong>drawing -</strong> <input type="file" name="drawing_{{ item.id }}"></p>
+              <hr>
+              <p><strong>inspection_report -</strong> <input type="file" name="inspection_report_{{ item.id }}"></p>
+            </td>
+            {% endif %} -->
+            <!-- <td id="shortQuantity_{{ item.id }}">{{ item.short_quantity }}</td> -->
+
+            {% endif %}
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if product_index.status != 'verified' %}
+      <div class="submit-button">
+        <button type="submit" id="submitBtn" >Submit</button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</form>
+<script>
+  function downloadQrCode() {
+    var qrCodeData = "{{ qr_code }}";
+    var downloadLink = document.createElement("a");
+    downloadLink.href = "data:image/png;base64," + qrCodeData;
+    downloadLink.download = "batch_qr_code.png";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
+
+  // document.addEventListener('DOMContentLoaded', function () {
+  //   var submitButton = document.getElementById('submitBtn');
+  //   var verificationCheckboxes = document.querySelectorAll('.verification-checkbox');
+  //   var receivedQuantities = document.querySelectorAll('[name^="received_quantities_"]');
+
+  //   function updateHiddenField(selectElement) {
+  //     var hiddenFieldId = selectElement.id.replace("select", "");
+  //     var hiddenField = document.getElementById(hiddenFieldId);
+  //     hiddenField.value = selectElement.value;
+  //   }
+  //   function updateSubmitButtonStatus() {
+  //     var isFormValid = true;
+
+  //     receivedQuantities.forEach(function (input) {
+  //       if (!input.value.trim()) {
+  //         isFormValid = false;
+  //       }
+  //     });
+
+  //     var isChecked = Array.from(verificationCheckboxes).some(function (checkbox) {
+  //       return checkbox.checked;
+  //     });
+
+  //     submitButton.disabled = !(isFormValid && isChecked);
+  //   }
+
+  //   verificationCheckboxes.forEach(function (checkbox) {
+  //     checkbox.addEventListener('change', updateSubmitButtonStatus);
+  //   });
+
+  //   receivedQuantities.forEach(function (input) {
+  //     input.addEventListener('input', updateSubmitButtonStatus);
+  //   });
+  //   updateSubmitButtonStatus();
+  // });
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var verificationCheckboxes = document.querySelectorAll('.verification-checkbox');
+    var receivedQuantities = document.querySelectorAll('[name^="received_quantities_"]');
+    var inspectionQuantities = document.querySelectorAll('[name^="inspection_quantities_"]');
+    var shortQuantityCells = document.querySelectorAll('[id^="shortQuantity_"]');
+    var submitButton = document.getElementById('submitBtn');
+
+    function calculateShortQuantity(index) {
+      var receivedQty = parseInt(receivedQuantities[index].value.trim()) || 0;
+      var inspectionQty = parseInt(inspectionQuantities[index].textContent.trim()) || 0;
+      var shortQty = receivedQty - inspectionQty;
+      shortQuantityCells[index].textContent = shortQty >= 0 ? shortQty : 0;
+    }
+
+    function updateSubmitButtonStatus() {
+      var isChecked = false;
+
+      verificationCheckboxes.forEach(function (checkbox, index) {
+        if (checkbox.checked) {
+          isChecked = true;
+          calculateShortQuantity(index);
+        }
+      });
+
+      var isFormValid = true;
+      receivedQuantities.forEach(function (input) {
+        if (!input.value.trim()) {
+          isFormValid = false;
+        }
+      });
+
+      submitButton.disabled = !(isFormValid && isChecked);
+    }
+
+    verificationCheckboxes.forEach(function (checkbox, index) {
+      checkbox.addEventListener('change', function () {
+        calculateShortQuantity(index);
+        updateSubmitButtonStatus();
+      });
+    });
+
+    receivedQuantities.forEach(function (input) {
+      input.addEventListener('input', updateSubmitButtonStatus);
+    });
+
+    updateSubmitButtonStatus();
+  });
+
+    updateShortQuantities(); // Calculate on page load
+  });
+
+
+</script>
+{% endif %}
+{% endblock %}

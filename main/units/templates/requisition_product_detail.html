@@ -1,0 +1,91 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="card mb-4">
+        <div
+            class="card-header {% if requisition_product.is_completed %}bg-success{% else %}bg-danger{% endif %} text-white">
+            <h2 class="mb-0">Requisition: {{ requisition.req_no }}</h2>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Requisition Details</h5>
+            <dl class="row">
+                <div class="col-md-6" style="border-right: solid black 1px;">
+                    <dt>Machine Name:</dt>
+                    <dd>{{ requisition.machine.name }}</dd>
+
+                    <dt>Products On Machine Count:</dt>
+                    <dd>{{ has_active_tools_for_product }}</dd>
+                </div>
+                <div class="col-md-6">
+                    <dt>Job:</dt>
+                    <dd>{{ requisition.job }}</dd>
+
+                    <dt>Operation:</dt>
+                    <dd>{{ requisition.operation }}</dd>
+
+                    <dt>Allocation Date:</dt>
+                    <dd>{{ requisition.date }}</dd>
+                </div>
+            </dl>
+            <hr>
+            <div class="container" style="margin: auto; padding-top: 15px;">
+                <center>
+                    <h3><strong>{{ requisition_product.product.name }}</strong></h3>
+                    <h3><strong>{{ requisition_product.product.produt_id }}</strong></h3>
+                    <p>Description: {{ requisition_product.product.description }}</p>
+                </center>
+            </div>
+            <hr>
+            <div class="container" style="   display: flex;
+            justify-content: space-evenly;">
+                <p>Total Quantity : {{ requisition_product.total_quantity }}</p>
+                <p>Allocated Quantity : {{ requisition_product.allocate_quantity }}</p>
+            </div>
+            <hr>
+            <div class="container" style="   display: flex;
+            justify-content: space-evenly;">
+                <p>Quantity of Resharp: {{ requisition_product.resharp_quantity }}</p>
+                <p>Quantity of Break: {{ requisition_product.break_quantity }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add more product details as needed -->
+
+    {% if has_active_tools_for_product  and has_active_tools_for_product > requisition_product.total_quantity%}
+    <!-- Display Old UUID Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Old UUID Form</h2>
+        </div>
+        <div class="form-group">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                {{ old_uuid_form.as_p }} <!-- Render OldUUIDForm here -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <!-- Display Master To Requisition Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2>Master To Requisition Form</h2>
+        </div>
+        <div class="card-body">
+            <form method="post"
+                action="{% url 'process_master_allocation' requisition_id=requisition.req_no product_id=requisition_product.product.pk %}"
+                class="needs-validation" novalidate>
+                {% csrf_token %}
+                {{ master_to_req_form.as_p }} <!-- Render Master_To_reqform here -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Add more requisition details as needed -->
+</div>
+
+{% endblock %}

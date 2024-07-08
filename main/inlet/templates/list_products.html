@@ -1,0 +1,116 @@
+{% extends 'base1.html' %}
+{% block content %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/table.css' %}" />
+
+<script>
+  $(document).ready(function () {
+    $('#responsiveTable').DataTable({
+      "paging": false,
+      "ordering": true,
+      "info": true,
+      "searching": false,
+      "responsive": true
+    });
+  });
+</script>
+
+<style>
+  .pageheader {
+    font-family: Verdana, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    padding-bottom: 30px;
+  }
+
+  .tablecontainer{
+    background-color:white;
+    padding: 20px;
+    min-height: 90vh;
+    position: relative;  /* Add this style for positioning */
+  }
+
+  #responsiveTable {
+    padding-top: 15px;
+  }
+
+  #responsiveTable tbody tr td span.green{
+    color: greenyellow;
+  }
+
+  #responsiveTable tbody tr td span.orange{
+    color: orange;
+  }
+
+  .custom-pagination {
+    position: absolute;
+    bottom: 10px;  /* Adjust the distance from the bottom */
+    right: 10px;   /* Adjust the distance from the right */
+  }
+  
+</style>
+
+<div class="container">
+  <div class="pageheader">MASTER LIST</div>
+  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat reiciendis libero, similique ad fugit facilis in corporis nam exercitationem quas error corrupti accusantium.</p>
+  <div class="search-container">
+    <form method="get" action="{% url 'list_products' %}">
+       <input type="text" name="search" placeholder="Search...">
+       <button type="submit">Search</button>
+    </form>
+ </div>
+ {% if search_query %}
+    <div class="search-query">
+       Showing results for: "{{ search_query }}"
+    </div>
+ {% endif %}
+  <div class="tablecontainer">
+    <table id="responsiveTable" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th class="px-9" scope="col">Name</th>
+          <th class="px-9" scope="col">Material Code</th>
+          <th class="px-9" scope="col">Product Id</th> 
+          <th class="px-9" scope="col">Active Count</th>
+          <th class="px-9" scope="col">In Progress Count</th>
+          <th class="px-9" scope="col">Dective Count</th>
+          <th class="px-9" scope="col">Break Count</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td class="px-9 py-3 border-0">{{ product.name }}</td>
+          <td class="px-9 py-3 border-0"><a href="{% url 'product_list_masters' product.MaterialCode %}">{{ product.MaterialCode }}</a></td>
+          <td class="px-9 py-3 border-0">{{ product.product_id }}</td>
+          <td class="px-2 py-1 border-0" style="text-transform: capitalize;">{{ product.active_count }}</td>
+          <td class="px-2 py-1 border-0" style="text-transform: capitalize;">{{ product.in_progress_masters_count }}</td>
+          <td class="px-2 py-1 border-0" style="text-transform: capitalize;">{{ product.deactive_count }}</td>
+          <td class="px-2 py-1 border-0" style="text-transform: capitalize;">{{ product.break_count }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <!-- Custom pagination -->
+    <div class="pagination">
+      <span class="step-links">
+          {% if masters.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ masters.previous_page_number }}">previous</a>
+          {% endif %}
+   
+          <span class="current">
+              Page {{ product.number }} of {{ product.paginator.num_pages }}.
+          </span>
+   
+          {% if masters.has_next %}
+              <a href="?page={{ masters.next_page_number }}">next</a>
+              <a href="?page={{ masters.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+      </span>
+   </div>
+  </div>
+</div>
+
+{% endblock %}

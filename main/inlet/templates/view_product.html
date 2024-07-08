@@ -1,0 +1,228 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #f5f7fb;
+    font-family: "Inter", sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    margin: 40px auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .page-header {
+    font-size: 32px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 30px;
+  }
+
+  .card {
+    width: 90vw;
+    max-width: 75vw;
+    border-radius: 20px;
+    margin: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+
+  .batchname {
+    font-size: 20px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .block {
+    flex: 1;
+    min-width: 250px;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #3498db;
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #fff;
+  }
+
+  .data {
+    text-align: center;
+    font-size: 16px;
+  }
+
+  .status {
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 10px;
+    text-transform: capitalize;
+    color: #fff;
+    margin-top: 10px;
+    display: inline-block;
+  }
+
+  .green {
+    background-color: #28a745;
+  }
+
+  .orange {
+    background-color: #ffa500;
+  }
+
+  .grey {
+    background-color: #ccc;
+  }
+
+  .jsontitle {
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .data-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .data-column {
+    flex: 1;
+  }
+
+  .data1,
+  .data2 {
+    text-align: left;
+    width: 100%;
+  }
+
+  ul {
+    padding-left: 20px;
+    margin-top: 0;
+  }
+</style>
+
+<div class="container">
+  <div class="page-header">Product Details</div>
+
+  <div class="card">
+    <span class="batchname">Product: {{ product.product }}</span>
+    <span class="batchname">ID: {{ product.uuid }}</span>
+
+    <div class="blocks">
+      <div class="block">
+        <div class="icon"><i class="fas fa-truck"></i></div>
+        <div class="data">
+          <b>Supplier:</b><br>
+          <span>{{ product.product.supplier_name }}</span>
+        </div>
+      </div>
+      <div class="block">
+        <div class="icon"><i class="fas fa-spinner"></i></div>
+        <div class="data">
+          <b>Status:</b><br>
+          <div class="status green">{{ product.status }}</div>
+        </div>
+      </div>
+      {% if product.is_insert %}
+      <div class="block">
+        <div class="icon"><i class="fas fa-spinner"></i></div>
+        <div class="data">
+          <b>Insert:</b><br>
+          <div class="status">{{ product.is_insert }}</div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="icon"><i class="fas fa-spinner"></i></div>
+        <div class="data">
+          <b>Quantity In Box:</b><br>
+          <div class="status">{{ product.quantity_per_box }}</div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="icon"><i class="fas fa-spinner"></i></div>
+        <div class="data">
+          <b>BOX Capacity:</b><br>
+          <div class="status">{{ product.box_capacity }}</div>
+        </div>
+      </div>
+      {% endif %}
+      <div class="block">
+        <div class="icon"><i class="fas fa-user"></i></div>
+        <div class="data">
+          <b>Received By:</b><br>
+          <span>{{ product.received_by }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="data-container">
+      <div class="data-column">
+        <div class="data1">
+          {% for key, value in product.data_json.items %}
+            {% if key == 'outlet' %}
+              <span class="jsontitle">Inlet</span>
+              <ul>
+                {% for a, b in value.items %}
+                  {% for c, d in b.items %}
+                    <li><strong>{{ c }}:</strong> {{ d }}</li>
+                  {% endfor %}
+                {% endfor %}
+              </ul>
+            {% endif %}
+            <span class="jsontitle">{{ key }}</span>
+            {% for sub_key, sub_value in value.items %}
+              <li><strong>{{ sub_key }}:</strong> {{ sub_value }}</li>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="data-column">
+        <div class="data2">
+          <h2>Whole Data:</h2>
+          {% for key, value in product.data_json.items %}
+            <ul>
+              {% for prop_key, prop_value in value.items %}
+                <li><strong>{{ prop_key }}:</strong> {{ prop_value }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{
+    "PackingSlipNo": "123",
+    "TrackingId": "ID586",
+    "TransportId": 1010000001,
+    "VehicleNo": "MH09DY4545",
+    "OrderSummary": [
+        {
+            "OrderNo": "102242590113000782",
+            "AmendNo": 0,
+            "MaterialCode": 1010100009,
+            "Quantity": 2,
+            "UIds": [
+                "252268",
+                "jhudk44jj"
+            ]
+        }
+    ]
+}

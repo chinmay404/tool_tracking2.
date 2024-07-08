@@ -1,0 +1,116 @@
+{% extends 'base1.html' %}
+{% block content %}
+{% load static %}
+<style>
+    /* Background Gradient */
+    body {
+        /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+        font-family: "Inter", sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Table Styling */
+    #vehicleTable_wrapper {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+    }
+
+    #vehicleTable th,
+    #vehicleTable td {
+        padding: 12px;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    #vehicleTable thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    #vehicleTable tbody + tbody {
+        border-top: 2px solid #dee2e6;
+    }
+
+    /* Hover Effect for Table Rows */
+    #vehicleTable tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Pagination Button Styling */
+    .paginate_button {
+        /* background-color: #764ba2 !important; */
+        /* color: #fff !important; */
+        border-radius: 5px !important;
+        padding: 8px 16px !important;
+        margin: 0 4px !important;
+        transition: all 0.3s ease;
+    }
+
+    .paginate_button:hover {
+        background-color: #5f3e7e !important;
+    }
+
+    /* Data Table Responsive */
+    @media screen and (max-width: 767px) {
+        #vehicleTable_wrapper {
+            overflow-x: auto;
+        }
+    }
+</style>
+<div class="container">
+    <div class="main-body">
+        <h1>Vehicle Details</h1>
+        <table id="vehicleTable" class="display">
+            <thead>
+                <tr>
+                    <th>Vehicle Number</th>
+                    <th>Vehicle Make</th>
+                    <th>Vehicle Model</th>
+                    <th>Fuel Type</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Speed</th>
+                    <th>Vehicle Name</th>
+                    <th>Current Status</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vehicle in vehicles %}
+                    <tr>
+                        <td><a href="{% url 'vehicle_detail' vehicle.vehicleNumber %}">{{ vehicle.vehicleNumber }}</a></td>
+                        <td>{{ vehicle.vehicleMake }}</td>
+                        <td>{{ vehicle.vehicleModel }}</td>
+                        <td>{{ vehicle.fuelType }}</td>
+                        <td>{{ vehicle.latitude }}</td>
+                        <td>{{ vehicle.longitude }}</td>
+                        <td>{{ vehicle.speed }}</td>
+                        <td>{{ vehicle.vehicleName }}</td>
+                        <td>{{ vehicle.currentStatus }}</td>
+                        <td>{{ vehicle.address }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        // Initialize DataTable
+        $('#vehicleTable').DataTable({
+            "paging": true,
+            "ordering": true,
+            "info": true,
+            "searching": true,
+            "responsive": true,
+            "lengthMenu": [5, 10, 25, 50],
+            "pageLength": 10 // Default page length
+        });
+    });
+</script>
+{% endblock %}

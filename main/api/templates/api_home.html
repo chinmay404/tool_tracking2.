@@ -1,0 +1,211 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fb;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.5s, color 0.5s;
+  }
+
+  .container {
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .pageheader {
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    color: #333;
+    text-transform: uppercase;
+  }
+
+  .searchbar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .searchbar input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+    font-size: 14px;
+  }
+
+  .searchbar button {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .searchbar button:hover {
+    background-color: #000000;
+  }
+
+  .newtable {
+    background-color: white;
+    padding: 20px;
+    position: relative;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+
+  .newtable table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  .newtable th,
+  .newtable td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+
+  .newtable th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .newtable tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .newtable a {
+    color: #4CAF50;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .newtable a:hover {
+    color: #000000;
+  }
+
+  .custom-pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .custom-pagination span {
+    margin: 0 5px;
+  }
+
+  .custom-pagination a {
+    text-decoration: none;
+    color: #4CAF50;
+    transition: color 0.3s ease;
+  }
+
+  .custom-pagination a:hover {
+    color: #45a049;
+  }
+
+  @media (max-width: 768px) {
+    .searchbar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .searchbar input[type="text"] {
+      margin-bottom: 10px;
+    }
+
+    .newtable table,
+    .newtable th,
+    .newtable td {
+      font-size: 12px;
+    }
+
+    .custom-pagination {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .custom-pagination span {
+      margin: 5px 0;
+    }
+  }
+</style>
+
+<div class="container">
+  <div class="pageheader">Activation via Batches</div>
+  <div class="col" style="display: flex; min-height: 100px;align-items: stretch;justify-content: space-around;">
+    <p><a href="{% url 'activate_via_product' %}" style="text-decoration: none;"><strong>Activate Masters By Product listing</strong></a></p>
+  <p><a href="{% url 'upload_reports' %}" style="text-decoration: none;"><strong>Upload Reports</strong></a></p>
+  <p><a href="{% url 'generate_qr_page' %}" style="text-decoration: none;"><strong>GET QR EXCEL</strong></a></p>
+  </div>
+  <h2>Product Indexes with Masters in Progress</h2>
+  <div class="searchbar">
+    <form method="get" action="{% url 'api_home' %}">
+      <input type="text" name="search" value="{{ search_query }}" placeholder="Search..." style="width: 200px;" />
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <div class="newtable">
+    <table>
+      <thead>
+        <tr>
+          <th>Party Name</th>
+          <th>Po No</th>
+          <th>GRN</th>
+          <th>Bill No</th>
+          <th>Batch ID</th>
+          <th>Party Chalan</th>
+          <th>Status</th>
+          <th>Received By</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product_index in product_indexes_with_in_progress_masters %}
+        <tr>
+          <td>{{ product_index.party_name }}</td>
+          <td>{{ product_index.po_no }}</td>
+          <td>{{ product_index.grn_no }}</td>
+          <td>{{ product_index.part_bill_no }}</td>
+          <td><a href="{% url 'activate_via_batch' product_index.batch_id %}">{{ product_index.batch_id }}</a></td>
+          <td>{{ product_index.party_challan_no }}</td>
+          <td>{{ product_index.status }}</td>
+          <td>{{ product_index.received_by }}</td>
+        </tr>
+        {% endfor %}
+        {% if product_indexes_with_in_progress_masters|length == 0 %}
+        <tr>
+          <td colspan="7">No results found.</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+    <div class="custom-pagination">
+      <span>
+        {% if product_indexes_with_in_progress_masters.has_previous %}
+        <a href="?page=1">&laquo; First</a>
+        <a href="?page={{ product_indexes_with_in_progress_masters.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span>Page {{ product_indexes_with_in_progress_masters.number }} of {{ product_indexes_with_in_progress_masters.paginator.num_pages }}</span>
+        {% if product_indexes_with_in_progress_masters.has_next %}
+        <a href="?page={{ product_indexes_with_in_progress_masters.next_page_number }}">Next</a>
+        <a href="?page={{ product_indexes_with_in_progress_masters.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+      </span>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

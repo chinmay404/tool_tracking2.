@@ -1,0 +1,379 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+  body {
+    background-color: #f5f7fb;
+    font-family: "Inter", sans-serif;
+    margin-bottom: 100px;
+  }
+
+  .blur img {
+    filter: blur(5px);
+  }
+
+  .blur .not-available-text {
+    display: block;
+  }
+
+  .container {
+    margin-bottom: 30px;
+  }
+
+  .box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .box-heading {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    border: none;
+    color: #fff;
+  }
+
+  .btn-danger:hover {
+    background-color: #c82333;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    color: #fff;
+  }
+
+  .btn-secondary:hover {
+    background-color: #5a6268;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .btn-container {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .delete-form-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .delete-form-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .alert {
+    margin-top: 20px;
+  }
+
+  /* Additional Styles */
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .table th,
+  .table td {
+    font-size: 14px;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+
+  .qr-code-container {
+    cursor: pointer;
+  }
+
+  .qr-code-image {
+    width: 200px;
+  }
+
+  .row-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .row-item {
+    flex: 1;
+  }
+</style>
+
+<div class="container mt-5">
+  <div class="box">
+    <center>
+      <div class="box-heading" style="padding-left: 133px;"> Group Details</div>
+    </center>
+    <hr>
+    <!-- Existing content remains unchanged -->
+
+    {% if qr_code %}
+    <div class="text-center mt-4 row-container">
+      <div class="row-item" style="border-right: 0.5px solid grey;">
+        <h3><strong>Unit:</strong> </h3> <h2> <strong><u>{{ sale_order_group.unit }}</u></strong></h2>
+        <h2> <strong>GROUP ID: </strong>G-{{ group_id }}</h2>
+        <h2><strong>Vehicle No:</strong> {{ sale_order_group.vehicle }}</h2>
+        <h2><strong>Destination:</strong> {{ sale_order_group.destination }}</h2>
+        <h2><strong>Status:</strong> {{ sale_order_group.status }}</h2>
+      </div>
+      <hr class="separator-line">
+      <div class="qr-code-container row-item" id="qrCodeContainer">
+        <img class="qr-code-image" src="data:image/png;base64,{{ qr_code }}" alt="QR Code" onclick="downloadQrCode()">
+        <p class="mt-2" style="font-size: small;">Click to Download</p>
+      </div>
+    </div>
+    {% else %}
+    <p class="mt-4">No QR code available</p>
+    {% endif %}
+  </div>
+  <!-- <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="box">
+          <div class="box-heading">Information Details</div>
+
+          <form method="post" action="{% url 'sale_order_group_detail' group_id=group_id %}" class="mt-4">
+            {% csrf_token %}
+            <div class="form-row">
+              {% if sale_order_group.vehicle %}
+              <div class="form-group col-md-6">
+                <label ><strong>Selected Veichal </strong>: {{ sale_order_group.vehicle }}</label>
+                
+              </div>
+              <div class="form-group col-md-6">
+              <label ><strong>Veichal Tracking URL: </strong></label>
+              <div class="form-group col-md-6">
+              <label><strong>status:</strong>{{ sale_order_group.vehicle.status }} </label>
+            </div>
+              
+            </div>
+              {% else %}
+              <div class="form-group col-md-6">
+                <label for="vehicleSelect"><strong>Select Vehicle</strong></label>
+                <select class="form-control" id="vehicleSelect" name="vehicle_no">
+                  <option value="">Select a Vehicle</option>
+                  {% for vehicle in vehicles %}
+                  <option value="{{ vehicle.vehicle_number }}" {% if sale_order_group.vehicle_no == vehicle.vehicle_number %} selected {% endif %} >{{ vehicle.vehicle_number }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              {% endif %}
+
+              <div class="form-group col-md-8">
+                <label for="driverName"><strong>Vehicle Driver Name </strong></label>
+                {% if sale_order_group.driver_name %}
+                {{ sale_order_group.driver_name }}
+                {% else %}
+                <input type="text" class="form-control" id="driverName" name="vehicle_driver_name"
+                  placeholder="Enter Driver Name" {% if sale_order_group.driver_name %}
+                  value="{{ sale_order_group.driver_name }}" disabled {% endif %}>
+                  {% endif %}
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="destination"><strong>Destination</strong></label>
+                {% if sale_order_group.destination %}
+                {{ sale_order_group.destination }}
+                {% else %}
+                <input type="text" class="form-control" id="destination" name="destination"
+                  placeholder="Write Destination" {% if sale_order_group.destination %}
+                  value="{{ sale_order_group.destination }}" disabled {% endif %}>
+                  {% endif %}
+              </div>
+              {% if sale_order_group.vehicle %}
+              <div></div>
+              {% else %}
+              <div class="btn-container">
+                <button type="submit" class="btn btn-primary" {% if sale_order_group.vehicle_no %} disabled {% endif %}>Submit</button>
+              </div>
+              {% endif %}
+            </div>
+          </form>
+        </div>
+      </div>
+
+Selected Vehicle Details Section 
+      <div class="col-md-7">
+        <div class="box">
+          <div class="box-heading">Vehicle Details</div>
+          <div class="selected-vehicle-details">
+            {% if selected_vehicle %}
+            <p><strong>Vehicle No:</strong> {{ selected_vehicle.vehicle_number }}</p>
+            <p><strong>Driver Name:</strong> {{ sale_order_group.driver_name }}</p>
+            <p><strong>Destination:</strong> {{ sale_order_group.destination }}</p>
+            <div id="map" style="height: 300px;"></div>
+            {% else %}
+            <p>No vehicle selected</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+
+<div class="box">
+  <div class="box-heading">Sale Order Table</div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th>Bill No</th>
+          <th>UUID</th>
+          <th>PO Number</th>
+          <th>Vehicle No</th>
+          <th>Driver Name</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sale_order in sale_orders_in_group %}
+        <tr>
+          <td>
+            <a href="{% url 'sale_order_detail' order_no=sale_order.order_no %}">
+              {{ sale_order.order_no }}
+            </a>
+          </td>
+          <td><span class="d-inline-block text-truncate" style="max-width: 150px;">{{ sale_order.uuid }}</span></td>
+          <td>{{ sale_order.po_number }}</td>
+          <td>{{ sale_order.vehicle_no }}</td>
+          <td>{{ sale_order.driver_name }}</td>
+          <td>
+            {% if sale_order.status == 'complete' %}
+            <span class="badge badge-success" style="color: green;">{{ sale_order.status }}</span>
+          </td>
+          {% elif sale_order.status == 'pending' %}
+          <span class="badge badge-warning" style="color: rgb(255, 18, 18);">{{ sale_order.status }}</span>
+          </td>
+          <td style="color: #c82333;">Not Available</td>
+          {% else %}
+          <span class="badge badge-danger" style="color: rgb(0, 0, 0);">{{ sale_order.status }}</span>
+          </td>
+          <td style="color: #c82333;">Not Available</td>
+          {% endif %}
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="btn-container">
+  {% if sale_order_group.status != 'recived' and sale_order_group.status != 'dispatched' %}
+  <button class="btn btn-danger" onclick="toggleDeleteForm()">Delete Group</button>
+  {% endif %}
+</div>
+
+<!-- Hidden delete confirmation form -->
+<div id="deleteFormContainer" class="delete-form-container">
+  <div class="delete-form-box">
+    <div class="box-heading">Delete Sale Order Group</div>
+
+    <p>Are you sure you want to delete Sale Order Group {{ sale_order_group.group_id }}?</p>
+
+    <form id="deleteForm" method="post" action="{% url 'delete_sale_order_group' group_id=sale_order_group.group_id %}">
+      {% csrf_token %}
+      <div class="btn-container">
+        <button type="submit" class="btn btn-danger">Delete Group</button>
+        <button type="button" class="btn btn-secondary" onclick="toggleDeleteForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+
+<script>
+  function toggleDeleteForm() {
+    var deleteFormContainer = document.getElementById('deleteFormContainer');
+    deleteFormContainer.style.display = (deleteFormContainer.style.display === 'none') ? 'flex' : 'none';
+  }
+
+  function downloadQrCode() {
+    var qrCodeData = "{{ qr_code }}";
+
+    // Check if all sale orders are complete before allowing the download
+    var allComplete = {% if all_sale_orders_complete %} true {% else %} false {% endif %};
+    var allReceived = {% if all_sale_orders_recived %} true {% else %} false {% endif %};
+
+  if (allReceived) {
+    alert("Cannot download QR code. Group already reached destination.");
+  }
+
+  if (allComplete) {
+    var downloadLink = document.createElement("a");
+    downloadLink.href = "data:image/png;base64," + qrCodeData;
+    downloadLink.download = "GROUP_QR.png";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  } else {
+    alert("Cannot download QR code. All Sale Orders Not Completed.");
+  }
+  }
+
+  // Function to toggle blur effect and display "Content Not Available" text
+  function toggleBlurAndText() {
+    var qrCodeContainer = document.getElementById('qrCodeContainer');
+    var saleOrdersComplete = {% if all_sale_orders_complete %} true {% else %} false {% endif %};
+
+  if (!saleOrdersComplete) {
+    qrCodeContainer.classList.add('blur');
+    qrCodeContainer.querySelector('.not-available-text').style.display = 'block';
+  }
+  }
+
+  // Call the function when the page loads
+  window.onload = function () {
+    toggleBlurAndText();
+  };
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
+{% endblock %}

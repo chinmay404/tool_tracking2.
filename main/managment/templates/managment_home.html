@@ -1,0 +1,442 @@
+{% extends 'base1.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container mt-4">
+  <!-- Heading Section
+  <div class="heading-section mb-4">
+    <h1 class="text-center">Dashboard</h1>
+    <p class="lead text-center">
+      To see all GRN <a href="{% url 'batch_verification_history' %}">Click Here</a>
+    </p>
+  </div>
+
+  <!-- Search Bar -->
+  <!-- <div class="search-bar mb-4">
+    <form method="get" action="{% url 'managment_home' %}">
+      <div class="input-group">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Search" class="form-control">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </form>
+  </div> --> -->
+  <!-- Heading Section -->
+  <div class="heading-section mb-4">
+    <h1 class="text-center text-primary">Dashboard</h1>
+    <p class="lead text-center">
+      To see all GRN <a href="{% url 'batch_verification_history' %}" class="text-info">Click Here</a>
+    </p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar mb-4">
+    <form method="get" action="{% url 'managment_home' %}">
+      <div class="input-group">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Search" class="form-control">
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Time Range Selection -->
+  <div class="time-range-selection mb-4 d-flex align-items-center">
+    <label for="time_range" class="mr-2">Time:</label>
+    <select name="time_range" id="time_range" class="form-control mr-2">
+      <option value="one_month">One Month</option>
+      <option value="one_week">One Week</option>
+      <option value="custom">Custom</option>
+    </select>
+    <button type="button" class="btn btn-primary apply-time-range">Apply</button>
+  </div>
+
+  <!-- Counts -->
+  <div class="row mb-4">
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body" style="
+        display: flex;
+        align-content: center;
+        justify-content: space-around;
+        align-items: flex-end;
+    ">
+          <div class="count-item text-center">
+            <h4>Total Sale Orders</h4>
+            <p class="count">{{ total_sale_orders_count }}</p>
+          </div>
+          <div class="divider"></div>
+          <div class="count-item text-center">
+            <h4>Completed Sale Orders</h4>
+            <p class="count">{{ completed_sale_orders_count }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body" style="
+        display: flex;
+        align-content: center;
+        justify-content: space-around;
+        align-items: flex-end;
+    ">
+          <div class="count-item text-center">
+            <h4>Total GRN</h4>
+            <p class="count">{{ total_product_indexes_count }}</p>
+          </div>
+          <div class="divider"></div>
+          <div class="count-item text-center">
+            <h4>Activated GRN</h4>
+            <p class="count">{{ completed_product_indexes_count }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Dashboard Components -->
+  <div class="row mb-4">
+    <!-- Monthly Chart -->
+    <div class="col-md-6">
+      <div class="card chart-container">
+        <div class="card-body">
+          <h2 class="card-title text-center">Monthly Chart</h2>
+          <canvas id="monthlyChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title text-center">Product's</h2>
+          <div class="counts">
+            <div class="count-item">
+              <h4 class="text-center">Total</h4>
+              <p class="text-center count">{{ total_count }}</p>
+            </div>
+            {% for status, count in status_counts.items %}
+            <div class="count-item">
+              <h4 class="text-center">{{ status|title }}</h4>
+              <p class="text-center count">{{ count }}</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Active Users -->
+    <!-- Active Users -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title text-center">Active Users</h2>
+          <div class="active-users-list">
+            <ul class="list-group">
+              {% for user in active_users %}
+              <li class="list-group-item">
+                <span class="dot"
+                  style="background-color: {% if user.is_active %}green{% else %}gray{% endif %}"></span>
+                {{ user.username }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vehicle List Section -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">All Vehicles</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Vehicle Number</th>
+                  <th>Destination</th>
+                  <th>Driver</th>
+                  <th>Phone</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for vehicle in all_vehicles %}
+                <tr>
+                  <td>{{ vehicle.vehicle_number }}</td>
+                  <td>{{ vehicle.destination }}</td>
+                  <td>{{ vehicle.driver_name }}</td>
+                  <td>{{ vehicle.driver_phone_number }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Indexes Section -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Activated Product Indexes</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Supplier Name</th>
+                  <th>Gate Inward No</th>
+                  <th>Party Challan</th>
+                  <th>Bill No</th>
+                  <th>Batch ID</th>
+                  <th>UOM</th>
+                  <th>PO</th>
+                  <th>Status</th>
+                  <th>Received By</th>
+                  <th>Arrival Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product_index in activated_product_index %}
+                <tr class="{% if product_index.status == 'in_progress' %}bg-warning{% endif %}">
+                  <td>{{ product_index.party_name }}</td>
+                  <td>{{ product_index.gate_inward_No }}</td>
+                  <td>{{ product_index.party_challan_no }}</td>
+                  <td>{{ product_index.part_bill_no }}</td>
+                  <td><a href="{% url 'product_batch' product_index.batch_id %}">{{ product_index.batch_id }}</a></td>
+                  <td>{{ product_index.UOM }}</td>
+                  <td>{{ product_index.po_no }}</td>
+                  <td>{{ product_index.status|capfirst }}</td>
+                  <td>{{ product_index.received_by }}</td>
+                  <td>{{ product_index.arrive_date }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination mb-4">
+    <span class="step-links">
+      {% if product_indexes.has_previous %}
+      <a href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}" class="page-link">&laquo; first</a>
+      <a href="?page={{ product_indexes.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}"
+        class="page-link">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ product_indexes.number }} of {{ product_indexes.paginator.num_pages }}.
+      </span>
+
+      {% if product_indexes.has_next %}
+      <a href="?page={{ product_indexes.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}"
+        class="page-link">next</a>
+      <a href="?page={{ product_indexes.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}"
+        class="page-link">last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+
+</div>
+
+<!-- Custom CSS -->
+<style>
+  /* body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+  } */
+
+  .active-users-list {
+    max-height: 200px;
+    /* Set maximum height for scroll */
+    overflow-y: auto;
+    /* Add vertical scrollbar if needed */
+  }
+
+  .active-users-list ul {
+    margin-bottom: 0;
+    /* Remove default margin */
+  }
+
+  .container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .heading-section h1 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .lead {
+    color: #555;
+  }
+
+  .search-bar {
+    margin-bottom: 20px;
+  }
+
+  .chart-container {
+    margin-bottom: 20px;
+  }
+
+  .counts {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .count-item {
+    margin: 10px;
+    text-align: center;
+  }
+
+  .count-item h4 {
+    margin-bottom: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+  }
+
+  .count-item p {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .active-users-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .list-group-item {
+    border: none;
+    position: relative;
+    color: #555;
+  }
+
+  .dot {
+    height: 10px;
+    width: 10px;
+    background-color: green;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .table {
+    margin-bottom: 20px;
+  }
+
+  .bg-warning {
+    background-color: #ffeeba !important;
+    color: #856404;
+  }
+
+  .pagination {
+    text-align: center;
+  }
+
+  .pagination a {
+    color: #007bff;
+    margin: 0 5px;
+  }
+
+  .pagination .current {
+    font-weight: bold;
+    color: #333;
+  }
+
+  .pagination .page-link:hover {
+    text-decoration: none;
+  }
+
+  .divider {
+    border-left: 1px solid #ccc;
+    /* Vertical line */
+    height: 80px;
+    /* Adjust height as needed */
+    margin: 0 20px;
+    /* Adjust margin as needed */
+  }
+</style>
+<script>
+  // JavaScript to handle time range selection
+  document.addEventListener('DOMContentLoaded', function () {
+    const applyButton = document.querySelector('.apply-time-range');
+    const timeRangeSelect = document.getElementById('time_range');
+
+    applyButton.addEventListener('click', function () {
+      const selectedValue = timeRangeSelect.value;
+      console.log('Selected Time Range:', selectedValue);
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Retrieve data from the chart_data object passed from the backend
+    const chartData = JSON.parse('{{ chart_data|escapejs }}');
+    const saleOrdersCount = chartData.saleOrdersCount;
+    const completedSaleOrdersCount = chartData.completedSaleOrdersCount;
+    const productIndexesCount = chartData.productIndexesCount;
+    const completedProductIndexesCount = chartData.completedProductIndexesCount;
+
+    // Delay time in milliseconds (adjust as needed)
+    const delayTime = 1000; // 1 second delay
+
+    setTimeout(function () {
+      const ctx = document.getElementById('monthlyChart').getContext('2d');
+      const monthlyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Sale Orders', 'Completed Sale Orders', 'Product Indexes', 'Completed Product Indexes'],
+          datasets: [{
+            label: 'Counts',
+            data: [saleOrdersCount, completedSaleOrdersCount, productIndexesCount, completedProductIndexesCount],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)', // Sale Orders
+              'rgba(54, 162, 235, 0.2)', // Completed Sale Orders
+              'rgba(255, 206, 86, 0.2)', // Product Indexes
+              'rgba(75, 192, 192, 0.2)', // Completed Product Indexes
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

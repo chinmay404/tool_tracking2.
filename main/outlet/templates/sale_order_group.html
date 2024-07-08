@@ -1,0 +1,117 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<style>
+  /* Custom styles */
+  .container {
+    margin: 50px auto;
+    padding: 20px;
+    /* Set max-width for better readability */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-row .col-md-6 {
+    padding: 0 5px;
+  }
+
+  .table th,
+  .table td {
+    vertical-align: middle;
+  }
+
+  .alert {
+    margin-top: 20px;
+  }
+
+  .table th {
+    background-color: #f8f9fa;
+    border-bottom-width: 2px;
+  }
+
+  /* Button Styles */
+  .btn-primary,
+  .btn-secondary {
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    border-radius: 5px;
+  }
+
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+
+  /* Table Hover Effect */
+  .table-striped tbody tr:hover {
+    background-color: #f0f0f0;
+  }
+</style>
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">Create Sale Order Group</h2>
+
+  <!-- Filter Form -->
+  <form method="post" id="filter_form" class="mb-4" action="{% url 'create_sale_order_group' %}">
+    {% csrf_token %}
+    <div class="form-row align-items-center justify-content-between mb-3">
+      <div class="col-md-6">
+        <label for="unitFilter">Unit Filter</label>
+        {{ form.unitFilter }}
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-primary btn-block">Filter</button>
+      </div>
+    </div>
+  </form>
+  <hr>
+
+  <!-- Sale Orders Table -->
+  {% if sale_orders %}
+  <form method="post" id="group_form" action="{% url 'create_group_for_selected_orders' %}">
+    {% csrf_token %}
+    <div class="table-responsive">
+      <table id="sale_orders_table" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Company Name</th>
+            <th>PO No</th>
+            <th>Order No</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in sale_orders %}
+          <tr>
+            <td>{{ order.unit }}</td>
+            <td>{{ order.po_number }}</td>
+            <td>{{ order.order_no }}</td>
+            <td>{{ order.status }}</td>
+            <td>
+              <input type="checkbox" class="sale_order_checkbox" name="selected_sale_orders"
+                value="{{ order.order_no }}">
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="text-center">
+      <button type="submit" class="btn btn-secondary btn-lg mt-3">Create Group</button>
+    </div>
+  </form>
+  {% else %}
+  <div class="alert alert-info" role="alert">
+    No sale orders found.
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('#sale_orders_table').DataTable();
+  });
+</script>
+
+{% endblock %}

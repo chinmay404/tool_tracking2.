@@ -1,0 +1,43 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Machines in {{ unit.name }}</h2>
+  <table id="machinesTable" class="table table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Machine Name</th>
+        <th scope="col">Active Tools</th>
+        <th scope="col">Actions</th>
+        <!-- Add more columns as needed -->
+      </tr>
+    </thead>
+    <tbody>
+      {% for machine in machines %}
+      <tr>
+        <td>{{ machine.name }}</td>
+        <td>{{ machine.active_tools|length }}</td>
+        <td>
+          <a href="{% url 'machine_details' machine.name %}">View</a>
+        </td>
+        <!-- Add more columns as needed -->
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% block scripts %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      $('#machinesTable').DataTable({
+        "paging": true,
+        "ordering": true,
+        "info": true,
+        "searching": true,
+        "responsive": true
+      });
+    });
+  </script>
+{% endblock %}
+{% endblock %}

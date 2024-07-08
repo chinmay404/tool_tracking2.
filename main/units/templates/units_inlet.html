@@ -1,0 +1,406 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<style>
+    /* body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    } */
+
+    #scanQrContainer {
+        background-color: #ffffff;
+        padding: 20px;
+        border-bottom: 2px solid #ccc;
+        width: 80vw;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    #resultContainer {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: left;
+        max-width: 80vw;
+        margin: 20px auto;
+    }
+
+    h2 {
+        color: #333;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+
+    p {
+        margin: 10px 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 15px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .error-message {
+        color: red;
+        margin-top: 15px;
+    }
+
+    .result-columns {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .column {
+        width: calc(50% - 10px);
+        /* 50% width with a small gap between columns */
+        margin-bottom: 5px;
+    }
+
+    .column:nth-child(even) {
+        margin-left: 20px;
+        /* Add margin to every even column for spacing */
+    }
+
+    .sale-order-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: left;
+        max-width: 80vw;
+        margin: 20px auto;
+        padding: 20px;
+        transition: box-shadow 0.3s;
+        /* Smooth transition for box-shadow */
+    }
+
+    .sale-order-container:hover {
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        /* Darken shadow on hover */
+    }
+
+    .sale-order-container:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .sale-order-details {
+        margin-bottom: 20px;
+    }
+
+    .sale-order-products {
+        margin-top: 20px;
+    }
+
+    .sale-order-actions {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .sale-order-actions button {
+        margin-right: 10px;
+    }
+
+    /* Style for counts container */
+    #countsContainer {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+        max-width: 80vw;
+    }
+
+    .count-box {
+        background-color: #f2f2f2;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        flex-basis: 30%;
+        /* Equal width for count boxes */
+    }
+
+    .count-box h4 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .count-box p {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .input input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    /* Center button */
+    .button-container {
+        text-align: center;
+    }
+
+    .button-container button {
+        width: 150px;
+        /* Adjust width as needed */
+    }
+
+    .checked {
+        background-color: #d3f9d8;
+        /* Light green background */
+    }
+
+    .dropdown-content {
+        display: none;
+    }
+
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+
+    .sale-order-container {
+        transition: all 0.3s ease;
+    }
+
+    /* Animation for sale order details dropdown */
+    .sale-order-details {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .sale-order-container.active .sale-order-details {
+        max-height: 500px; /* Adjust as needed */
+    }
+
+    /* Animation for button hover effect */
+    .button-container button {
+        transition: background-color 0.3s ease;
+    }
+
+    .button-container button:hover {
+        background-color: #45a049;
+    }
+
+    /* Animation for input field */
+    .input input[type="text"] {
+        transition: border-color 0.3s ease;
+    }
+
+    .input input[type="text"]:focus {
+        border-color: #4CAF50;
+    }
+
+    /* Animation for checkbox hover */
+    .sale-order-container:hover {
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Animation for sale order status */
+    .sale-order-header h2 {
+        transition: color 0.3s ease;
+    }
+
+    .sale-order-container.checked .sale-order-header h2 {
+        color: #4CAF50;
+    }
+
+    .sale-order-container.unchecked .sale-order-header h2 {
+        color: #bd2b2b;
+    }
+</style>
+
+<h3>{{ unit }}</h3>
+{% if not sale_orders %}
+<p>NO SALE ORDER </p>
+{% else %}
+<div id="countsContainer">
+    <div class="count-box">
+        <h4>Sale Orders Count</h4>
+        <p>{{ sale_orders_count }}</p>
+    </div>
+    <div class="count-box">
+        <h4>Checked Saleorder Count</h4>
+        <p>{{ products_count }}</p>
+    </div>
+    <div class="count-box">
+        <h4>Unchecked Saleorder Count</h4>
+        <p>{{ products_count }}</p>
+    </div>
+    <div class="count-box">
+        <h4>Products Count</h4>
+        <p>{{ products_count }}</p>
+    </div>
+
+</div>
+<div class="input">
+    <form method="post" action="{% url 'mark_sale_order_checked' %}">
+        {% csrf_token %}
+        <input type="hidden" name="group_id" value="{{ sale_orders.0.group_id }}">
+        <input type="text" name="uuid" placeholder="Scan QR on bill to confirm the bill" required>
+        <!-- <button type="submit">Submit</button> -->
+    </form>
+</div>
+<div id="resultContainer">
+    <center>
+        <div class="button-container">
+            <a href="{% if sale_orders %}{% url 'units_done_verification' group_id=sale_orders.0.group_id %}{% endif %}"
+                class="btn btn-success" style="margin-top: 15px; min-width: 20vw; pointer-events: none; " disabled>Accept All </a>
+            <button type="button" class="btn btn-danger" onclick="changeStatus()" style="min-width: 20vw" disabled>Reject
+                All</button>
+        </div>
+    </center>
+    {% for sale_order in sale_orders %}
+    <div class="sale-order-container {% if sale_order.checked %}checked{% endif %}">
+        <div class="sale-order-header" onclick="toggleSaleOrder(this)">
+            <h3>ID : {{ sale_order.uuid }}</h3>
+            {% if sale_order.checked %}
+            <h2 style="color: #4CAF50;"> Checked </h2>
+            {% else %}
+            <h2 style="color: #bd2b2b;"> Unchecked </h2>
+            {% endif %}
+            <div class="dropdown-content">
+                <div class="sale-order-details">
+                    <!-- Details -->
+                    <p><strong>Bill No:</strong> {{ sale_order.bill_no }}</p>
+                    <p><strong>GRN Number:</strong> {{ sale_order.grn_number }}</p>
+                    <p><strong>PO Number:</strong> {{ sale_order.po_number }}</p>
+                    <p><strong>Vehicle No:</strong> {{ sale_order.vehicle_no }}</p>
+                    <p><strong>Status:</strong> {{ sale_order.status }}</p>
+                    <p><strong>Total Quantity:</strong> {{ sale_order.total_quantity }}</p>
+                    <h4>Products</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale_order_product in sale_order.saleorderproduct_set.all %}
+                            <tr>
+                                <td>{{ sale_order_product.product.name }}</td>
+                                <td>{{ sale_order_product.quantity }}</td>
+                                <td>{{ sale_order_product.status }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- {% if sale_orders %}
+
+    {% else %}
+    <p>No sale orders found for the entered group ID.</p>
+    {% endif %} -->
+
+    {% if error_message %}
+    <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+</div>
+{% endif %}
+
+<script>
+
+    function toggleSaleOrder(element) {
+        // Get all sale order containers
+        var saleOrderContainers = document.querySelectorAll('.sale-order-container');
+
+        // Close all sale order details
+        saleOrderContainers.forEach(function (container) {
+            container.classList.remove('active');
+            var dropdownContent = container.querySelector('.dropdown-content');
+            dropdownContent.style.display = 'none';
+        });
+
+        // Open the clicked sale order details
+        element.parentElement.classList.toggle('active');
+        var dropdownContent = element.querySelector('.dropdown-content');
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+    }
+
+
+
+    function submitUUID() {
+        var uuid = document.getElementById('uuidInput').value;
+        var groupId = "{{ sale_orders.0.group_id }}"; // Get the group ID from the template context
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // AJAX request
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url 'mark_sale_order_checked' %}', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 400) {
+                // Success
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    alert("Sale order marked as checked.");
+                    // Reload the page or update the UI as needed
+                    location.reload(); // Reload the page
+                } else {
+                    alert("Sale order not found.");
+                    // Display error message or update the UI as needed
+                }
+            } else {
+                // Error
+                console.error("Error:", xhr);
+            }
+        };
+        xhr.onerror = function () {
+            // Request error
+            console.error("Request failed:", xhr);
+        };
+        xhr.send('group_id=' + groupId + '&uuid=' + uuid);
+    }
+</script>
+{% endblock %}

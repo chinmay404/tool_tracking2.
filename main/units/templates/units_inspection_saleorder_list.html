@@ -1,0 +1,12 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+
+<h1>Sale Orders for Unit: {{ unit }}</h1>
+    <ul>
+        {% for sale_order in sale_orders %}
+            <li>{{ sale_order.bill_no }} - {{ sale_order.status }}</li>
+            <!-- Add more fields as needed -->
+        {% endfor %}
+    </ul>
+{% endblock %}

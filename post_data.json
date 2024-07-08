@@ -1,0 +1,26 @@
+[
+    {
+        "TrnNo": "102232440411030648",
+        "MaterialCode": 1011324596,
+        "AcceptQty": 15,
+        "RejectedQty": 0,
+        "UIds": [
+            "252268",
+            "jhudk44jj",
+            "ddff",
+            "569"
+        ]
+    },
+    {
+        "TrnNo": "102232440411030627",
+        "MaterialCode": 1011321056,
+        "AcceptQty": 9,
+        "RejectedQty": 1,
+        "UIds": [
+            "2568",
+            "jh44ud44kjj",
+            "ddff589",
+            "56fgg9"
+        ]
+    }
+]

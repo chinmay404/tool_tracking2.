@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Product Index</title>
+</head>
+<body>
+TEST
+<h2>Create Product Index</h2>
+
+<form method="post" action="{% url 'create_product_index' %}">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <h3>Product Details</h3>
+    {{ product_formset.management_form }}
+    {% for form in product_formset %}
+        {{ form.as_table }}
+    {% endfor %}
+
+    <button type="submit">Create Product Index</button>
+</form>
+
+<script>
+    // Add more products dynamically (optional)
+    function addProductForm() {
+        var formset = document.getElementById('id_product_set-TOTAL_FORMS');
+        var newFormIndex = parseInt(formset.value);
+        var newForm = document.getElementById('empty_form').cloneNode(true);
+        newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, newFormIndex);
+        document.getElementById('product_forms').appendChild(newForm);
+        formset.value = newFormIndex + 1;
+    }
+</script>
+
+</body>
+</html>

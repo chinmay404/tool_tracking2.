@@ -1,0 +1,223 @@
+{% extends 'base1.html' %}
+{% block content %}
+<style>
+    #scanQrContainer {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-bottom: 2px solid #ccc;
+        width: 80vw;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    form {
+        margin-top: 20px;
+    }
+
+    #resultContainer {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: left;
+        max-width: 80vw;
+        margin: 20px auto;
+    }
+
+    p {
+        margin: 10px 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 15px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .error-message {
+        color: red;
+        margin-top: 15px;
+    }
+
+    .result-columns {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .column {
+        width: calc(50% - 10px);
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        transition: transform 0.3s ease;
+    }
+
+    .column:hover {
+        transform: translateY(-5px);
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .button-container button {
+        margin: 0 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .button-container button:hover {
+        background-color: #d9534f;
+    }
+
+    .hed {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .hed h2 {
+        margin: 0;
+        font-size: 50px;
+        color: #333;
+        /* Adjust color as needed */
+    }
+
+    .button-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .button-container a,
+    .button-container button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-left: 10px;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+    }
+
+    .button-container a:hover,
+    .button-container button:hover {
+        background-color: #45a049;
+    }
+
+    .btn-danger {
+        background-color: #d9534f;
+    }
+</style>
+
+<div id="scanQrContainer">
+    <form method="post" action="{% url 'out_verification' %}">
+        {% csrf_token %}
+        <label for="group_id">Enter Group ID:</label>
+        <input type="text" id="group_id" name="group_id" required autocomplete="off">
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<div id="resultContainer">
+    {% if sale_orders %}
+    <div class="hed" style="    display: flex;
+    justify-content: space-around;
+    align-items: center;
+">
+        <h2>Sale Orders In Group</h2>
+        <div class="button-container">
+            <a href="{% if sale_orders %}{% url 'done_verification' group_id=sale_orders.0.group_id %}{% endif %}"
+                class="btn btn-success">Mark as Done</a>
+            <button type="button" class="btn btn-danger" style="background-color: #d9534f;" onclick="changeStatus()">Reject</button>
+        </div>
+    </div>
+    <br>
+    <hr>
+    {% endif %}
+    <div class="result-columns">
+        {% if sale_orders %}
+
+        {% for sale_order in sale_orders %}
+        <div class="column">
+            <h3>Sale Order Bill : {{ sale_order.order_no }}</h3>
+            <p><strong>Bill No:</strong> {{ sale_order.order_no }}</p>
+            <p><strong>GRN Number:</strong> {{ sale_order.grn_number }}</p>
+            <p><strong>PO Number:</strong> {{ sale_order.po_number }}</p>
+        </div>
+        <div class="column">
+            <p><strong>Vehicle No:</strong> {{ sale_order.vehicle_no }}</p>
+            <p><strong>Status:</strong> {{ sale_order.status }}</p>
+            <p><strong>Total Quantity:</strong> {{ sale_order.total_quantity }}</p>
+        </div>
+        <h4>Products</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale_order_product in sale_order.saleorderproduct_set.all %}
+                <tr>
+                    <td>{{ sale_order_product.product.name }}</td>
+                    <td>{{ sale_order_product.quantity }}</td>
+                    <td>{{ sale_order_product.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+
+        {% endfor %}
+        <hr>
+        <br>
+
+
+
+        {% endif %}
+    </div>
+
+    {% if error_message %}
+    <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+</div>
+
+{% endblock %}

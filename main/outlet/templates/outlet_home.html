@@ -1,0 +1,137 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mb-4">Sale Order Groups</h1>
+  <p>To See All Packing List And Their Details <a href="{% url 'sale_order_group_history' %}">Click Here</a></p>
+
+  <div class="table-responsive">
+    <table id="saleOrderGroupsTable" class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Company Name</th>
+          <th>Destination</th>
+          <th>Group ID</th>
+          <th>Status</th>
+          <th>Vehicle No</th>
+          <th>Driver</th>
+          <!-- Add more columns as needed -->
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sale_order_group in sale_order_groups %}
+        <tr>
+          <td>{{ sale_order_group.unit }}</td>
+          <td>{{ sale_order_group.destination }}</td>
+          <td>
+            <a href="{% url 'sale_order_group_detail' group_id=sale_order_group.group_id %}">
+              G-{{ sale_order_group.group_id }}
+            </a>
+          </td>
+          <td>
+            <span class="badge {% if sale_order_group.status == 'pending' %}badge-warning{% elif sale_order_group.status == 'completed' %}badge-success{% else %}badge-info{% endif %}">
+              {{ sale_order_group.status }}
+            </span>
+          </td>
+          {% if sale_order_group.vehicle.vehicle_number %}
+          <td>{{ sale_order_group.vehicle.vehicle_number }}</td>
+          {% else %}
+          <td style="color: #e71c1c;"><strong>No Vehicle Assigned Yet</strong></td>
+          {% endif %}
+          <td>{{ sale_order_group.driver_name }}</td>
+          <!-- Add more columns as needed -->
+          <td>
+            {% csrf_token %}
+            <a href="{% url 'generate_pdf' group_id=sale_order_group.group_id %}" class="btn btn-link download-pdf">Download PDF</a> |
+            <button onclick="printPDF('{% url 'generate_pdf' group_id=sale_order_group.group_id %}')" class="btn btn-link print-pdf">Print PDF</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .table-bordered th,
+  .table-bordered td {
+    border: 1px solid #dee2e6;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  .badge {
+    padding: 8px 12px;
+    border-radius: 5px;
+  }
+
+  .badge-warning {
+    background-color: #ffc107;
+  }
+
+  .badge-success {
+    background-color: #28a745;
+  }
+
+  .badge-info {
+    background-color: #17a2b8;
+  }
+</style>
+
+<script>
+  $(document).ready(function () {
+    $('#saleOrderGroupsTable').DataTable({
+      paging: true,
+      ordering: true,
+      info: true,
+      searching: true,
+      responsive: true
+    });
+
+    $('.download-pdf').click(function (e) {
+      e.preventDefault();
+      var pdfUrl = $(this).attr('href');
+      window.open(pdfUrl, '_blank');
+    });
+
+    $('.print-pdf').click(function (e) {
+      e.preventDefault();
+      var pdfUrl = $(this).prev('.download-pdf').attr('href');
+      var csrfToken = $('input[name="csrfmiddlewaretoken"]').val(); // Get CSRF token from the page
+
+      // Initiate server-side PDF generation and download
+      fetch(pdfUrl, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken // Include CSRF token in the request headers
+        }
+      })
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'sale_order_group.pdf';
+
+          // Add printing logic here
+          a.click();  // Initiate download
+          printPDF(url); // Call a new function to print the downloaded PDF
+        });
+    });
+
+    function printPDF(pdfUrl) {
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = pdfUrl;
+      document.body.appendChild(iframe);
+
+      iframe.onload = function () {
+        iframe.contentWindow.print(); // Print the content of the iframe (downloaded PDF)
+      };
+    }
+  });
+</script>
+{% endblock %}

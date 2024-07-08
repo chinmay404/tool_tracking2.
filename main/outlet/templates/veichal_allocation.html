@@ -1,0 +1,97 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Vehicle Allocation</h1>
+    <p>To See All Allocations  <a href="{% url 'veichal_allocation_history' %}">Click Here</a></p>
+    <div class="table-responsive">
+        <form method="post" action="{% url 'veichal_allocation' %}">
+            {% csrf_token %}
+            <table id="saleOrderGroupsTable" class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Compony Name</th>
+                        <th>Destination</th>
+                        <th>Group ID</th>
+                        <th>Status</th>
+                        <th>Vehicle No</th>
+                        <th>Driver</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in groups %}
+                    <tr>
+                        <td>{{ group.unit }}</td>
+                        <td>{{ group.destination }}</td>
+                        <td>
+                            <a href="{% url 'sale_order_group_detail' group_id=group.group_id %}">
+                                G-{{ group.group_id }}
+                            </a>
+                        </td>
+                        <td>
+                            <span
+                                class="badge {% if group.status == 'pending' %}badge-warning{% elif group.status == 'completed' %}badge-success{% else %}badge-info{% endif %}">
+                                {{ group.status }}
+                            </span>
+                        </td>
+                        {% if group.vehicle.vehicle_number %}
+                        <td>{{ group.vehicle.vehicle_number }}</td>
+                        {% else %}
+                        <td style="color: #e71c1c;"><strong>No Vehicle Assigned Yet</strong></td>
+                        {% endif %}
+                        <td>{{ group.driver_name }}</td>
+                        <td>
+                            <input type="checkbox" class="selected_groups" name="selected_groups"
+                                value="{{ group.group_id }}">
+                        </td>
+                        <!-- Add more columns as needed -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="submit" value="Allocate Vehicle">
+        </form>
+    </div>
+</div>
+
+<style>
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .badge {
+        padding: 8px 12px;
+        border-radius: 5px;
+    }
+
+    .badge-warning {
+        color: #e71c1c;
+    }
+
+    .badge-success {
+        color: #28a745;
+    }
+
+    .badge-info {
+        color: #000000;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#saleOrderGroupsTable').DataTable({
+            "paging": true,
+            "ordering": true,
+            "info": true,
+            "searching": true,
+            "responsive": true
+        });
+    });
+</script>
+{% endblock %}

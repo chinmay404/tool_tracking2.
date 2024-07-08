@@ -1,0 +1,77 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+
+<div class="container mt-4" style="min-width: 80vw;">
+    <!-- Requisition Details Box -->
+    <div class="card mb-4">
+        <div class="card-header {% if requisition.is_completed %}bg-success{% else %}bg-danger{% endif %} text-white">
+            <h2 class="mb-0">Requisition: {{ requisition.req_no }}</h2>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Requisition Details</h5>
+            <dl class="row">
+                <div class="col-md-6" style="border-right: solid black 1px;">
+                    <dt>Machine Name:</dt>
+                    <dd>{{ requisition.machine.name }}</dd>
+
+                    <dt>No of Products:</dt>
+                    <dd>{{ requisition.requisitionproduct_set.count }}</dd>
+                </div>
+                <div class="col-md-6">
+                    <dt>Job:</dt>
+                    <dd>{{ requisition.job }}</dd>
+
+                    <dt>Operation:</dt>
+                    <dd>{{ requisition.operation }}</dd>
+
+                    <dt>Allocation Date:</dt>
+                    <dd>{{ requisition.date }}</dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Product List Box -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="mb-0">Product List</h3>
+        </div>
+        <div class="card-body">
+            <table id="productTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Break Quantity</th>
+                        <th>Resharp Quantity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for requisition_product in requisition_products %}
+                    <tr>
+                        <td><a href="{% url 'product_detail' requisition_id=requisition.req_no product_id=requisition_product.product.pk %}">{{ requisition_product.product.name }}</a></td>
+                        <td>{{ requisition_product.break_quantity }}</td>
+                        <td>{{ requisition_product.resharp_quantity }}</td>
+                        <td>{{ requisition_product.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#productTable').DataTable({
+            "paging": true,
+            "ordering": true,
+            "info": true,
+            "searching": true,
+            "responsive": true
+        });
+    });
+</script>
+
+{% endblock %}

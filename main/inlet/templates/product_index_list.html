@@ -1,0 +1,139 @@
+{% extends 'base1.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+  .pageheader {
+    font-family: Verdana, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    padding-bottom: 30px;
+  }
+
+  .tablecontainer {
+    /* background-color: white; */
+    padding: 20px;
+    min-height: 90vh;
+    position: relative;
+    /* Add this style for positioning */
+  }
+
+  #responsiveTable {
+    padding-top: 15px;
+  }
+
+  /* #responsiveTable tbody tr td span.green {
+    color: greenyellow;
+  }
+
+  #responsiveTable tbody tr td span.orange {
+    color: orange;
+  } */
+
+  .custom-pagination {
+    position: absolute;
+    bottom: 10px;
+    /* Adjust the distance from the bottom */
+    right: 10px;
+    /* Adjust the distance from the right */
+  }
+
+  .pagination {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .pagination a {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    color: black;
+  }
+
+  .pagination a:hover {
+    background-color: #ddd;
+  }
+
+  .pagination .current {
+    color: rgb(0, 0, 0);
+  }
+
+  tr.in-progress {
+    background-color: rgba(228, 134, 99, 0.2);
+  }
+
+  tr.complete {
+    background-color: rgb(156, 241, 161);
+  }
+</style>
+
+<div class="container">
+  <div class="pageheader">LIST BATCH</div>
+  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis nisi asperiores autem, maiores veniam unde
+    commodi adipisci soluta omnis corrupti incidunt architecto, quas aut non vel quis exercitationem ab praesentium
+    distinctio sunt delectus natus!</p>
+  <div class="search-bar">
+    <form method="get" action="{% url 'list_product_index' %}">
+      <input type="text" name="search" value="{{ search_query }}" placeholder="Search...">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <div class="tablecontainer">
+    <table id="responsiveTable" class="table table-hover">
+      <thead>
+        <tr>
+          <th class="px-6">Party Name</th>
+          <th class="px-6">G.I.N</th>
+          <th class="px-6">P.C.</th>
+          <th class="px-6">B.N.</th>
+          <th class="px-6">Batch ID</th>
+          <th class="px-6">UOM</th>
+          <th class="px-6">PO</th>
+          <th class="px-6">Status</th>
+          <th class="px-6">Receiver</th>
+          <th class="px-6">Arrival Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product_index in product_indexes %}
+        <tr class="{% if product_index.status == 'in_progress' %}in-progress{% elif product_index.status == 'complete' %}complete{% endif %}">
+          <td class="px-6 py-3 border-0">{{ product_index.party_name }}</td>
+          <td class="px-6 py-3 border-0">{{ product_index.gate_inward_No }}</td>
+          <td class="px-6 py-3 border-0">{{ product_index.party_challan_no }}</td>
+          <td class="px-6 py-3 border-0">{{ product_index.part_bill_no }}</td>
+          <td class="px-6 py-3 border-0"><a href="{% url 'product_batch' product_index.batch_id %}">{{product_index.batch_id }}</a></td>
+          <td class="px-6 py-3 border-0">{{ product_index.UOM }}</td>
+          <td class="px-6 py-3 border-0">{{ product_index.po_no }}</td>
+          <td class="px-6 py-3 border-0" style="text-transform: capitalize;">{{ product_index.status }}</td>
+          <td class="px-6 py-3 border-0" style="text-transform: capitalize;">{{ product_index.received_by }}</td>
+          <td class="px-6 py-3 border-0">{{ product_index.arrive_date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Custom Pagination -->
+    <div class="custom-pagination">
+      <div class="pagination">
+        <span class="step-links">
+          {% if product_indexes.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <a href="?page={{ product_indexes.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+            Page {{ product_indexes.number }} of {{ product_indexes.paginator.num_pages }}.
+          </span>
+
+          {% if product_indexes.has_next %}
+          <a href="?page={{ product_indexes.next_page_number }}">next</a>
+          <a href="?page={{ product_indexes.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

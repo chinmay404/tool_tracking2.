@@ -1,0 +1,56 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">Product Detail: {{ product_name }}</div>
+
+  <div class="card card1">
+    <div class="data-container">
+      <div class="data-column">
+        <div class="data1">
+          <h2>Masters of {{ product_name }} in {{ request.user.unit }}:</h2>
+          <div class="table-responsive">
+            <table id="mastersTable" class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">UUID</th>
+                  <th scope="col">Unit Status</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Added Date</th>
+                  <th scope="col">Machine</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for master in unit_masters %}
+                  <tr>
+                    <td><a href="{% url 'view_product' master.uuid %}">{{ master.uuid }}</a></td>
+                    <td>{{ master.unit_status }}</td>
+                    <td>{{ master.status }}</td>
+                    <td>{{ master.added_date }}</td>
+                    <td>{{ master.machine }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      $('#mastersTable').DataTable({
+        "paging": true,
+        "ordering": true,
+        "info": true,
+        "searching": true,
+        "responsive": true
+      });
+    });
+  </script>
+{% endblock %}
+
+{% endblock %}

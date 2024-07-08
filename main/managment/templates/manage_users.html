@@ -1,0 +1,56 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+
+
+    a:hover {
+        text-decoration: underline;
+        background-color: #007BFF;
+        color: #fff;
+    }
+</style>
+
+<h1>Manage Users</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>User Group</th>
+            <th>Date of Join</th>
+            <th>Last Login</th>
+            <th>Unit</th>
+            <th>Is Active</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <td><a href="{% url 'manage_user' user.id %}">{{ user.username }}</a></td>
+                <td>{% if user.groups.first %}{{ user.groups.first.name }}{% else %}No Group{% endif %}</td>
+                <td>{{ user.date_joined }}</td>
+                <td>{{ user.last_login }}</td>
+                <td>{{ user.unit }}</td>
+                <td>{% if user.is_active %}Yes{% else %}No{% endif %}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends 'base1.html' %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body {
+    background-color: #f5f7fb;
+    font-family: "Inter", sans-serif;
+    height: 100vh;
+    margin-bottom: 100px;
+  }
+
+  .page-header {
+    font-size: 36px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 80px;
+    margin-bottom: 30px;
+    color: #333;
+    /* Updated color */
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #fff;
+    padding: 20px;
+    font-size: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .parta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .box {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    /* Updated background color */
+    color: #000000;
+    /* Updated text color */
+    text-align: center;
+  }
+
+  .number {
+    font-size: 45px;
+    font-weight: 700;
+  }
+
+  .second {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 50px;
+    align-items: flex-start;
+  }
+
+  .newtable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .newtable th,
+  .newtable td {
+    padding: 15px 12px;
+    text-align: center;
+    height: 30px;
+    border-bottom: 1px solid #ddd;
+    /* Adding bottom border */
+  }
+
+  .newtable th {
+    font-size: 14px;
+    text-align: center;
+    color: #fff;
+    vertical-align: middle;
+    font-weight: 600;
+    background-color: #4a4646;
+  }
+
+  .newtable a,
+  .name {
+    text-decoration: none;
+    color: #3685e1;
+    /* Updated link color */
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Responsive Table Styles */
+  @media screen and (max-width: 600px) {
+    .container {
+      flex-direction: column;
+    }
+
+    .box {
+      margin-top: 20px;
+    }
+  }
+</style>
+
+<div class="page-header">Sale Order Details</div>
+
+<div class="container">
+  <div class="parta">
+    <div class="item">Order No: <b>{{ sale_order.order_no }}</b></div>
+    <div class="item">Order Date: <b>{{ sale_order.order_date }}</b></div>
+    <div class="item">Party PO Date: <b>{{ sale_order.party_po_date }}</b></div>
+    <div class="item">PO Number: <b>{{ sale_order.po_number }}</b></div>
+    <div class="item">Bill Number: <b>{{ sale_order.order_no }}</b></div>
+    <div class="item">Vehicle Number: <b>{{ sale_order.vehicle_no }}</b></div>
+    <div class="item">Group ID: <b>{{ sale_order.group_id }}</b></div>
+    <div class="item">Status: <b>{{ sale_order.status }}</b></div>
+
+    <!-- {% if sale_order.status == 'complete' or sale_order.status == 'done' %}
+    <div class="item">
+      <a href="{% url 'download_qrcode_pdf' order_no=sale_order.order_no %}" target="_blank">
+        Qr Download
+      </a>
+    </div>
+    {% endif %} -->
+
+    
+  </div>
+  <center>
+    <a href="{% url 'sale_order_group_detail' sale_order.group_id %}">
+      BACK TO HOME PAGE
+    </a>
+  </center>
+  <div class="box">
+    <div class="chart-container">
+      <canvas id="productsPieChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="container second mt-4">
+  <h4>Sale Order Products:</h4>
+  <table id="saleOrderProductsTable" class="newtable">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Status</th>
+        <th>Material Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sale_order_product in sale_order.saleorderproduct_set.all %}
+      <tr>
+        <td>
+          <a href="{% url 'sale_order_product_detail' sale_order.order_no  sale_order_product.product.MaterialCode %}">
+            {{ sale_order_product.product.name }}
+          </a>
+        </td>
+        <td>{{ sale_order_product.quantity }}</td>
+        <td class="{% if sale_order_product.status == 'complete' %}table-success{% else %}table-danger{% endif %}">
+          {{ sale_order_product.status }}
+        </td>
+        <td>{{ sale_order_product.product.MaterialCode }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var productsPieChartData = {
+      labels: ["Added", "Remaining"],
+      datasets: [{
+        data: [{{total_products_added}}, {{remaining}}],
+      backgroundColor: ["rgba(144, 12, 63, 0.5)", "rgba(255, 255, 255, 0.5)"],
+      borderWidth: 0
+  }]
+};
+  var productsPieChartData = {
+    labels: ["Added", "Remaining"],
+    datasets: [{
+      data: [{{total_products_added}}, {{remaning}}],
+    backgroundColor: ["#4CAF50", "#FFC107"],
+    borderColor: "#fff",
+    borderWidth: 2 
+      }]
+    };
+
+
+  var productsPieChartCanvas = document.getElementById('productsPieChart').getContext('2d');
+  new Chart(productsPieChartCanvas, {
+    type: 'doughnut',
+    data: productsPieChartData,
+    options: {
+      responsive: true,
+      cutoutPercentage: 70,
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Products Overview'
+      },
+      animation: {
+        animateScale: true,
+        animateRotate: true
+      }
+    }
+  });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,624 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css"
+href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps.css" />
+<script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps-web.min.js"></script>
+<style>
+    .container {
+        margin-bottom: 30px;
+    }
+
+    .box {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .box-heading {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+        color: #fff;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .btn-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .delete-form-container {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .delete-form-box {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert {
+        margin-top: 20px;
+    }
+
+    h2 {
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .table th,
+    .table td {
+        font-size: 14px;
+    }
+
+    .hh-grayBox {
+        background-color: #F8F8F8;
+        margin-bottom: 20px;
+        padding: 35px;
+        margin-top: 20px;
+    }
+
+    .pt45 {
+        padding-top: 45px;
+    }
+
+    .order-tracking {
+        text-align: center;
+        width: 33.33%;
+        position: relative;
+        display: block;
+    }
+
+    .order-tracking .is-complete {
+        display: block;
+        position: relative;
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        border: 0px solid #AFAFAF;
+        background-color: #f7be16;
+        margin: 0 auto;
+        transition: background 0.25s linear;
+        -webkit-transition: background 0.25s linear;
+        z-index: 2;
+    }
+
+    .order-tracking .is-complete:after {
+        display: block;
+        position: absolute;
+        content: '';
+        height: 14px;
+        width: 7px;
+        top: -2px;
+        bottom: 0;
+        left: 5px;
+        margin: auto 0;
+        border: 0px solid #AFAFAF;
+        border-width: 0px 2px 2px 0;
+        transform: rotate(45deg);
+        opacity: 0;
+    }
+
+    .order-tracking.completed .is-complete {
+        border-color: #27aa80;
+        border-width: 0px;
+        background-color: #27aa80;
+    }
+
+    .order-tracking.completed .is-complete:after {
+        border-color: #fff;
+        border-width: 0px 3px 3px 0;
+        width: 7px;
+        left: 11px;
+        opacity: 1;
+    }
+
+    .order-tracking p {
+        color: #A4A4A4;
+        font-size: 16px;
+        margin-top: 8px;
+        margin-bottom: 0;
+        line-height: 20px;
+    }
+
+    .order-tracking p span {
+        font-size: 14px;
+    }
+
+    .order-tracking.completed p {
+        color: #000;
+    }
+
+    .order-tracking::before {
+        content: '';
+        display: block;
+        height: 3px;
+        width: calc(100% - 40px);
+        background-color: #f7be16;
+        top: 13px;
+        position: absolute;
+        left: calc(-50% + 20px);
+        z-index: 0;
+    }
+
+    .order-tracking:first-child:before {
+        display: none;
+    }
+
+    .order-tracking.completed:before {
+        background-color: #27aa80;
+    }
+
+    .details-box {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .map-container {
+        flex: 1;
+        margin-left: 20px;
+    }
+
+    .details-container {
+        flex: 1;
+        margin-right: 20px;
+    }
+
+    .details-container>.details-box {
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+
+        .map-container,
+        .details-container {
+            margin: 0;
+        }
+    }
+
+
+    .card {
+        margin-bottom: 24px;
+        -webkit-box-shadow: 0 2px 4px rgb(126 142 177 / 10%);
+        box-shadow: 0 2px 4px rgb(126 142 177 / 10%);
+    }
+
+    .card {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid #eaedf1;
+        border-radius: .25rem;
+    }
+
+    .activity-wid {
+        margin-left: 16px;
+    }
+
+    .mb-0 {
+        margin-bottom: 0 !important;
+    }
+
+    .list-unstyled {
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .activity-wid .activity-list {
+        position: relative;
+        padding: 0 0 33px 30px;
+    }
+
+    .activity-border:before {
+        content: "";
+        position: absolute;
+        height: 38px;
+        border-left: 3px dashed #eaedf1;
+        top: 40px;
+        left: 0;
+    }
+
+    .activity-wid .activity-list .activity-icon {
+        position: absolute;
+        left: -20px;
+        top: 0;
+        z-index: 2;
+    }
+
+    .avatar-sm {
+        height: 2.5rem;
+        width: 2.5rem;
+    }
+
+    .media {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+    }
+
+    .me-3 {
+        margin-right: 1rem !important;
+    }
+
+    .font-size-15 {
+        font-size: 15px !important;
+    }
+
+    .font-size-14 {
+        font-size: 14px !important;
+    }
+
+    .text-muted {
+        color: #74788d !important;
+    }
+
+    .text-end {
+        text-align: right !important;
+    }
+
+    .font-size-13 {
+        font-size: 13px !important;
+    }
+
+    .avatar-title {
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        height: 100%;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .bg-soft-primary {
+        background-color: rgba(82, 92, 229, .25) !important;
+    }
+
+    .bg-soft-success {
+        background-color: rgba(35, 197, 143, .25) !important;
+    }
+    .detail-item{
+        padding-bottom: 5px;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="details-container">
+                <div class="details-box">
+    <h3>Vehicle Details:</h3>
+    <div class="row">
+        <h1>{{ vehicle.vehicle_number }}</h1>
+        <div class="col-md-6" style="border-right: 1px solid black;">
+            
+            <div class="detail-item">
+                <strong>Driver Name:</strong>
+                <span>{{ vehicle.driver_name }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Status:</strong>
+                <span>{{ vehicle.status }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Driver Phone Number:</strong>
+                <span>{{ vehicle.driver_phone_number }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Vehicle Make:</strong>
+                <span>{{ vehicle.vehicle_make }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Fuel Type:</strong>
+                <span>{{ vehicle.fuel_type }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Vehicle Year:</strong>
+                <span>{{ vehicle.vehicle_year }}</span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="detail-item">
+                <strong>On Path:</strong>
+                <span>{{ vehicle.on_path }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Current Destination:</strong>
+                <span>{{ vehicle.current_destination }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Last Location:</strong>
+                <span>{{ vehicle.last_location }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Last Updated At:</strong>
+                <span>{{ vehicle.last_updated_at }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Total Odometer:</strong>
+                <span>{{ vehicle.total_odometer }}</span>
+            </div>
+            <div class="detail-item">
+                <strong>Current Status:</strong>
+                <span>{{ vehicle.current_status }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+    <div class="details-box">
+        <h3>Driver Details:</h3>
+        <div class="detail-item">
+            <strong>Name : </strong>
+            <span>{{ vehicle.driver_name }}</span>
+        </div>
+        <div class="detail-item">
+            <strong>Driver Phone Number:</strong>
+            <span>{{ vehicle.driver_phone_number }}</span>
+            <div class="detail-item">
+            </div>
+        </div>
+    </div>
+            
+        </div>
+
+        <div class="col-12 col-md-6 map-container">
+            <center>
+                <h4>Live Location</h4>
+            </center>
+            <div id="map" style="height: 360px; " class="card mb-4"></div>
+        </div>
+    </div>
+</div>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+{% if vehicle.current_carrying %}
+<div class="details-box">
+    <h3>Current Carrying:</h3>
+    <div class="tracking-ids">
+        {{ current_carrying_sale_order }}
+        {% for tracking_id, group_ids in vehicle.current_carrying.items %}
+        <div class="tracking-id">
+            <center><h4>Tracking ID: <span>{{ tracking_id }}</span></h4></center>
+            <ul class="group-list">
+                {% for group_id in group_ids %}
+                <ul><a href="{% url 'sale_order_group_detail' group_id }">G - {{ group_id }}</a></ul>
+                {% endfor %}
+                {{ current_carrying_sale_order  }}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+<div class="container-all" style="    display: flex;
+justify-content: space-between;
+align-items: flex-start;">
+    <div class="col-xl-4" style="background-color: white;
+padding: 20px;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-4">Current Traking</h4>
+                <p><strong>For : </strong>location</p>
+                <p><strong>Dispatch Time : </strong>time</p>
+                <hr>
+                <ul class="list-unstyled activity-wid mb-0">
+                    {% for status_type, status_data in vehicle.ongoing_status.items %}
+                        {% if status_data %}
+                            <li class="activity-list activity-border">
+                                <div class="activity-icon avatar-sm">
+                                    <!-- You can replace the image with any suitable icon or leave it blank -->
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="avatar-sm rounded-circle" alt="">
+                                </div>
+                                <div class="media">
+                                    <div class="me-3">
+                                        <h5 class="font-size-15 mb-1">{{ status_data.status }}</h5>
+                                        {% if status_data.company_name %}
+                                            <p class="text-muted font-size-14 mb-0">{{ status_data.company_name }}</p>
+                                        {% endif %}
+                                        {% if status_data.allocated_time %}
+                                            <p class="text-muted font-size-14 mb-0">Allocated Time: {{ status_data.allocated_time }}</p>
+                                        {% endif %}
+                                        {% if status_data.current_destination %}
+                                            <p class="text-muted font-size-14 mb-0">Destination: {{ status_data.current_destination }}</p>
+                                        {% endif %}
+                                        {% if status_data.user_ip %}
+                                            <p class="text-muted font-size-14 mb-0">{{ status_data.user_ip }}</p>
+                                        {% endif %}
+                                        {% if status_data.verified_by %}
+                                            <p class="text-muted font-size-14 mb-0">Verified By: {{ status_data.verified_by }}</p>
+                                        {% endif %}
+                                        {% if status_data.dispatch_time %}
+                                            <p class="text-muted font-size-14 mb-0">Dispatch Time: {{ status_data.dispatch_time }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="text-end d-none d-md-block">
+                                            <!-- You can customize this part based on your requirement -->
+                                            <p class="text-muted font-size-13 mt-2 pt-1 mb-0"><i class="fa fa-calendar font-size-15 text-primary"></i> N/A</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                
+                
+                    
+
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive" style="min-width:52vw">
+        <h4 class="header-title mb-4">
+            <center>Past Carried Data</center>
+        </h4>
+        <table class="table table-striped" id="pastCarriedDataTable">
+            <thead>
+                <tr>
+                    <th>Place</th>
+                    <th>Date</th>
+                    <th>Driver</th>
+                    <th>Arrive Time</th>
+                    <th>Dispatch Time</th>
+                    <th>Time Required</th>
+                    <th>Carried Group</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tbody>
+                {% for place, data in past_carried_data.items %}
+                <tr>
+                    <td>{{ place }}</td>
+                    <td>{{ data.Date }}</td>
+                    <td>{{ data.Driver }}</td>
+                    <td>{{ data.Arrive_Time }}</td>
+                    <td>{{ data.Dispatch_Time }}</td>
+                    <td>{{ data.Time_Required }} Hr</td>
+                    <td>{{ data.Carried_Group }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+
+
+<p>History : {{ history }}
+</p>
+
+<script>
+    var map = tt.map({
+        key: 'BwaXSyJqAhFR7WWNNsGuconXGrmAobPr',
+        container: 'map',
+        // style: '2/basic_street-satellite',
+        center: [{{vehicle.longitude}},{{vehicle.latitude}}],
+        zoom: 15
+    });
+
+    map.addControl(new tt.FullscreenControl());
+    map.addControl(new tt.NavigationControl());
+
+    // Define the truck icon
+    // var truckIcon = new tt.Marker({element: '<i class="fas fa-star" style="color: yellow; font-size: 24px;"></i>'}).setLngLat([{{vehicle.longitude}}, {{vehicle.latitude}}]).addTo(map);
+
+    // // Add a marker for the current vehicle location
+    // var vehicleMarker = new tt.Marker().setLngLat([{{vehicle.longitude}}, {{vehicle.latitude}}]).addTo(map);
+    var marker = new tt.Marker().setLngLat([{{vehicle.longitude}},{{vehicle.latitude}}]).addTo(map)
+
+    
+    function updateMap() {
+    $.ajax({
+        url: '{% url 'live_location' vehicle.vehicle_number %}',
+        method: 'GET',
+        success: function(response) {
+            console.log("ASDASDASDASD"); // Log the entire response object
+            var latitude = response.latitude;
+            var longitude = response.longitude;
+            console.log('Latitude:', latitude);
+            console.log('Longitude:', longitude);
+            if (latitude !== null && longitude !== null) {
+                initMap(latitude, longitude); // Update the map with new coordinates
+            } else {
+                console.error('Latitude or longitude is null');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching live location:', error);
+        }
+    });
+}
+
+
+
+    // Call updateMap function initially and then set it to refresh every 10 seconds
+    updateMap();
+    console.log("UPDATE CALLED")
+    setInterval(updateMap,5000); // Refresh every 10 second
+</script>
+
+{% endblock %}
