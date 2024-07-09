@@ -10,13 +10,9 @@ qr_gen.py
 ~$TOOLCONSUMPTIONREPORT (3).xlsx
 async_api_calls.py
 venv
-main/main/settings.py
 *.log
-main/main/settings.py
-settings.py
 TODO.md
 *.log
-main/media
 main/media/api_logs.log
 *.pyc
 main/media/api_logs.log
