@@ -6,7 +6,6 @@ DB backup
 real_data
 test.html
 __pycache__
-qr_gen.py
 ~$TOOLCONSUMPTIONREPORT (3).xlsx
 async_api_calls.py
 venv
