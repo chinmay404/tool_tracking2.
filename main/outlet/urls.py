@@ -24,5 +24,6 @@ urlpatterns = [
     path('veichal-allocation-details/<str:tracking_id>', views.veichal_allocation_details, name='veichal_allocation_details'),
     path('create_group_for_selected_orders/', views.create_group_for_selected_orders, name='create_group_for_selected_orders'),
     path('veichal-allocation-history/', views.veichal_allocation_history, name='veichal_allocation_history'), 
+     path('add_groups_to_vehicle/<int:vehicle_id>/', views.add_groups_to_vehicle, name='add_groups_to_vehicle'),
 
 ]

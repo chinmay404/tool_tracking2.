@@ -148,12 +148,14 @@ def group_details(request, group_id):
             for product in sale_order.saleorderproduct_set.filter(status='complete'):
                 material_code = product.product.MaterialCode
                 for uid in product.uuids:
-                    order_summary['UIds'].append({
-                        'Uid': uid,
-                    })
-
+                    # Assuming uid is a dictionary where keys are UIDs and values are quantities
+                    for uid_key, quantity in uid.items():
+                        uid_info = {
+                            'Uid': uid_key,
+                            'Quantity': quantity
+                        }
+                        order_summary['UIds'].append(uid_info)
                 order_summary['MaterialCode'] = material_code
-
             data['OrderSummary'].append(order_summary)
 
         return JsonResponse(data)

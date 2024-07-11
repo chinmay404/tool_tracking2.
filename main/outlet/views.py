@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from managment.decorators import unauth_user, allowed_users
 from django.db.models import Sum, Count, Max, F, Value, Q
 from .gen_pdf import pdf
-from django.db import transaction
+from django.db import IntegrityError, transaction
 import json
 import uuid
 import calendar
@@ -149,7 +149,7 @@ def add_holding_uuid(request, order_no, MaterialCode, new_uuid, sale_order_produ
                 try:
                     print(f"STARTING : {sale_order.uuids}")
                     if material_code not in sale_order.uuids:
-                        print(f"INSIDE IF  : {sale_order.uuids[material_code]}")
+                        print( f"INSIDE IF  : {sale_order.uuids[material_code]}")
                         print(f"MATERIAL CODE : {material_code}")
                         print("NOT EXITS")
                         sale_order.uuids[material_code] = []
@@ -158,7 +158,8 @@ def add_holding_uuid(request, order_no, MaterialCode, new_uuid, sale_order_produ
                         print(f"EXISTING : {sale_order.uuids[material_code]}")
 
                     quantity_per_box = matching_master.quantity_per_box
-                    sale_order.uuids[material_code].append({new_uuid: quantity_per_box})
+                    sale_order.uuids[material_code].append(
+                        {new_uuid: quantity_per_box})
                     print(f"AFTER ADDING : {sale_order.uuids[material_code]}")
                     sale_order.save()
 
@@ -235,20 +236,24 @@ def add_uuid_not_insert(request, order_no, sale_order_product_id, sale_order_pro
     remaining_quantity = sale_order_product.remaining_quantity
     print(f"REMAIN QUANTITY : {remaining_quantity}")
     uuid_set = {uuid for d in sale_order_product.uuids for uuid in d}
-    
+
     if new_uuid in uuid_set:
-        messages.error(request, f"Product is already scanned and added to the list.")
+        messages.error(
+            request, f"Product is already scanned and added to the list.")
         return  # Exit early if UUID is already in the list
 
     matching_master = Master.objects.filter(
         product=sale_order_product.product, uuid=new_uuid).first()
-    
+
     if not matching_master:
-        messages.error(request, f"ID: {new_uuid} does not match the product in the sale order product: {sale_order_product.product}.")
+        messages.error(
+            request, f"ID: {new_uuid} does not match the product in the sale order product: {sale_order_product.product}.")
     elif matching_master.status != 'active':
-        messages.error(request, f"UUID '{new_uuid}' is not in an allocation state.")
+        messages.error(
+            request, f"UUID '{new_uuid}' is not in an allocation state.")
     elif matching_master.status == 'allocated':
-        messages.error(request, f"UUID {new_uuid} is already allocated elsewhere.")
+        messages.error(
+            request, f"UUID {new_uuid} is already allocated elsewhere.")
     else:
         try:
             if new_uuid not in sale_order_product.uuids and new_uuid not in sale_order.uuids:
@@ -258,28 +263,24 @@ def add_uuid_not_insert(request, order_no, sale_order_product_id, sale_order_pro
                 print(new_master.status)
                 new_master.save()
                 sale_order_product.uuids.append({new_uuid: None})
-                
                 material_code = sale_order_product.product.MaterialCode
-                
                 if material_code not in sale_order.uuids:
                     sale_order.uuids[material_code] = {}
 
                 quantity_per_box = matching_master.quantity_per_box
                 sale_order.uuids[material_code][new_uuid] = quantity_per_box
                 sale_order.save()
-                
                 print(f"Material data updated: {sale_order.uuids[material_code]}")
                 remaining_quantity -= 1  # Decrement remaining quantity
-                
                 print(f"Remaining quantity updated: {remaining_quantity}")
             else:
                 messages.error(request, f"UUID '{new_uuid}' is already added. Skipping.")
         except Exception as e:
             messages.error(request, str(e))
-    
     # Save remaining quantity regardless of success or failure
     sale_order_product.remaining_quantity = remaining_quantity
     sale_order_product.save()
+
 
 def save_and_return(request, order_no, MaterialCode):
     sale_order = get_object_or_404(SaleOrder, order_no=order_no)
@@ -298,9 +299,11 @@ def save_and_return(request, order_no, MaterialCode):
     if sale_order_product:
         for uuid in sale_order_product.uuids:
             if MaterialCode not in sale_order.uuids:
-                sale_order.uuids[MaterialCode] = []  # Initialize the list if it doesn't exist
+                # Initialize the list if it doesn't exist
+                sale_order.uuids[MaterialCode] = []
 
-            sale_order.uuids[MaterialCode].append(uuid)  # Append each uuid to the list
+            sale_order.uuids[MaterialCode].append(
+                uuid)  # Append each uuid to the list
             print(f"UUID added: {uuid}")
 
             master = Master.objects.filter(uuid=uuid, status='active').first()
@@ -404,7 +407,7 @@ def out_verification(request):
                 return redirect('out_verification')
             elif any(not order.invoice_no for order in sale_orders):
                 messages.error(request, f'Waiting For invoice No. To be Generated. Cannot Proceed')
-                return redirect('out_verification') 
+                return redirect('out_verification')
 
         context = {
             'sale_orders': sale_orders,
@@ -502,7 +505,8 @@ def done_verification(request, group_id):
             # vehicle.current_carrying = so_data
             # vehicle.save()
 
-            vehicle_sale_order_group = VehicleSaleOrderGroup.objects.filter(order_groups__pk=group_id).first()
+            vehicle_sale_order_group = VehicleSaleOrderGroup.objects.filter(
+                order_groups__pk=group_id).first()
             vehicle_type = vehicle_sale_order_group.TransporterName
             print(vehicle_type)
             print(group.status)
@@ -518,7 +522,8 @@ def done_verification(request, group_id):
                     TransporterName = vehicle_sale_order_group.TransporterName
                     print(f"TRANSPORTER NAME : {TransporterName}")
                     if vehicle_type == 'OWN VEHICLE':
-                        vehicle = Vehicle.objects.filter(vehicle_number=vehicle)
+                        vehicle = Vehicle.objects.filter(
+                            vehicle_number=vehicle)
                         ongoing_status_data = vehicle.ongoing_status or {}
                         dispatch_info = {
                             'dispatch_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -527,7 +532,7 @@ def done_verification(request, group_id):
                         }
                         ongoing_status_data['Dispatched'] = dispatch_info
                         vehicle.ongoing_status = ongoing_status_data
-                        vehicle.on_path = True
+                        # vehicle.on_path = True
                         vehicle.current_destination = group.destination
                         vehicle.driver_name = group.driver_name
                         vehicle_sale_order_group_data_json = json.loads(
@@ -538,7 +543,8 @@ def done_verification(request, group_id):
                     # vehicle_sale_order_group.save()
                     # vehicle.save()
                     all_data = []
-                    print(f"vehicle_sale_order_group : {vehicle_sale_order_group}")
+                    print(
+                        f"vehicle_sale_order_group : {vehicle_sale_order_group}")
                     sale_order_groups = vehicle_sale_order_group.order_groups.all()
                     print(f"sale_order_groups : {sale_order_groups}")
                     for vehicle_group in sale_order_groups:
@@ -560,7 +566,7 @@ def done_verification(request, group_id):
                                         "Quantity": quantity
                                     }
                                     uid_list.append(uid_info)
-                                
+
                                 sale_order_data = {
                                     'OrderNo': str(sale_order.order_no),
                                     "AmendNo": 0,
@@ -656,7 +662,7 @@ def create_group_for_selected_orders(request):
             sale_orders_with_group = SaleOrder.objects.filter(
                 order_no__in=selected_sale_orders, group_id__isnull=False
             ).exists()
-            
+
             if sale_orders_with_group:
                 messages.error(
                     request, 'One or more selected sale orders already belong to a group.'
@@ -670,7 +676,8 @@ def create_group_for_selected_orders(request):
                 else:
                     selected_unit_name = selected_units[0]['unit']
                     try:
-                        selected_unit = Unit.objects.get(name=selected_unit_name)
+                        selected_unit = Unit.objects.get(
+                            name=selected_unit_name)
                     except Unit.DoesNotExist:
                         messages.error(
                             request, f'Selected unit "{selected_unit_name}" does not exist.')
@@ -778,8 +785,8 @@ def generate_short_id():
     short_id = uuid_str.replace("-", "")[:7]
     month_name = calendar.month_name[datetime.datetime.now().month][:3]
     final_id = f"{month_name}{short_id}"
+    print(final_id)
     return final_id
-
 
 def veichal_allocation(request):
     if request.method == 'POST':
@@ -787,42 +794,65 @@ def veichal_allocation(request):
         print(f"Selected groups: {selected_groups}")
         try:
             with transaction.atomic():
-                # vehicle_sale_order_group, created = VehicleSaleOrderGroup.objects.get_or_create(tracking_id=generate_short_id(), data_json={})
-                vehicle_sale_order_group = VehicleSaleOrderGroup.objects.create(
-                    tracking_id=generate_short_id(), data_json={})
+                # Generate a tracking ID only once
+                tracking_id = generate_short_id()
+
+                vehicle_sale_order_group, created = VehicleSaleOrderGroup.objects.get_or_create(
+                    tracking_id=tracking_id, defaults={'data_json': {}})
 
                 print(f"TRACKING ID : {vehicle_sale_order_group.tracking_id}")
 
-                if vehicle_sale_order_group is None:
-                    raise ValueError("Failed to create VehicleSaleOrderGroup")
                 routes = {}
                 for group_id in selected_groups:
-                    group = SaleOrderGroup.objects.get(group_id=int(group_id))
+                    group = SaleOrderGroup.objects.select_for_update().get(group_id=int(group_id))
+                    print(f"GROUP : {group}")
+
+                    if group.tracking_id:
+                        raise ValueError(f"SaleOrderGroup {group_id} is already associated with a tracking ID.")
+
                     group.allocated = True
-                    group.tracking_id = vehicle_sale_order_group.tracking_id
+                    group.tracking_id = tracking_id  # Use the generated tracking_id
+                    print(f"GROUP ID : {group.group_id}")
+                    print(f"GROUP tracking_id : {group.tracking_id}")
+
                     group.save()
                     vehicle_sale_order_group.order_groups.add(group)
                     routes[group.unit] = False
+
                 vehicle_sale_order_group.data_json['routes'] = routes
                 vehicle_sale_order_group.save()
 
-                messages.success(
-                    request, f"Sale Order Groups added to Vehicle Sale Group")
+                messages.success(request, f"Sale Order Groups added to Tracking ID {tracking_id}")
                 return redirect('veichal_allocation_details', tracking_id=vehicle_sale_order_group.tracking_id)
+
+        except IntegrityError as e:
+            print("IntegrityError in VEICHAL ALLOCATION", e)
+            messages.error(request, 'A unique tracking ID could not be generated. Please try again.')
+            return redirect('veichal_allocation')
         except Exception as e:
             print("VEICHAL ALLOCATION EXCEPTION", e)
+            messages.error(request, f'An error occurred during vehicle allocation. {str(e)}')
             return redirect('veichal_allocation')
     else:
-        groups = SaleOrderGroup.objects.filter(
-            status='complete', vehicle=None, allocated=False)
+        groups = SaleOrderGroup.objects.filter(status='complete', vehicle=None, allocated=False)
         context = {'groups': groups}
         return render(request, 'veichal_allocation.html', context)
 
-
 def veichal_allocation_details(request, tracking_id):
     try:
-        vehicles = Vehicle.objects.filter(on_path=False)
-        vh = VehicleSaleOrderGroup.objects.get(tracking_id=tracking_id)
+        # vehicles = Vehicle.objects.filter(on_path=False)
+        vehicles = Vehicle.objects.all()
+        vh = get_object_or_404(VehicleSaleOrderGroup, tracking_id=tracking_id)
+        complete_sale_order_groups = SaleOrderGroup.objects.filter(
+            status='complete', vehicle=None, allocated=False)
+
+        selected_vehicle = None
+        if vh.vehicle:
+            selected_vehicle = get_object_or_404(
+                Vehicle, vehicle_number=vh.vehicle)
+
+        print("Selected vehicle:", selected_vehicle)
+
         if isinstance(vh.data_json, str):
             data_json = json.loads(vh.data_json)
             routes = data_json.get('routes', {})
@@ -831,33 +861,33 @@ def veichal_allocation_details(request, tracking_id):
 
         if request.method == 'POST':
             vehicle_id = None
-            print(f"REQUEST L {request.POST}")
+            driver_name = request.POST.get('vehicle_driver_name')
             vehicle_type = request.POST.get('vehicle_type')
-            print(f"TYPE : {vehicle_type}")
+
+            print(f"Form data: {request.POST}")
+
             if vehicle_type == 'dtdc':
                 vehicle_id = request.POST.get('dtdc_vehicle_no')
-                driver_name = request.POST.get('vehicle_driver_name')
             elif vehicle_type == 'own_vehicle':
-                print("IN OWN VEICHAL MAIN")
                 vehicle_id = request.POST.get('vehicle_no')
-                driver_name = request.POST.get('vehicle_driver_name')
+
+            print(
+                f"Selected vehicle ID: {vehicle_id}, Driver name: {driver_name}, Vehicle type: {vehicle_type}")
 
             if vehicle_id:
                 if vehicle_type == 'own_vehicle':
-                    print("IN OWN VEICHAL")
-                    try:
-                        vehicle = Vehicle.objects.get(id=vehicle_id)
-                        vehicle_id = vehicle.vehicle_number
-                    except Exception as e:
-                        print("EXCEPTION IN VEICHAL ALLOCATION  : {e}")
-                    print(vehicle)
+                    vehicle = get_object_or_404(Vehicle, id=vehicle_id)
+                    vehicle_id = vehicle.vehicle_number
+                    print(f"Vehicle (own): {vehicle}")
                 else:
-                    print("NOT IN OWN VEICHAL")
                     vehicle = vehicle_id
+                    print(f"Vehicle (dtdc): {vehicle}")
+
                 vh.vehicle = vehicle_id
+                vh.driver_name = driver_name
                 vh.TransporterName = vehicle_type
-                print(vh.vehicle , vh.TransporterName)
                 vh.save()
+
                 sog = {}
                 try:
                     for sale_order_group in vh.order_groups.all():
@@ -865,41 +895,35 @@ def veichal_allocation_details(request, tracking_id):
                             if tracking_id not in sog:
                                 sog[tracking_id] = []
                             sog[tracking_id].append(sale_order_group.group_id)
-                            print(sog)
                             sale_order_group.driver_name = driver_name
                             sale_order_group.vehicle = vehicle_id
-                            # sale_order_group.destination = unit.address
                             sale_order_group.save()
 
-                    # Update SaleOrders within the SaleOrderGroup
-                    print(f"SOG : {sog}")
-                    for sale_order in sale_order_group.sale_orders.all():
-                        sale_order.vehicle_no = vehicle_id
-                        sale_order.driver_name = driver_name
-                        # sale_order.destination = unit.address
-                        sale_order.save()
+                            for sale_order in sale_order_group.sale_orders.all():
+                                sale_order.vehicle_no = vehicle_id
+                                sale_order.driver_name = driver_name
+                                sale_order.save()
+
                 except Exception as e:
-                    print(f"EXCEPTION : {e}")
+                    print(f"Exception while updating SaleOrderGroups: {e}")
+
                 try:
                     current_time = timezone.now()
                     data_json = {
                         "SaleOrderGroup_id": sog,
                         "driver_name": driver_name,
-                        "TransporterName":vehicle_type,
-                        # "current_destination": unit.address,
-                        # Add other relevant information here
+                        "TransporterName": vehicle_type,
                     }
+
                     if vehicle_type == 'own_vehicle':
-                        vehicle.on_path = True
+                        # vehicle.on_path = True
                         vehicle.driver_name = driver_name
-                        vehicle.current_carrying = sog  # Assuming vh.id is the SaleOrderGroup number
+                        vehicle.current_carrying = sog
                         vehicle.state = "Allocated"
                         vehicle.ongoing_status = {
                             "Allocated": {
                                 "allocated_time": current_time.strftime("%Y-%m-%d %H:%M:%S"),
                                 "status": "Allocated",
-                                # "company name": unit.name,
-                                # "current_destination": unit.address
                             },
                             "Dispatched": {},
                             "Reached": {},
@@ -908,17 +932,24 @@ def veichal_allocation_details(request, tracking_id):
                         }
                         vehicle.data_json = json.dumps(data_json)
                         vehicle.save()
+
                     vh.data_json = json.dumps(data_json)
                     vh.save()
                 except Exception as e:
                     messages.error(
-                        request, f'Error In Veichal Allocation. {e}')
+                        request, f'Error In Vehicle Allocation. {e}')
 
                 messages.success(
                     request, 'Vehicle successfully assigned to all associated SaleOrderGroups.')
                 return redirect('veichal_allocation_details', tracking_id=tracking_id)
 
-        context = {'vehicles': vehicles, 'vh': vh, 'routes': routes}
+        context = {
+            'vehicles': vehicles,
+            'vh': vh,
+            'routes': routes,
+            'selected_vehicle': selected_vehicle,
+            'complete_sale_order_groups': complete_sale_order_groups,
+        }
         return render(request, 'veichal_allocation_details.html', context)
 
     except VehicleSaleOrderGroup.DoesNotExist:
@@ -929,10 +960,6 @@ def veichal_allocation_details(request, tracking_id):
         messages.error(request, 'Selected vehicle does not exist.')
         return redirect('sale_order_group_history')
 
-    # except Unit.DoesNotExist:
-    #     messages.error(request, 'Unit does not exist.')
-    #     return redirect('veichal_allocation_details', id=id)
-
     except Exception as e:
         messages.error(request, f'An error occurred: {str(e)}')
         return redirect('veichal_allocation')
@@ -941,3 +968,21 @@ def veichal_allocation_details(request, tracking_id):
 def veichal_allocation_history(request):
     all_vehicle_sale_orders = VehicleSaleOrderGroup.objects.all()
     return render(request, 'veichal_allocation_history.html', {'all_vehicle_sale_orders': all_vehicle_sale_orders})
+
+
+def add_groups_to_vehicle(request, vehicle_id):
+    if request.method == 'POST':
+        print(request)
+        selected_group_ids = request.POST.getlist('selected_groups')
+        print(selected_group_ids)
+        # vehicle = get_object_or_404(Vehicle, pk=vehicle_id)  # Replace 'Vehicle' with your actual model name
+        for group_id in selected_group_ids:
+            print(group_id)
+            group = get_object_or_404(SaleOrderGroup, pk=group_id)
+            group.vehicle = vehicle
+            group.save()
+        # Redirect to vehicle detail page
+        return redirect('vehicle_detail', vehicle_id=vehicle_id)
+    else:
+        # Handle GET request appropriately, if needed
+        return redirect('vehicle_detail', vehicle_id=vehicle_id)

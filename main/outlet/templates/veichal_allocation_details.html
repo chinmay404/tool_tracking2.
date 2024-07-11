@@ -2,8 +2,18 @@
 {% block content %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" type="text/css" href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps.css" />
+<script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps-web.min.js"></script>
+
 <style>
   /* Global Styles */
+
+
+  .modal-backdrop {
+    filter: blur(3px);
+    /* Adjust blur amount as needed */
+  }
+
   body {
     background-color: #f5f7fb;
     font-family: "Inter", sans-serif;
@@ -187,7 +197,6 @@
           </div>
           <div class="form-group col-md-12">
             <label for="driverName"><strong>Vehicle Driver Name:</strong></label>
-            <p>{{ vh.driver_name }}</p>
             {% if vh.driver_name %}
             <p>{{ vh.driver_name }}</p>
             {% else %}
@@ -196,8 +205,8 @@
               value="{{ sale_order_group.driver_name }}" disabled {% endif %}>
             {% endif %}
           </div>
-          {% if sale_order_group.vehicle %}
-          <div>P</div>
+          {% if vh.driver_name and vh.vehicle %}
+          <div></div>
           {% else %}
           <div class="btn-container">
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -212,16 +221,13 @@
       <div class="box">
         <div class="box-heading">Vehicle Details</div>
         <div class="selected-vehicle-details">
-          {% if vh.vehicle %}
-          <p><strong>Vehicle No:</strong> {{ vh.vehicle.vehicle_number }}</p>
-          <p><strong>Driver Name:</strong> {{ vh.vehicle.driver_name }}</p>
-          <p><strong>Destination:</strong> {{ unit.address }}</p>
-          <div class="col-12 col-md-6 map-container">
-            <center>
-              <h4>Live Location</h4>
-            </center>
-            <div id="map" style="height: 360px; " class="card mb-4"></div>
-          </div>
+          {% if selected_vehicle %}
+          <p><strong>Vehicle No:</strong> {{ selected_vehicle.vehicle_number }}</p>
+          <p><strong>Driver Name:</strong> {{ selected_vehicle.driver_name }}</p>
+          <p><strong>Destination:</strong> {{ selected_vehicle.address }}</p>
+          <p><strong>Location :</strong> Lan - {{ selected_vehicle.latitude }} | lon - {{ selected_vehicle.longitude }}
+          </p>
+
           {% else %}
           <p class="no-vehicle">No vehicle selected</p>
           {% endif %}
@@ -231,6 +237,14 @@
   </div>
 </div>
 <hr>
+{% if selected_vehicle %}
+<div class="cr">
+  <center>
+    <h4>Live Location</h4>
+  </center>
+  <div id="map" style="height: 49vh;width: 83vw;" class="card mb-4"></div>
+</div>
+{% endif %}
 <!-- <div id="route-container" class="box" style="display: flex; justify-content: space-around; margin-top: 20px;">
   <div id="route-container" class="box"></div>
 </div> -->
@@ -242,21 +256,98 @@
       <th>Unit</th>
       <th>Destination</th>
       <th>Vehicle</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
     {% for sale_order_group in vh.order_groups.all %}
     <tr>
-      <td><a href="{% url 'sale_order_group_detail' group_id=sale_order_group.group_id %}">G-{{sale_order_group.group_id  }}</a></td>
+      <td><a
+          href="{% url 'sale_order_group_detail' group_id=sale_order_group.group_id %}">G-{{sale_order_group.group_id}}</a>
+      </td>
       <td>{{ sale_order_group.unit }}</td>
       <td>{{ sale_order_group.destination }}</td>
-      <td><p>{{ vh.vehicle }}</p></td>
+      <td>
+        <p><strong>{{ vh.vehicle }}</strong></p>
+      </td>
+      <td><button type="button" class="btn btn-sm btn-outline-danger">REMOVE</button></td>
       <!-- <td class="no-vehicle"><strong>No Vehicle Assigned Yet</strong></td> -->
 
     </tr>
     {% endfor %}
   </tbody>
 </table>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col text-center">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+        Launch modal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Groups</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+        {% csrf_token %}
+        <center><h2 style="color: red;">** NOT COMPLETED DONT USE THIS **</h2></center>
+        <input type="hidden" name="selected_groups" id="selectedGroupsInput" value="">
+        <div class="modal-body">
+          <table id="sale_order_groups_table" class="display">
+            <thead>
+              <tr>
+                <th>Group ID</th>
+                <th>Unit</th>
+                <th>Destination</th>
+                <th>Vehicle</th>
+                <th>Select</th> <!-- Checkbox column -->
+              </tr>
+            </thead>
+            <tbody>
+              {% for sale_order_group in complete_sale_order_groups %}
+              <tr>
+                <td><a href="{% url 'sale_order_group_detail' group_id=sale_order_group.group_id %}">G-{{
+                    sale_order_group.group_id }}</a></td>
+                <td>{{ sale_order_group.unit }}</td>
+                <td>{{ sale_order_group.destination }}</td>
+                <td>
+                  <p><strong>{{ vh.vehicle }}</strong></p>
+                </td>
+                <td><input type="checkbox" class="group-checkbox" data-group-id="{{ sale_order_group.group_id }}"></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Add Groups</button>
+        </div>
+      </form>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
 
 <script>
   $(document).ready(function () {
@@ -266,7 +357,7 @@
   var map = tt.map({
     key: 'BwaXSyJqAhFR7WWNNsGuconXGrmAobPr',
     container: 'map',
-    center: [{{vehicle.longitude}}, {{vehicle.latitude}}],
+    center: [{{selected_vehicle.longitude}}, {{selected_vehicle.latitude}}],
   zoom: 15
   });
 
@@ -349,4 +440,58 @@
     }
   });
 </script>
+
+
+
+
+
+{% if selected_vehicle %}
+<script>
+  var map = tt.map({
+    key: 'BwaXSyJqAhFR7WWNNsGuconXGrmAobPr',
+    container: 'map',
+    // style: '2/basic_street-satellite',
+    center: [{{ selected_vehicle.longitude }}, {{ selected_vehicle.latitude }}],
+    zoom: 15
+  });
+
+  map.addControl(new tt.FullscreenControl());
+  map.addControl(new tt.NavigationControl());
+
+  var marker = new tt.Marker().setLngLat([{{ selected_vehicle.longitude }}, {{ selected_vehicle.latitude }}]).addTo(map);
+
+  function updateMap() {
+    $.ajax({
+      url: '{% url "live_location" selected_vehicle.vehicle_number %}',
+      method: 'GET',
+      success: function (response) {
+        console.log("ASDASDASDASD"); // Log the entire response object
+        var latitude = response.latitude;
+        var longitude = response.longitude;
+        console.log('Latitude:', latitude);
+        console.log('Longitude:', longitude);
+        if (latitude !== null && longitude !== null) {
+          marker.setLngLat([longitude, latitude]); // Update the marker position
+        } else {
+          console.error('Latitude or longitude is null');
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error('Error fetching live location:', error);
+      }
+    });
+  }
+
+  // Call updateMap function initially and then set it to refresh every 10 seconds
+  updateMap();
+  console.log("UPDATE CALLED");
+  setInterval(updateMap, 5000); // Refresh every 10 seconds
+</script>
+{% else %}
+<script>
+  console.log("No selected vehicle.");
+</script>
+{% endif %}
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
 {% endblock %}

@@ -82,7 +82,7 @@ class SaleOrderGroup(models.Model):
         ('recived', 'recived')
 
     ]
-    tracking_id = models.CharField(max_length=12, unique=True ,null=True ,blank=True)
+    tracking_id = models.CharField(max_length=12 ,null=True ,blank=True)
     unit = models.CharField(max_length=200)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default='created')

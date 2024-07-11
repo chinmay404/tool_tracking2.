@@ -27,13 +27,10 @@ admin.site.register(SaleOrder, SaleOrderAdmin)
 
 
 class VehicleSaleOrderGroupAdmin(admin.ModelAdmin):
-    list_display = ('tracking_id','vehicle',)
-    list_filter = ( 'tracking_id','vehicle',)
-
-    # def display_sale_order_groups(self, obj):
-    #     return ', '.join(str(group.group_id) for group in obj.sale_order_groups.all())
-
-    # display_sale_order_groups.short_description = 'Sale Order Groups'
+    list_display = ('tracking_id', 'vehicle', 'TransporterName', 'arrive_date')
+    list_filter = ('tracking_id', 'vehicle', 'TransporterName')
+    search_fields = ('tracking_id', 'vehicle', 'TransporterName')
+    date_hierarchy = 'arrive_date'
 
 admin.site.register(VehicleSaleOrderGroup, VehicleSaleOrderGroupAdmin)
 
