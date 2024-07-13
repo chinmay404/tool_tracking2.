@@ -125,7 +125,7 @@ def group_details(request, group_id):
         vehicle_group = VehicleSaleOrderGroup.objects.get(
             tracking_id=tracking_id)
     except VehicleSaleOrderGroup.DoesNotExist:
-        pass  # Handle case where vehicle group does not exist
+        pass
 
     if vehicle_group:
         data = {
@@ -137,26 +137,31 @@ def group_details(request, group_id):
         }
 
         for sale_order in sale_orders:
-            order_summary = {
-                'OrderNo': str(sale_order.order_no),
-                'AmendNo': 0,
-                'MaterialCode': '',  # Placeholder
-                'Quantity': sum(product.quantity for product in sale_order.saleorderproduct_set.filter(status='complete')),
-                'UIds': [],
-            }
-
+            products_summary = {}
             for product in sale_order.saleorderproduct_set.filter(status='complete'):
                 material_code = product.product.MaterialCode
+                if material_code not in products_summary:
+                    products_summary[material_code] = {
+                        'OrderNo': str(sale_order.order_no),
+                        'AmendNo': 0,
+                        'MaterialCode': material_code,
+                        'Quantity': 0,
+                        'UIds': [],
+                    }
+
+                products_summary[material_code]['Quantity'] += product.quantity
+
                 for uid in product.uuids:
-                    # Assuming uid is a dictionary where keys are UIDs and values are quantities
                     for uid_key, quantity in uid.items():
                         uid_info = {
                             'Uid': uid_key,
                             'Quantity': quantity
                         }
-                        order_summary['UIds'].append(uid_info)
-                order_summary['MaterialCode'] = material_code
-            data['OrderSummary'].append(order_summary)
+                        products_summary[material_code]['UIds'].append(
+                            uid_info)
+
+            for product_summary in products_summary.values():
+                data['OrderSummary'].append(product_summary)
 
         return JsonResponse(data)
     else:
