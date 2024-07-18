@@ -838,46 +838,50 @@ def veichal_allocation(request):
     if request.method == 'POST':
         selected_groups = request.POST.getlist('selected_groups')
         print(f"Selected groups: {selected_groups}")
-        try:
-            with transaction.atomic():
-                # Generate a tracking ID only once
-                tracking_id = generate_short_id()
+        if selected_groups:
+            try:
+                with transaction.atomic():
+                    # Generate a tracking ID only once
+                    tracking_id = generate_short_id()
 
-                vehicle_sale_order_group, created = VehicleSaleOrderGroup.objects.get_or_create(
-                    tracking_id=tracking_id, defaults={'data_json': {}})
+                    vehicle_sale_order_group, created = VehicleSaleOrderGroup.objects.get_or_create(
+                        tracking_id=tracking_id, defaults={'data_json': {}})
 
-                print(f"TRACKING ID : {vehicle_sale_order_group.tracking_id}")
+                    print(f"TRACKING ID : {vehicle_sale_order_group.tracking_id}")
 
-                routes = {}
-                for group_id in selected_groups:
-                    group = SaleOrderGroup.objects.select_for_update().get(group_id=int(group_id))
-                    print(f"GROUP : {group}")
+                    routes = {}
+                    for group_id in selected_groups:
+                        group = SaleOrderGroup.objects.select_for_update().get(group_id=int(group_id))
+                        print(f"GROUP : {group}")
 
-                    if group.tracking_id:
-                        raise ValueError(f"SaleOrderGroup {group_id} is already associated with a tracking ID.")
+                        if group.tracking_id:
+                            raise ValueError(f"SaleOrderGroup {group_id} is already associated with a tracking ID.")
 
-                    group.allocated = True
-                    group.tracking_id = tracking_id  # Use the generated tracking_id
-                    print(f"GROUP ID : {group.group_id}")
-                    print(f"GROUP tracking_id : {group.tracking_id}")
+                        group.allocated = True
+                        group.tracking_id = tracking_id  # Use the generated tracking_id
+                        print(f"GROUP ID : {group.group_id}")
+                        print(f"GROUP tracking_id : {group.tracking_id}")
 
-                    group.save()
-                    vehicle_sale_order_group.order_groups.add(group)
-                    routes[group.unit] = False
+                        group.save()
+                        vehicle_sale_order_group.order_groups.add(group)
+                        routes[group.unit] = False
 
-                vehicle_sale_order_group.data_json['routes'] = routes
-                vehicle_sale_order_group.save()
+                    vehicle_sale_order_group.data_json['routes'] = routes
+                    vehicle_sale_order_group.save()
 
-                messages.success(request, f"Sale Order Groups added to Tracking ID {tracking_id}")
-                return redirect('veichal_allocation_details', tracking_id=vehicle_sale_order_group.tracking_id)
+                    messages.success(request, f"Sale Order Groups added to Tracking ID {tracking_id}")
+                    return redirect('veichal_allocation_details', tracking_id=vehicle_sale_order_group.tracking_id)
 
-        except IntegrityError as e:
-            print("IntegrityError in VEICHAL ALLOCATION", e)
-            messages.error(request, 'A unique tracking ID could not be generated. Please try again.')
-            return redirect('veichal_allocation')
-        except Exception as e:
-            print("VEICHAL ALLOCATION EXCEPTION", e)
-            messages.error(request, f'An error occurred during vehicle allocation. {str(e)}')
+            except IntegrityError as e:
+                print("IntegrityError in VEICHAL ALLOCATION", e)
+                messages.error(request, 'A unique tracking ID could not be generated. Please try again.')
+                return redirect('veichal_allocation')
+            except Exception as e:
+                print("VEICHAL ALLOCATION EXCEPTION", e)
+                messages.error(request, f'An error occurred during vehicle allocation. {str(e)}')
+                return redirect('veichal_allocation')
+        else:
+            messages.error(request,"No Packing Slip Selected")
             return redirect('veichal_allocation')
     else:
         groups = SaleOrderGroup.objects.filter(status='complete', vehicle=None, allocated=False)
