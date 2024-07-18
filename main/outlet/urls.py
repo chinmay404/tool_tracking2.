@@ -25,5 +25,6 @@ urlpatterns = [
     path('create_group_for_selected_orders/', views.create_group_for_selected_orders, name='create_group_for_selected_orders'),
     path('veichal-allocation-history/', views.veichal_allocation_history, name='veichal_allocation_history'), 
      path('add_groups_to_vehicle/<int:vehicle_id>/', views.add_groups_to_vehicle, name='add_groups_to_vehicle'),
+     path('claim_empty_box/<str:product_id>/', views.claim_empty_box, name='claim_empty_box'),
 
 ]

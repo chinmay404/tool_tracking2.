@@ -2,7 +2,6 @@
 {% block content %}
 <style>
   body {
-    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
     font-family: "Inter", sans-serif;
     color: #333;
     margin: 0;
@@ -12,6 +11,7 @@
   .container {
     margin: 50px auto;
     padding: 20px;
+    max-width: 1200px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
@@ -38,7 +38,7 @@
     flex: 1;
     height: 50px;
     padding: 10px;
-    border: none;
+    border: 1px solid #ccc;
     border-radius: 5px 0 0 5px;
     font-size: 16px;
     outline: none;
@@ -60,56 +60,13 @@
     background-color: #5f3e7e;
   }
 
-  .cardbody {
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
+  .dataTables_wrapper {
+    margin-top: 20px;
   }
 
-  .cardbody:hover {
-    /* transform: scale(1.05); */
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .link {
-    color: #764ba2;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 10px;
-    display: inline-block;
-    transition: all 0.3s ease;
-  }
-
-  .link:hover {
-    color: #5f3e7e;
-  }
-
-  .collapse {
-    display: none;
-    transition: all 0.3s ease;
-  }
-
-  .collapse.show {
-    display: block;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  .pulse-animation {
-    animation: pulse 2s infinite;
+  .dataTables_length select {
+    padding: 5px;
+    margin-right: 10px;
   }
 </style>
 <div class="container">
@@ -123,29 +80,49 @@
 <div id="inquiry-results" class="container">
   {% if search_results %}
     <h5 style="color: #333;">Search Results:</h5>
-    {% for item in search_results %}
-      <div class="cardbody">
-        <strong>ID:</strong> <a href="{% url 'get_product_details_master' item.uuid  %}">{{item.uuid }}</a> <br />
-        <strong>Batch ID:</strong> {{ item.batch_id }}<br />
-        <strong>Product Name:</strong> {{ item.product.name }}<br />
-        <strong>Status:</strong> {{ item.status }}<br />
-        <strong>Added Date:</strong> {{ item.added_date }}<br />
-        <strong>Received By:</strong>
-        <span style="text-transform: capitalize">{{item.received_by }}</span><br />
-        <div class="link">
-          <a class="link" data-bs-toggle="collapse" href="#{{item.uuid}}" aria-expanded="false" aria-controls="collapseExample">
-            View Inlet Data >>
-          </a>
-        </div>
-        <ul class="collapse grid" id="{{item.uuid}}">
-          {% for key,value in item.data_json.items %}
-            {% for sub_key, sub_value in value.items %}
-              <li><strong>{{ sub_key }}:</strong> {{ sub_value }}</li>
-            {% endfor %}
-          {% endfor %}
-        </ul>
-      </div>
-    {% endfor %}
+    <table id="resultsTable" class="display">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Batch ID</th>
+          <th>Product Name</th>
+          <th>Is Insert Box</th>
+          <th>Box Capacity</th>
+          <th>Quantity In Box</th>
+          <th>Status</th>
+          <th>Added Date</th>
+          <th>Received By</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in search_results %}
+          <tr>
+            <td><a href="{% url 'get_product_details_master' item.uuid  %}">{{item.uuid }}</a></td>
+            <td>{{ item.batch_id }}</td>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.product.is_insert }}</td>
+            <td>{% if item.product.is_insert %}{{ item.box_capacity }}{% else %}N/A{% endif %}</td>
+            <td>{% if item.product.is_insert %}{{ item.quantity_per_box }}{% else %}N/A{% endif %}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.added_date }}</td>
+            <td><span style="text-transform: capitalize">{{item.received_by }}</span></td>
+            <td>
+              <a class="link" data-bs-toggle="collapse" href="#{{item.uuid}}" aria-expanded="false" aria-controls="collapseExample">
+                Extra
+              </a>
+              <ul class="collapse" id="{{item.uuid}}">
+                {% for key,value in item.data_json.items %}
+                  {% for sub_key, sub_value in value.items %}
+                    <li><strong>{{ sub_key }}:</strong> {{ sub_value }}</li>
+                  {% endfor %}
+                {% endfor %}
+              </ul>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   {% else %}
     <center>
       <p>No matching items found.</p>
@@ -153,11 +130,18 @@
   {% endif %}
 </div>
 <script>
-  var buttons = document.querySelectorAll(".grid");
+  $(document).ready(function() {
+    $('#resultsTable').DataTable();
 
-  buttons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      this.classList.toggle("show");
+    var links = document.querySelectorAll(".link a");
+
+    links.forEach(function (link) {
+      link.addEventListener("click", function (event) {
+        event.preventDefault();
+        var targetId = this.getAttribute("href").substring(1);
+        var targetElement = document.getElementById(targetId);
+        targetElement.classList.toggle("show");
+      });
     });
   });
 </script>

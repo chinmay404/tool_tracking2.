@@ -22,6 +22,7 @@ from units.models import Unit
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 import datetime
+import qrcode
 
 
 @login_required(login_url='managment/login/')
@@ -84,6 +85,51 @@ def sale_order_product_detail(request, order_no, MaterialCode):
         sale_order_product.status = 'complete'
         sale_order_product.save()
     return render(request, 'sale_order_product_detail.html', {'sale_order': sale_order, 'sale_order_product': sale_order_product, 'inventory_count': inventory_count, 'selected_master_uuids': selected_master_uuids, 'form': form, 'product': product, 'selected_master_uuids_count': selected_master_uuids_count, 'sale_order_status': sale_order_status})
+
+
+
+@login_required(login_url='managment/login/')
+def claim_empty_box(request, product_id):
+    product = get_object_or_404(Product, product_id=product_id)
+    order_no = request.POST.get('order_no')
+    MaterialCode = request.POST.get('MaterialCode')
+    
+    if request.method == 'POST':
+        try:
+            box_capacity = int(request.POST.get('box_capacity'))
+            new_master = Master.objects.create(
+                product=product,
+                box_capacity=box_capacity,
+                quantity_per_box=0,
+                is_insert=True,
+                status='active',
+                received_by=request.user
+            )
+            new_master.save()
+
+            # Generate QR code
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_H,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(new_master.uuid)
+            qr.make(fit=True)
+
+            # Create a response to download the QR code image
+            response = HttpResponse(content_type="image/png")
+            qr.make_image(fill_color="black", back_color="white").save(response, "PNG")
+            response['Content-Disposition'] = f'attachment; filename="claimed_box_{new_master.uuid}.png"'
+            
+            return response
+        except Exception as e:
+            messages.error(request, f'Error: {e}')
+        
+        messages.success(request, 'Box Claimed successfully.')
+        return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
+
+    return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
 
 
 @login_required(login_url='managment/login/')
