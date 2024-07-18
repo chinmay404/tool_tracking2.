@@ -327,7 +327,6 @@ def add_uuid_not_insert(request, order_no, sale_order_product_id, sale_order_pro
     sale_order_product.remaining_quantity = remaining_quantity
     sale_order_product.save()
 
-
 def save_and_return(request, order_no, MaterialCode):
     sale_order = get_object_or_404(SaleOrder, order_no=order_no)
     sale_order_product = get_object_or_404(
@@ -345,11 +344,13 @@ def save_and_return(request, order_no, MaterialCode):
     if sale_order_product:
         for uuid in sale_order_product.uuids:
             if MaterialCode not in sale_order.uuids:
-                # Initialize the list if it doesn't exist
                 sale_order.uuids[MaterialCode] = []
 
-            sale_order.uuids[MaterialCode].append(
-                uuid)  # Append each uuid to the list
+            # Ensure sale_order.uuids[MaterialCode] is a list before appending
+            if not isinstance(sale_order.uuids[MaterialCode], list):
+                sale_order.uuids[MaterialCode] = []
+
+            sale_order.uuids[MaterialCode].append(uuid) 
             print(f"UUID added: {uuid}")
 
             master = Master.objects.filter(uuid=uuid, status='active').first()
@@ -385,6 +386,7 @@ def save_and_return(request, order_no, MaterialCode):
         messages.error(request, 'SaleOrderProduct not found.')
 
     return redirect('sale_order_detail', order_no=order_no)
+
 
 
 def remove_uuid(request, order_no, sale_order_product_id):

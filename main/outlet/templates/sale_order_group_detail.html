@@ -1,8 +1,7 @@
 {% extends 'base1.html' %}
 
 {% block content %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <style>
   body {
     background-color: #f5f7fb;
@@ -270,7 +269,6 @@ Selected Vehicle Details Section
           <th>Vehicle No</th>
           <th>Driver Name</th>
           <th>Status</th>
-          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -375,5 +373,4 @@ Selected Vehicle Details Section
     toggleBlurAndText();
   };
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
 {% endblock %}

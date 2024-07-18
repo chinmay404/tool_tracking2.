@@ -1,0 +1,27 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Pull latest changes
+      run: |
+        git pull origin main
+
+    - name: Run migrations
+      run: |
+        source /path/to/your/virtualenv/bin/activate
+        python manage.py migrate
+
+    - name: Restart Gunicorn
+      run: |
+        sudo systemctl restart gunicorn
