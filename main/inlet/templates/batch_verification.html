@@ -7,13 +7,6 @@
 
 <style>
    /* General Styles */
-   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
-    margin: 0;
-    padding: 0;
-  }
 
   .container {
     padding: 20px;
@@ -231,11 +224,12 @@
 
 </style>
 
-<div class="container">
+<div class="card">
   <!-- <button onclick="toggleDarkMode()">Toggle Dark Mode</button> -->
 
-  <div class="pageheader">Batch Verification</div>
-  <p>To see all verified batches <a href="{% url 'batch_verification_history' %}">click here</a>.</p>
+  <center><div class="card-title">Batch Verification</div></center>
+  <div class="card-body">
+    <p>To see all verified batches <a href="{% url 'batch_verification_history' %}">click here</a>.</p>
   <form method="get" enctype="multipart/form-data" class="search-bar">
     <!-- <input type="text" name="q" value="{% if query %}{{ query }}{% endif %}" placeholder="Search by Party Name">
     <button type="submit">Search</button>
@@ -272,7 +266,8 @@
     </form>
     <!-- EXPORT DATA END  -->
   </div>
-
+<div class="table-responsive">
+  
   <table id="responsiveTable">
     <thead>
       <tr>
@@ -318,6 +313,7 @@
       {% endfor %}
     </tbody>
   </table>
+</div>
 
   <div class="pagination">
     <span class="step-links">
@@ -336,6 +332,7 @@
       {% endif %}
     </span>
    
+  </div>
   </div>
 </div>
 <script>
