@@ -29,9 +29,9 @@ jobs:
       shell: bash
       run: |
         echo "Activating virtual environment"
-        source ~/tool_tracking2/env/bin/activate
-        echo "Changing directory to ~/tool_tracking2/main"
-        cd ~/tool_tracking2/main
+        source ~/tool_tracking2./env/bin/activate
+        echo "Changing directory to ~/tool_tracking2./main"
+        cd ~/tool_tracking2./main
         echo "Current directory:"
         pwd
         echo "Listing files:"
