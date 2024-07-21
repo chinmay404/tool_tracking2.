@@ -15,13 +15,24 @@ jobs:
 
     - name: Pull latest changes
       run: |
+        echo "Pulling latest changes"
         git pull origin main
 
     - name: Run migrations
+      shell: bash
       run: |
-        source /path/to/your/virtualenv/bin/activate
+        echo "Activating virtual environment"
+        source ~/tool_tracking2./env/bin/activate
+        echo "Changing directory to ~/tool_tracking2./main"
+        cd ~/tool_tracking2./main
+        echo "Current directory:"
+        pwd
+        echo "Listing files:"
+        ls -la
+        echo "Running migrations"
         python manage.py migrate
 
     - name: Restart Gunicorn
       run: |
+        echo "Restarting Gunicorn"
         sudo systemctl restart gunicorn
