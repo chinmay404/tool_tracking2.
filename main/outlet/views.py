@@ -23,6 +23,7 @@ from django.utils import timezone
 from django.http import HttpResponseRedirect
 import datetime
 import qrcode
+import re
 
 
 @login_required(login_url='managment/login/')
@@ -87,46 +88,52 @@ def sale_order_product_detail(request, order_no, MaterialCode):
     return render(request, 'sale_order_product_detail.html', {'sale_order': sale_order, 'sale_order_product': sale_order_product, 'inventory_count': inventory_count, 'selected_master_uuids': selected_master_uuids, 'form': form, 'product': product, 'selected_master_uuids_count': selected_master_uuids_count, 'sale_order_status': sale_order_status})
 
 
+def is_valid_short_uuid(id_str):
+    expected_length = 16
+    if len(id_str) == expected_length and re.match(r'^[a-fA-F0-9]+$', id_str):
+        return True
+    else:
+        return False
+
 
 @login_required(login_url='managment/login/')
 def claim_empty_box(request, product_id):
     product = get_object_or_404(Product, product_id=product_id)
     order_no = request.POST.get('order_no')
     MaterialCode = request.POST.get('MaterialCode')
-    
+
     if request.method == 'POST':
         try:
+            uuid_input = request.POST.get('uuid')  # Get UUID from user input
             box_capacity = int(request.POST.get('box_capacity'))
-            new_master = Master.objects.create(
-                product=product,
-                box_capacity=box_capacity,
-                quantity_per_box=0,
-                is_insert=True,
-                status='active',
-                received_by=request.user
-            )
-            new_master.save()
 
-            # Generate QR code
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_H,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(new_master.uuid)
-            qr.make(fit=True)
+            # Check if the provided UUID is valid
+            if not is_valid_short_uuid(uuid_input):
+                messages.error(
+                    request, f'Provided Box ID is Invalid : {uuid_input}')
+            elif Master.objects.filter(uuid=uuid_input).exists():
+                messages.error(
+                    request, f'Error: A master with UUID {uuid_input} already exists.')
+            else:
+                try:
+                    new_master = Master.objects.create(
+                        product=product,
+                        uuid=uuid_input,
+                        box_capacity=box_capacity,
+                        quantity_per_box=0,
+                        is_insert=True,
+                        status='active',
+                        received_by=request.user
+                    )
+                    new_master.save()
+                except Exception as e:
+                    messages.error(request, f'Error 114 : {e}')
 
-            # Create a response to download the QR code image
-            response = HttpResponse(content_type="image/png")
-            qr.make_image(fill_color="black", back_color="white").save(response, "PNG")
-            response['Content-Disposition'] = f'attachment; filename="claimed_box_{new_master.uuid}.png"'
-            
-            return response
+                messages.success(request, 'Box claimed successfully.')
+                return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
         except Exception as e:
             messages.error(request, f'Error: {e}')
-        
-        messages.success(request, 'Box Claimed successfully.')
+
         return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
 
     return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
@@ -195,7 +202,8 @@ def add_holding_uuid(request, order_no, MaterialCode, new_uuid, sale_order_produ
                 try:
                     print(f"STARTING : {sale_order.uuids}")
                     if material_code not in sale_order.uuids:
-                        print( f"INSIDE IF  : {sale_order.uuids[material_code]}")
+                        print(
+                            f"INSIDE IF  : {sale_order.uuids[material_code]}")
                         print(f"MATERIAL CODE : {material_code}")
                         print("NOT EXITS")
                         sale_order.uuids[material_code] = []
@@ -316,16 +324,19 @@ def add_uuid_not_insert(request, order_no, sale_order_product_id, sale_order_pro
                 quantity_per_box = matching_master.quantity_per_box
                 sale_order.uuids[material_code][new_uuid] = quantity_per_box
                 sale_order.save()
-                print(f"Material data updated: {sale_order.uuids[material_code]}")
+                print(
+                    f"Material data updated: {sale_order.uuids[material_code]}")
                 remaining_quantity -= 1  # Decrement remaining quantity
                 print(f"Remaining quantity updated: {remaining_quantity}")
             else:
-                messages.error(request, f"UUID '{new_uuid}' is already added. Skipping.")
+                messages.error(
+                    request, f"UUID '{new_uuid}' is already added. Skipping.")
         except Exception as e:
             messages.error(request, str(e))
     # Save remaining quantity regardless of success or failure
     sale_order_product.remaining_quantity = remaining_quantity
     sale_order_product.save()
+
 
 def save_and_return(request, order_no, MaterialCode):
     sale_order = get_object_or_404(SaleOrder, order_no=order_no)
@@ -350,7 +361,7 @@ def save_and_return(request, order_no, MaterialCode):
             if not isinstance(sale_order.uuids[MaterialCode], list):
                 sale_order.uuids[MaterialCode] = []
 
-            sale_order.uuids[MaterialCode].append(uuid) 
+            sale_order.uuids[MaterialCode].append(uuid)
             print(f"UUID added: {uuid}")
 
             master = Master.objects.filter(uuid=uuid, status='active').first()
@@ -386,7 +397,6 @@ def save_and_return(request, order_no, MaterialCode):
         messages.error(request, 'SaleOrderProduct not found.')
 
     return redirect('sale_order_detail', order_no=order_no)
-
 
 
 def remove_uuid(request, order_no, sale_order_product_id):
@@ -451,10 +461,12 @@ def out_verification(request):
             sale_orders = SaleOrder.objects.filter(group_id=group_id_numeric)
 
             if not sale_orders.exists() or any(order.status != 'complete' for order in sale_orders):
-                messages.error(request, f'Not all sale orders in group {group_id} are in the "complete" state. Cannot Proceed')
+                messages.error(
+                    request, f'Not all sale orders in group {group_id} are in the "complete" state. Cannot Proceed')
                 return redirect('out_verification')
             elif any(not order.invoice_no for order in sale_orders):
-                messages.error(request, f'Waiting For invoice No. To be Generated. Cannot Proceed')
+                messages.error(
+                    request, f'Waiting For invoice No. To be Generated. Cannot Proceed')
                 return redirect('out_verification')
 
         context = {
@@ -836,6 +848,7 @@ def generate_short_id():
     print(final_id)
     return final_id
 
+
 def veichal_allocation(request):
     if request.method == 'POST':
         selected_groups = request.POST.getlist('selected_groups')
@@ -849,7 +862,8 @@ def veichal_allocation(request):
                     vehicle_sale_order_group, created = VehicleSaleOrderGroup.objects.get_or_create(
                         tracking_id=tracking_id, defaults={'data_json': {}})
 
-                    print(f"TRACKING ID : {vehicle_sale_order_group.tracking_id}")
+                    print(
+                        f"TRACKING ID : {vehicle_sale_order_group.tracking_id}")
 
                     routes = {}
                     for group_id in selected_groups:
@@ -857,7 +871,8 @@ def veichal_allocation(request):
                         print(f"GROUP : {group}")
 
                         if group.tracking_id:
-                            raise ValueError(f"SaleOrderGroup {group_id} is already associated with a tracking ID.")
+                            raise ValueError(
+                                f"SaleOrderGroup {group_id} is already associated with a tracking ID.")
 
                         group.allocated = True
                         group.tracking_id = tracking_id  # Use the generated tracking_id
@@ -871,24 +886,29 @@ def veichal_allocation(request):
                     vehicle_sale_order_group.data_json['routes'] = routes
                     vehicle_sale_order_group.save()
 
-                    messages.success(request, f"Sale Order Groups added to Tracking ID {tracking_id}")
+                    messages.success(
+                        request, f"Sale Order Groups added to Tracking ID {tracking_id}")
                     return redirect('veichal_allocation_details', tracking_id=vehicle_sale_order_group.tracking_id)
 
             except IntegrityError as e:
                 print("IntegrityError in VEICHAL ALLOCATION", e)
-                messages.error(request, 'A unique tracking ID could not be generated. Please try again.')
+                messages.error(
+                    request, 'A unique tracking ID could not be generated. Please try again.')
                 return redirect('veichal_allocation')
             except Exception as e:
                 print("VEICHAL ALLOCATION EXCEPTION", e)
-                messages.error(request, f'An error occurred during vehicle allocation. {str(e)}')
+                messages.error(
+                    request, f'An error occurred during vehicle allocation. {str(e)}')
                 return redirect('veichal_allocation')
         else:
-            messages.error(request,"No Packing Slip Selected")
+            messages.error(request, "No Packing Slip Selected")
             return redirect('veichal_allocation')
     else:
-        groups = SaleOrderGroup.objects.filter(status='complete', vehicle=None, allocated=False)
+        groups = SaleOrderGroup.objects.filter(
+            status='complete', vehicle=None, allocated=False)
         context = {'groups': groups}
         return render(request, 'veichal_allocation.html', context)
+
 
 def veichal_allocation_details(request, tracking_id):
     try:

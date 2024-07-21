@@ -61,6 +61,8 @@
             {% csrf_token %}
             <div class="modal-body">
               <div class="form-group">
+                <label for="uuid">UUID:</label>
+                <input type="text" class="form-control" id="uuid" name="uuid" placeholder="Scan Id Here" required>
                 <label for="box_capacity">Box Capacity:</label>
                 <select class="form-control" id="box_capacity" name="box_capacity" required>
                   <option value="10">10</option>
