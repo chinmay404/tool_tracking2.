@@ -1,156 +1,107 @@
 {% extends 'base1.html' %}
 {% block content %}
 {% load static %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="container mt-4">
-  <!-- Heading Section
-  <div class="heading-section mb-4">
-    <h1 class="text-center">Dashboard</h1>
-    <p class="lead text-center">
-      To see all GRN <a href="{% url 'batch_verification_history' %}">Click Here</a>
-    </p>
-  </div>
 
-  <!-- Search Bar -->
-  <!-- <div class="search-bar mb-4">
-    <form method="get" action="{% url 'managment_home' %}">
-      <div class="input-group">
-        <input type="text" name="q" value="{{ search_query }}" placeholder="Search" class="form-control">
-        <button type="submit" class="btn btn-primary">Search</button>
-      </div>
-    </form>
-  </div> --> -->
+<div class="container">
   <!-- Heading Section -->
-  <div class="heading-section mb-4">
-    <h1 class="text-center text-primary">Dashboard</h1>
-    <p class="lead text-center">
-      To see all GRN <a href="{% url 'batch_verification_history' %}" class="text-info">Click Here</a>
-    </p>
-  </div>
-
-  <!-- Search Bar -->
-  <div class="search-bar mb-4">
-    <form method="get" action="{% url 'managment_home' %}">
-      <div class="input-group">
-        <input type="text" name="q" value="{{ search_query }}" placeholder="Search" class="form-control">
-        <div class="input-group-append">
-          <button type="submit" class="btn btn-primary">Search</button>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <!-- Time Range Selection -->
-  <div class="time-range-selection mb-4 d-flex align-items-center">
-    <label for="time_range" class="mr-2">Time:</label>
-    <select name="time_range" id="time_range" class="form-control mr-2">
-      <option value="one_month">One Month</option>
-      <option value="one_week">One Week</option>
-      <option value="custom">Custom</option>
-    </select>
-    <button type="button" class="btn btn-primary apply-time-range">Apply</button>
+  <div class="heading-section mb-4 text-center">
+    <h1 class="text-primary">Dashboard</h1>
   </div>
 
   <!-- Counts -->
   <div class="row mb-4">
-
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body" style="
-        display: flex;
-        align-content: center;
-        justify-content: space-around;
-        align-items: flex-end;
-    ">
-          <div class="count-item text-center">
-            <h4>Total Sale Orders</h4>
-            <p class="count">{{ total_sale_orders_count }}</p>
-          </div>
-          <div class="divider"></div>
-          <div class="count-item text-center">
-            <h4>Completed Sale Orders</h4>
-            <p class="count">{{ completed_sale_orders_count }}</p>
-          </div>
+    <div class="col-md-3">
+      <div class="card count-card animate__animated animate__fadeInUp">
+        <div class="card-body text-center">
+          <h4>Total Sale Orders</h4>
+          <p class="count">{{ total_sale_orders_count }}</p>
         </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body" style="
-        display: flex;
-        align-content: center;
-        justify-content: space-around;
-        align-items: flex-end;
-    ">
-          <div class="count-item text-center">
-            <h4>Total GRN</h4>
-            <p class="count">{{ total_product_indexes_count }}</p>
-          </div>
-          <div class="divider"></div>
-          <div class="count-item text-center">
-            <h4>Activated GRN</h4>
-            <p class="count">{{ completed_product_indexes_count }}</p>
-          </div>
+    <div class="col-md-3">
+      <div class="card count-card animate__animated animate__fadeInUp">
+        <div class="card-body text-center">
+          <h4>Completed Sale Orders</h4>
+          <p class="count">{{ completed_sale_orders_count }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card count-card animate__animated animate__fadeInUp">
+        <div class="card-body text-center">
+          <h4>Total GRN</h4>
+          <p class="count">{{ total_product_indexes_count }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card count-card animate__animated animate__fadeInUp">
+        <div class="card-body text-center">
+          <h4>Activated GRN</h4>
+          <p class="count">{{ completed_product_indexes_count }}</p>
         </div>
       </div>
     </div>
   </div>
-  <!-- Dashboard Components -->
+
+  <!-- Charts Row -->
   <div class="row mb-4">
-    <!-- Monthly Chart -->
     <div class="col-md-6">
-      <div class="card chart-container">
+      <div class="card chart-container animate__animated animate__fadeInUp">
         <div class="card-body">
-          <h2 class="card-title text-center">Monthly Chart</h2>
-          <canvas id="monthlyChart" width="400" height="200"></canvas>
+          <h2 class="card-title text-center">Monthly Sales</h2>
+          <canvas id="monthlySalesChart" width="400" height="200"></canvas>
         </div>
       </div>
     </div>
-    <div class="col-md-2">
-      <div class="card">
+    <div class="col-md-6">
+      <div class="card chart-container animate__animated animate__fadeInUp">
         <div class="card-body">
-          <h2 class="card-title text-center">Product's</h2>
-          <div class="counts">
-            <div class="count-item">
-              <h4 class="text-center">Total</h4>
-              <p class="text-center count">{{ total_count }}</p>
-            </div>
-            {% for status, count in status_counts.items %}
-            <div class="count-item">
-              <h4 class="text-center">{{ status|title }}</h4>
-              <p class="text-center count">{{ count }}</p>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Active Users -->
-    <!-- Active Users -->
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h2 class="card-title text-center">Active Users</h2>
-          <div class="active-users-list">
-            <ul class="list-group">
-              {% for user in active_users %}
-              <li class="list-group-item">
-                <span class="dot"
-                  style="background-color: {% if user.is_active %}green{% else %}gray{% endif %}"></span>
-                {{ user.username }}
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
+          <h2 class="card-title text-center">User Registrations</h2>
+          <canvas id="userRegistrationsChart" width="400" height="200"></canvas>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Vehicle List Section -->
+  <!-- Additional Data Rows -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card chart-container animate__animated animate__fadeInUp">
+        <div class="card-body">
+          <h2 class="card-title text-center">Top Products</h2>
+          <canvas id="topProductsChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card chart-container animate__animated animate__fadeInUp">
+        <div class="card-body">
+          <h2 class="card-title text-center">Inventory Status</h2>
+          <canvas id="inventoryStatusChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card animate__animated animate__fadeInUp">
+        <div class="card-body">
+          <h2 class="card-title text-center">Recent Activities</h2>
+          <ul class="list-group">
+            {% for activity in recent_activities %}
+            <li class="list-group-item">{{ activity }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tables Section -->
   <div class="row mb-4">
     <div class="col-md-12">
-      <div class="card">
+      <div class="card animate__animated animate__fadeInUp">
         <div class="card-body">
           <h2 class="card-title">All Vehicles</h2>
           <div class="table-responsive">
@@ -180,10 +131,9 @@
     </div>
   </div>
 
-  <!-- Product Indexes Section -->
   <div class="row mb-4">
     <div class="col-md-12">
-      <div class="card">
+      <div class="card animate__animated animate__fadeInUp">
         <div class="card-body">
           <h2 class="card-title">Activated Product Indexes</h2>
           <div class="table-responsive">
@@ -226,7 +176,7 @@
   </div>
 
   <!-- Pagination -->
-  <div class="pagination mb-4">
+  <div class="pagination mb-4 text-center animate__animated animate__fadeInUp">
     <span class="step-links">
       {% if product_indexes.has_previous %}
       <a href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}" class="page-link">&laquo; first</a>
@@ -246,197 +196,177 @@
       {% endif %}
     </span>
   </div>
-
 </div>
 
 <!-- Custom CSS -->
 <style>
-  /* body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-  } */
-
-  .active-users-list {
-    max-height: 200px;
-    /* Set maximum height for scroll */
-    overflow-y: auto;
-    /* Add vertical scrollbar if needed */
-  }
-
-  .active-users-list ul {
-    margin-bottom: 0;
-    /* Remove default margin */
-  }
-
   .container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
   }
 
   .heading-section h1 {
     margin-bottom: 20px;
+    color: #007bff;
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+
+  .count-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .count-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .count-card h4 {
+    margin-bottom: 10px;
+    color: #6c757d;
+    font-size: 1.2rem;
+  }
+
+  .count {
+    font-size: 28px;
+    font-weight: bold;
     color: #333;
-  }
-
-  .lead {
-    color: #555;
-  }
-
-  .search-bar {
-    margin-bottom: 20px;
   }
 
   .chart-container {
     margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
 
-  .counts {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .count-item {
-    margin: 10px;
-    text-align: center;
-  }
-
-  .count-item h4 {
-    margin-bottom: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #555;
-  }
-
-  .count-item p {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-  }
-
-  .active-users-list {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  .list-group-item {
-    border: none;
-    position: relative;
-    color: #555;
-  }
-
-  .dot {
-    height: 10px;
-    width: 10px;
-    background-color: green;
-    border-radius: 50%;
-    display: inline-block;
-    position: absolute;
-    left: -20px;
-    top: 50%;
-    transform: translateY(-50%);
+  .card-title {
+    margin-bottom: 20px;
+    color: #343a40;
+    font-size: 1.5rem;
   }
 
   .table {
-    margin-bottom: 20px;
-  }
-
-  .bg-warning {
-    background-color: #ffeeba !important;
-    color: #856404;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
 
   .pagination {
-    text-align: center;
+    margin-top: 20px;
+    font-size: 1rem;
   }
 
-  .pagination a {
-    color: #007bff;
+  .page-link {
+    padding: 10px;
+    border-radius: 5px;
     margin: 0 5px;
-  }
-
-  .pagination .current {
-    font-weight: bold;
-    color: #333;
-  }
-
-  .pagination .page-link:hover {
     text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
   }
 
-  .divider {
-    border-left: 1px solid #ccc;
-    /* Vertical line */
-    height: 80px;
-    /* Adjust height as needed */
-    margin: 0 20px;
-    /* Adjust margin as needed */
+  .page-link:hover {
+    background-color: #0056b3;
+  }
+
+  .bg-warning {
+    background-color: #fff3cd !important;
   }
 </style>
+
+<!-- JavaScript -->
 <script>
-  // JavaScript to handle time range selection
-  document.addEventListener('DOMContentLoaded', function () {
-    const applyButton = document.querySelector('.apply-time-range');
-    const timeRangeSelect = document.getElementById('time_range');
+document.addEventListener('DOMContentLoaded', function() {
+  // Fetch data from server
+  const chartData = JSON.parse('{{ chart_data|escapejs }}');
 
-    applyButton.addEventListener('click', function () {
-      const selectedValue = timeRangeSelect.value;
-      console.log('Selected Time Range:', selectedValue);
-    });
-  });
-</script>
+  // Ensure chartData is correctly structured
+  console.log(chartData);
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Retrieve data from the chart_data object passed from the backend
-    const chartData = JSON.parse('{{ chart_data|escapejs }}');
-    const saleOrdersCount = chartData.saleOrdersCount;
-    const completedSaleOrdersCount = chartData.completedSaleOrdersCount;
-    const productIndexesCount = chartData.productIndexesCount;
-    const completedProductIndexesCount = chartData.completedProductIndexesCount;
-
-    // Delay time in milliseconds (adjust as needed)
-    const delayTime = 1000; // 1 second delay
-
-    setTimeout(function () {
-      const ctx = document.getElementById('monthlyChart').getContext('2d');
-      const monthlyChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Sale Orders', 'Completed Sale Orders', 'Product Indexes', 'Completed Product Indexes'],
-          datasets: [{
-            label: 'Counts',
-            data: [saleOrdersCount, completedSaleOrdersCount, productIndexesCount, completedProductIndexesCount],
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)', // Sale Orders
-              'rgba(54, 162, 235, 0.2)', // Completed Sale Orders
-              'rgba(255, 206, 86, 0.2)', // Product Indexes
-              'rgba(75, 192, 192, 0.2)', // Completed Product Indexes
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-            ],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          }
+  // Monthly Sales Chart
+  new Chart(document.getElementById('monthlySalesChart'), {
+    type: 'bar',
+    data: {
+      labels: chartData.monthlySales.labels,
+      datasets: [{
+        label: 'Monthly Sales',
+        data: chartData.monthlySales.data,
+        backgroundColor: '#007bff',
+        borderColor: '#0056b3',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
         }
-      });
-    });
+      }
+    }
   });
+
+  // User Registrations Chart
+  new Chart(document.getElementById('userRegistrationsChart'), {
+    type: 'line',
+    data: {
+      labels: chartData.userRegistrations.labels,
+      datasets: [{
+        label: 'User Registrations',
+        data: chartData.userRegistrations.data,
+        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+        borderColor: '#007bff',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // Top Products Chart
+  new Chart(document.getElementById('topProductsChart'), {
+    type: 'pie',
+    data: {
+      labels: chartData.topProducts.labels,
+      datasets: [{
+        label: 'Top Products',
+        data: chartData.topProducts.data,
+        backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545'],
+        borderColor: '#fff',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true
+    }
+  });
+
+  // Inventory Status Chart
+  new Chart(document.getElementById('inventoryStatusChart'), {
+    type: 'doughnut',
+    data: {
+      labels: chartData.inventoryStatus.labels,
+      datasets: [{
+        label: 'Inventory Status',
+        data: chartData.inventoryStatus.data,
+        backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545'],
+        borderColor: '#fff',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true
+    }
+  });
+});
 </script>
 {% endblock %}

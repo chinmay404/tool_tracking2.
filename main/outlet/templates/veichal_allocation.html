@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mb-4">Vehicle Allocation</h1>
+    <center><h1 class="mb-4">Vehicle Allocation</h1></center>
     <p>To See All Allocations  <a href="{% url 'veichal_allocation_history' %}">Click Here</a></p>
     <div class="table-responsive">
         <form method="post" action="{% url 'veichal_allocation' %}">
@@ -56,6 +56,13 @@
 </div>
 
 <style>
+    .container {
+        min-width: 80vw;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
     .table-bordered th,
     .table-bordered td {
         border: 1px solid #dee2e6;

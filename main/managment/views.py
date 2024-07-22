@@ -1,16 +1,16 @@
-from django.shortcuts import render, redirect, HttpResponse ,get_object_or_404
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomUserAuthenticationForm
 from .decorators import unauth_user, allowed_users
 from django.contrib.auth.models import Group
-from inlet.models import Master,ProductIndex,Product
+from inlet.models import Master, ProductIndex, Product
 from django.db.models import Q
 from django.db.models import Count, Case, When, IntegerField
 from django.contrib.auth.models import User, Group, Permission
 from .models import CustomUser, Vehicle
-from outlet.models import SaleOrder
+from outlet.models import SaleOrder, SaleOrderProduct
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
@@ -20,13 +20,18 @@ from datetime import datetime, timedelta
 from AI import ai
 from django.contrib import messages
 from main.settings import ALLOW_AI
+from datetime import datetime
+import calendar
+from django.views.decorators.cache import cache_page
+from collections import defaultdict
+
 
 def chat(request):
     response = None
     if request.method == 'POST' and ALLOW_AI:
         user_input = request.POST.get('user_input', '')
         try:
-            response = ai.get_response(user_input,request)
+            response = ai.get_response(user_input, request)
         except Exception as e:
             messages.error(request, f'Error :  {e}')
     if ALLOW_AI:
@@ -35,96 +40,96 @@ def chat(request):
         return render(request, 'unavilable.html')
 
 
-
-    
-
 @login_required(login_url='managment/login/')
 @allowed_users(allowed_roles=['admins', 'managment_user'])
+@cache_page(60 * 15)
 def home(request):
-    all_vehicles = Vehicle.objects.all()
-    product_indexes = ProductIndex.objects.filter(status='verified').order_by('-arrive_date')
-    activated_product_index = product_indexes.filter(status='verified')
-    active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
-    # Extract user IDs from active sessions
-    active_user_ids = [session.get_decoded().get('_auth_user_id') for session in active_sessions]
-    # Get active users
-    time_range = request.GET.get('time_range')
-
-    if time_range == 'one_month':
-        start_date = datetime.now() - timedelta(days=30)
-    elif time_range == 'one_week':
-        start_date = datetime.now() - timedelta(days=7)
-    else:
-        # Default to one month if no time range is selected
-        start_date = datetime.now() - timedelta(days=30)
-    active_users = CustomUser.objects.filter(id__in=active_user_ids)  # Use your custom user model
-    completed_sale_orders_count = SaleOrder.objects.filter(status='complete', order_date__gte=start_date).count()
     total_sale_orders_count = SaleOrder.objects.count()
+    completed_sale_orders_count = SaleOrder.objects.filter(
+        status='complete').count()
     total_product_indexes_count = ProductIndex.objects.count()
-    completed_product_indexes_count = ProductIndex.objects.filter(status='complete', arrive_date__gte=start_date).count()
+    completed_product_indexes_count = ProductIndex.objects.filter(
+        status='completed').count()
 
-    # Implement search functionality
-    query = request.GET.get('q')
-    if query:
-        product_indexes = product_indexes.filter(
-            Q(gate_inward_No__icontains=query) |
-            Q(party_challan_no__icontains=query) |
-            Q(part_bill_no__icontains=query) |
-            Q(batch_id__icontains=query) |
-            Q(UOM__icontains=query) |
-            Q(po_no__icontains=query) |
-            Q(status__icontains=query) |
-            Q(received_by__username__icontains=query) |
-            Q(arrive_date__icontains=query)
-        )
-        activated_product_index = product_indexes.filter(status='verified')
+    # Prepare for date conversion
+    current_year = datetime.now().year
 
-    # Implement paging
-    per_page = 10  # You can adjust this as needed
-    paginator = Paginator(product_indexes, per_page)
-    page = request.GET.get('page')
-    total_count = Master.objects.all().count
-    status_counts = Master.objects.values('status').annotate(count=Count('status'))
-    status_count_dict = {item['status']: item['count'] for item in status_counts}
+    # Get all SaleOrders and convert date strings to datetime objects
+    all_sales_orders = SaleOrder.objects.all()
+    sales_data = defaultdict(int)
+    for order in all_sales_orders:
+        try:
+            order_date = datetime.strptime(order.order_date, '%d/%m/%Y')
+            if order_date.year == current_year:
+                month = order_date.month
+                sales_data[month] += 1
+        except ValueError:
+            continue
 
-    try:
-        product_indexes = paginator.page(page)
-    except PageNotAnInteger:
-        product_indexes = paginator.page(1)
-    except EmptyPage:
-        product_indexes = paginator.page(paginator.num_pages)
-    
-    # Retrieve monthly counts
-    monthly_counts = ProductIndex.objects.filter(status='verified').annotate(
-        month=TruncMonth('arrive_date')).values('month').annotate(count=Count('arrive_date')).order_by('-month')[:12]
+    sales_labels = [calendar.month_abbr[month] for month in range(1, 13)]
+    sales_values = [sales_data.get(month, 0) for month in range(1, 13)]
 
-    # Extract counts from monthly_counts
-    monthly_counts_dict = {entry['month'].strftime('%B %Y'): entry['count'] for entry in monthly_counts}
+    # User Registrations Data
+    user_data = CustomUser.objects.all()
+    user_data_monthly = defaultdict(int)
+    for user in user_data:
+        try:
+            join_date = user.date_joined
+            if join_date.year == current_year:
+                month = join_date.month
+                user_data_monthly[month] += 1
+        except AttributeError:
+            continue
 
-    # Create chart data
-    chart_data = {
-        'saleOrdersCount': total_sale_orders_count,
-        'completedSaleOrdersCount': completed_sale_orders_count,
-        'productIndexesCount': total_product_indexes_count,
-        'completedProductIndexesCount': completed_product_indexes_count,
-        'monthlyCounts': monthly_counts_dict
-    }
+    user_labels = [calendar.month_abbr[month] for month in range(1, 13)]
+    user_values = [user_data_monthly.get(month, 0) for month in range(1, 13)]
+
+    # Top Products Data
+    top_products = SaleOrderProduct.objects.values('product__name').annotate(
+        count=Count('product')
+    ).order_by('-count')[:10]
+
+    # Extract labels and values for top products
+    top_products_labels = [item['product__name'] for item in top_products]
+    top_products_values = [item['count'] for item in top_products]
+
+    # Inventory Status Data
+    inventory_status = ProductIndex.objects.values('status').annotate(
+        count=Count('id')
+    )
+
+    inventory_status_labels = [item['status'] for item in inventory_status]
+    inventory_status_values = [item['count'] for item in inventory_status]
+
+    # Recent Activities
+    # recent_activities = ActivityLog.objects.order_by('-timestamp')[:10]
 
     context = {
-        'completed_sale_orders_count': completed_sale_orders_count,
-        'completed_product_indexes_count': completed_product_indexes_count,
-        'status_counts': status_count_dict,
-        'product_indexes': product_indexes,
-        'total_count': total_count,
-        'active_users': active_users,
-        'all_vehicles': all_vehicles,
-        'activated_product_index': activated_product_index,
-        'search_query': query,
-        'chart_data': json.dumps(chart_data),
         'total_sale_orders_count': total_sale_orders_count,
-        'total_product_indexes_count': total_product_indexes_count
+        'completed_sale_orders_count': completed_sale_orders_count,
+        'total_product_indexes_count': total_product_indexes_count,
+        'completed_product_indexes_count': completed_product_indexes_count,
+        'chart_data': json.dumps({
+            'monthlySales': {
+                'labels': sales_labels,
+                'data': sales_values
+            },
+            'userRegistrations': {
+                'labels': user_labels,
+                'data': user_values
+            },
+            'topProducts': {
+                'labels': top_products_labels,
+                'data': top_products_values
+            },
+            'inventoryStatus': {
+                'labels': inventory_status_labels,
+                'data': inventory_status_values
+            }
+        }),
+        'all_vehicles': Vehicle.objects.all(),
+        'activated_product_index': ProductIndex.objects.filter(status='completed')
     }
-
     return render(request, 'managment_home.html', context)
 
 
@@ -155,12 +160,11 @@ def sale_orders(request):
 
     context = {
         'sale_orders': sale_orders,
-        'search_query': query,  # Pass the search query to pre-fill the search input in the template
+        # Pass the search query to pre-fill the search input in the template
+        'search_query': query,
     }
 
     return render(request, 'sale_orders.html', context)
-
-
 
 
 @login_required(login_url='managment/login/')
@@ -228,7 +232,7 @@ def login_view(request):
 
             login(request, user)
             messages.success(request, f'Welcome { user.username }')
-            
+
             if user.groups.exists():
                 group_names = [group.name for group in user.groups.all()]
                 # print('User Groups: ', group_names)
@@ -241,7 +245,7 @@ def login_view(request):
                     return redirect('api_home')
                 elif 'inspection' in group_names:
                     return redirect('batch_verification')
-                
+
                 elif 'activators' in group_names:
                     return redirect('list_batch')
                 elif 'outlet_user' in group_names:
@@ -249,7 +253,8 @@ def login_view(request):
                 elif 'gate_user' in group_names:
                     return redirect('batch_verification')
                 elif any('Units' in group_name for group_name in group_names):
-                    return redirect('units_home')  # Redirect to units_home for users in any group containing "Units"
+                    # Redirect to units_home for users in any group containing "Units"
+                    return redirect('units_home')
                 elif 'wait_list' in group_names:
                     return redirect('wating_feild')
         else:
@@ -261,7 +266,6 @@ def login_view(request):
         'form': form,
     }
     return render(request, 'login.html', context)
-
 
 
 @unauth_user
@@ -295,12 +299,9 @@ def admin_only(request):
     return redirect('admin:index')
 
 
-
-
-
 @login_required(login_url='managment/login/')
 def wating_feild(request):
-    return render(request,'wating_feild.html')
+    return render(request, 'wating_feild.html')
 
 
 @login_required(login_url='managment/login/')
@@ -311,8 +312,10 @@ def inquiry(request):
     if request.method == 'POST':
         query = request.POST.get('query')
         if query:
-            fields_to_search = ['uuid', 'batch_id', 'product__name', 'status', 'added_date', 'received_by__username','status']
-            queries = [Q(**{f'{field}__icontains': query}) for field in fields_to_search]
+            fields_to_search = ['uuid', 'batch_id', 'product__name',
+                                'status', 'added_date', 'received_by__username', 'status']
+            queries = [Q(**{f'{field}__icontains': query})
+                       for field in fields_to_search]
             search_query = Q()
             for query in queries:
                 search_query |= query
@@ -321,12 +324,8 @@ def inquiry(request):
 
     return render(request, 'inquiry.html', {'search_results': search_results})
 
+    # ************  USER MANAGEMNT ***********#
 
-
-
-
-
-                    # ************  USER MANAGEMNT ***********#
 
 @login_required(login_url='login')  # Ensure the user is logged in
 def manage_users(request):
@@ -334,13 +333,13 @@ def manage_users(request):
         users = CustomUser.objects.all()
     else:
         users = CustomUser.objects.filter(unit=request.user.unit)
-        
 
     context = {
         'users': users,
     }
 
     return render(request, 'manage_users.html', context)
+
 
 def manage_user(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
@@ -364,7 +363,6 @@ def manage_user(request, user_id):
     return render(request, 'manage_user.html', context)
 
 
-
 @login_required(login_url='managment/login/')
 def get_sorted_permissions():
     permissions = Permission.objects.all()
@@ -379,6 +377,7 @@ def get_sorted_permissions():
         sorted_permissions[category].append(permission)
 
     return sorted_permissions
+
 
 @login_required(login_url='managment/login/')
 def manage_users_unit(request):
