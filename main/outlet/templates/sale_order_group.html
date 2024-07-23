@@ -79,11 +79,13 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
-    display: none; /* Initially hidden */
+    display: none;
+    /* Initially hidden */
   }
 
   .selected-orders.show {
-    display: block; /* Show when selected */
+    display: block;
+    /* Show when selected */
   }
 
   .form-group {
@@ -106,7 +108,7 @@
 </style>
 
 <div class="container">
-  <h2 class="text-center mb-4">Create Sale Order Group</h2>
+  <h2 class="text-center mb-4">Create Packing Slip</h2>
 
   <!-- Filter Form -->
   <form method="post" id="filter_form" class="mb-4" action="{% url 'create_sale_order_group' %}">
@@ -129,7 +131,7 @@
       </div>
     </div>
   </form>
-  
+
   <hr>
 
   <!-- Sale Orders Table -->
@@ -199,19 +201,19 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const checkboxes = document.querySelectorAll('.sale_order_checkbox');
     const selectedOrdersBody = document.getElementById('selected-orders-body');
     const selectedOrdersDiv = document.getElementById('selected-orders');
     const removeSelectedBtn = document.getElementById('remove-selected-btn');
 
     checkboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
+      checkbox.addEventListener('change', function () {
         updateSelectedOrders();
       });
     });
 
-    removeSelectedBtn.addEventListener('click', function() {
+    removeSelectedBtn.addEventListener('click', function () {
       removeSelectedOrders();
     });
 
@@ -252,7 +254,7 @@
       const rows = selectedOrdersBody.querySelectorAll('tr');
       rows.forEach(row => {
         const removeBtn = row.querySelector('.remove-order-btn');
-        removeBtn.addEventListener('click', function() {
+        removeBtn.addEventListener('click', function () {
           row.remove();
           const orderNo = row.cells[2].innerText;
           checkboxes.forEach(checkbox => {
@@ -264,6 +266,12 @@
         });
       });
     }
+  });
+
+  $(document).ready(function () {
+    new DataTable('#sale_orders_table', {
+      pageLength: 50
+    });
   });
 </script>
 
