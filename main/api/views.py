@@ -36,7 +36,8 @@ from .utility_api_calls import *
 
 def is_valid_short_uuid(id_str):
     expected_length = 16
-    if len(id_str) == expected_length and re.match(r'^[a-fA-F0-9]+$', id_str):
+    # if len(id_str) == expected_length and re.match(r'^[a-fA-F0-9]+$', id_str):
+    if len(id_str) == expected_length:
         return True
     else:
         return False
