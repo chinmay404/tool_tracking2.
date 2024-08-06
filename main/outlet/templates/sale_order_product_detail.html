@@ -5,10 +5,7 @@
   <div class="card mb-4">
     <div class="card-body">
       <div class="row">
-        <center><strong>
-          <h1 style="color: red;">GIT HUB ACTION CHNAGES{status_code :  5463}</h1>
-            <h1 style="padding-bottom: 20px;">{{ product.name }}</h1>
-          </strong></center>
+
         <hr>
         <div class="sub_row" style="display: flex; flex-direction: row; justify-content: space-evenly;">
           <div>
@@ -115,7 +112,7 @@
 <div class="alert alert-danger" role="alert">
   No Material In Inventory
 </div>
-{% elif inventory_count <= sale_order_product.quantity %} <div class="alert alert-warning" role="alert">
+<!-- {% elif inventory_count <= sale_order_product.quantity %} <div class="alert alert-warning" role="alert">
   </div>
   <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
     {% csrf_token %}
@@ -136,8 +133,18 @@
       <input type="text" class="form-control" id="new_uuid" name="new_uuid">
     </div>
     <button type="submit" class="btn btn-primary">Add UUID</button>
-  </form>
-  {% endif %}
+  </form> -->
+  {% else %}
+  <p style="color: red;">TEMP FEILD</p>
+  <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="new_uuid">Add a UUID:</label>
+        <input type="text" class="form-control" id="new_uuid" name="new_uuid">
+    </div>
+    <button type="submit" class="btn btn-primary">Add UUID</button>
+</form> 
+   {% endif %}
   {% endif %}
 
   {% if product.is_insert == True and sale_order_product.holding_quantity == 0 %}
