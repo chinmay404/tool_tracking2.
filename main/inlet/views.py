@@ -520,9 +520,9 @@ def batch_activation(request, batch_id):
 
         for item in product_index.productindexitem_set.all():
             received_quantity_key = f'received_quantities_{ item.id }'
-            value_received_quantity = int(request.POST.get(received_quantity_key))
+            value_received_quantity = float(request.POST.get(received_quantity_key))
             print(f"Enetrd Quantity : { value_received_quantity }")
-            short_quantity = item.quantity_received - int(request.POST.get(received_quantity_key))
+            short_quantity = item.quantity_received - float(request.POST.get(received_quantity_key))
             print(f'SHORT QUNATITY asdasd: {short_quantity}')
             key = f'quantity_per_box_select_{ item.id }'
             quantity_per_box_key = int(request.POST.get(key, '0'))
@@ -554,7 +554,7 @@ def batch_activation(request, batch_id):
                                 received_quantity = ceil(remaining_quantity / quantity_per_box_key)
                             except Exception as e:
                                 print(f"Error occurred during division: {e}")
-                                                
+                        received_quantity = int(round(received_quantity))                  
                         for _ in range(received_quantity):
                             if product.is_insert:
                                 quantity_in_this_box = min(quantity_per_box_key, remaining_quantity)
