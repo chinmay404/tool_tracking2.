@@ -29,12 +29,12 @@ import re
 @login_required(login_url='managment/login/')
 @allowed_users(allowed_roles=['admins', 'outlet_user',])
 def outlet_home(request):
-    sale_order_groups = SaleOrderGroup.objects.filter(status='created')
+    sale_order_groups = SaleOrderGroup.objects.filter(status='created').order_by('-group_id')
     return render(request, 'outlet_home.html', {'sale_order_groups': sale_order_groups})
 
 
 def sale_order_group_history(request):
-    sale_order_groups = SaleOrderGroup.objects.all()
+    sale_order_groups = SaleOrderGroup.objects.all().order_by('-group_id')
     return render(request, 'sale_order_group_history.html', context={'sale_order_groups': sale_order_groups})
 
 # PDF START HERE

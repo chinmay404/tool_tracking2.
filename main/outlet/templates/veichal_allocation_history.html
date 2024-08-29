@@ -100,8 +100,15 @@
   </table>
 </div>
 <script>
-  $(document).ready(function() {
-    $('#vehicleTable').DataTable();
-  });
+  $(document).ready(function () {
+    $('#vehicleTable').DataTable({
+        paging: true,
+        ordering: true,
+        info: true,
+        searching: true,
+        responsive: true,
+        pageLength: 50
+    });
+});
 </script>
 {% endblock %}
