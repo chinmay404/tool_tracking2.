@@ -33,7 +33,6 @@ from django.http import JsonResponse
 from .utility_api_calls import *
 
 
-
 def is_valid_short_uuid(id_str):
     expected_length = 16
     # if len(id_str) == expected_length and re.match(r'^[a-fA-F0-9]+$', id_str):
@@ -41,8 +40,6 @@ def is_valid_short_uuid(id_str):
         return True
     else:
         return False
-
-
 
 
 @api_view(['GET'])
@@ -69,10 +66,12 @@ def activate_product(request, old_uuid, new_uuid):
     try:
         id_is_valid = is_valid_short_uuid(new_uuid)
         print(f"NEW ID : {new_uuid} {old_uuid}")
-        if Master.objects.filter(uuid=new_uuid).exists() :
-            messages.error(request, f'ID is already in use. Please scan another qr code.')
+        if Master.objects.filter(uuid=new_uuid).exists():
+            messages.error(
+                request, f'ID is already in use. Please scan another qr code.')
         elif id_is_valid != True:
-            messages.error(request, f'ID is in Invalid Format. Please scan another qr code.')
+            messages.error(
+                request, f'ID is in Invalid Format. Please scan another qr code.')
         else:
             master_product = get_object_or_404(Master, uuid=old_uuid)
             master_product.save()
@@ -80,65 +79,71 @@ def activate_product(request, old_uuid, new_uuid):
             # if request.user.has_perm('inlet.change_master'):
             if True:
                 if master_product.status != "in_progress":
-                    messages.error(request, f' Not Complete Request \nProduct with UUID {new_uuid} state : {master_product.status} can Not Complete Request')
+                    messages.error(
+                        request, f' Not Complete Request \nProduct with UUID {new_uuid} state : {master_product.status} can Not Complete Request')
                 else:
                     activator_name = request.user.username
                     activation_date = timezone.now()
-                    activator_ip = request.META.get('REMOTE_ADDR', 'Unknown IP')
+                    activator_ip = request.META.get(
+                        'REMOTE_ADDR', 'Unknown IP')
                     product = master_product.product
-                    new_master = Master(
-                        product=product,
-                        uuid=new_uuid,
-                        batch_id=master_product.batch_id,
-                        status='active',
-                        added_date=master_product.added_date,
-                        received_by=master_product.received_by,
-                        data_json=master_product.data_json,
-                        is_insert=product.is_insert,
-                        quantity_per_box=master_product.quantity_per_box,
-                        box_capacity=master_product.box_capacity
-                    )
-
-                    new_data = {
-                        'activator_name': activator_name,
-                        'activator_ip': activator_ip,
-                        'activation_date': activation_date.strftime('%Y-%m-%d %H:%M:%S'),
-                        'status_changedstatus_changed_to_to': 'active'
-                    }
-                    if 'activation' not in new_master.data_json:
-                        new_master.data_json['activation'] = new_data
-                    else:
-                        new_master.data_json['activation'].update(new_data)
-
-                    try:
-                        if product.is_insert:
-                            product.in_progress_masters_count = max(0, product.in_progress_masters_count - 1)
+                    if product.UOM == "NOS":
+                        new_master = Master(
+                            product=product,
+                            uuid=new_uuid,
+                            batch_id=master_product.batch_id,
+                            status='active',
+                            added_date=master_product.added_date,
+                            received_by=master_product.received_by,
+                            data_json=master_product.data_json,
+                            is_insert=product.is_insert,
+                            quantity_per_box=master_product.quantity_per_box,
+                            box_capacity=master_product.box_capacity
+                        )
+                        new_data = {
+                            'activator_name': activator_name,
+                            'activator_ip': activator_ip,
+                            'activation_date': activation_date.strftime('%Y-%m-%d %H:%M:%S'),
+                            'status_changedstatus_changed_to_to': 'active'
+                        }
+                        if 'activation' not in new_master.data_json:
+                            new_master.data_json['activation'] = new_data
                         else:
-                            product.active_count =+ 1
-                            if product.in_progress_masters_count == 0:
-                                print(f"Count COUNT REACHED TO 0")
-                                messages.info(request, f'Count Already To 0')
+                            new_master.data_json['activation'].update(new_data)
+
+                        try:
+                            if product.is_insert:
+                                product.in_progress_masters_count = max(
+                                    0, product.in_progress_masters_count - 1)
                             else:
-                                product.in_progress_masters_count = product.in_progress_masters_count - 1
-                            print(f"ACTIVAE COUNT : {product.active_count}")
-                            print(
-                                f"IN PROGRESS COUNT : {product.in_progress_masters_count}")
-                        print(f"ACTIVATED : {old_uuid} ::TO:: {new_uuid}")
-                        product.save()
-                        new_master.save()
-                        master_product.delete()
-                        return True
-                    except Exception as e:
-                        messages.error(
-                            request, f'ERROR IN ACTIVATION ERROR  : {e}')
+                                product.active_count = + 1
+                                if product.in_progress_masters_count == 0:
+                                    print(f"Count COUNT REACHED TO 0")
+                                    messages.info(
+                                        request, f'Count Already To 0')
+                                else:
+                                    product.in_progress_masters_count = product.in_progress_masters_count - 1
+                                print(
+                                    f"ACTIVAE COUNT : {product.active_count}")
+                                print(
+                                    f"IN PROGRESS COUNT : {product.in_progress_masters_count}")
+                            print(f"ACTIVATED : {old_uuid} ::TO:: {new_uuid}")
+                            product.save()
+                            new_master.save()
+                            master_product.delete()
+                            return True
+                        except Exception as e:
+                            messages.error(
+                                request, f'ERROR IN ACTIVATION ERROR  : {e}')
+                    else:
+                        pass
             else:
-                messages.error(request, f'Error In Activation: UUID: {new_uuid} ')
+                messages.error(
+                    request, f'Error In Activation: UUID: {new_uuid} ')
 
     except Master.DoesNotExist as e:
         messages.error(
             request, f'Error In Activation: UUID: {new_uuid}\nError: {e}')
-
-
 
 
 # from django.http import JsonResponse
@@ -201,7 +206,6 @@ def activate_product(request, old_uuid, new_uuid):
 #             return JsonResponse({'error': f'Error In Activation: UUID: {new_uuid}\nError: {e}'})
 #     else:
 #         return JsonResponse({'error': 'Invalid request method or not an AJAX request.'})
-
 
 
 # alert-danger ERROR IN ACTIVATION ERROR E : new row for relation "inlet_product" violates check constraint "inlet_product_in_progress_masters_count_check" DETAIL: Failing row contains (SNGX, SNGX, Insert, -1, 1, 0, 0, t, f, 0).
@@ -314,10 +318,11 @@ def activate_via_batch(request, batch_id):
 def activate_via_btach_single_product(request, batch_id, MaterialCode):
     product_index = ProductIndex.objects.filter(batch_id=batch_id).first()
     product = Product.objects.get(MaterialCode=MaterialCode)
-    product_index_item = ProductIndexItem.objects.filter(product_index=product_index, product=product).first()
-    in_progress_count = product_index_item.unactive_count 
+    product_index_item = ProductIndexItem.objects.filter(
+        product_index=product_index, product=product).first()
+    in_progress_count = product_index_item.unactive_count
     active_count = Master.objects.filter(
-                status='active', batch_id=batch_id,product=product).count()
+        status='active', batch_id=batch_id, product=product).count()
     if request.method == 'POST':
         new_uuids_str = request.POST.get('new_uuids')
         print(f"NEW UUIDS : {new_uuids_str}")
@@ -328,7 +333,7 @@ def activate_via_btach_single_product(request, batch_id, MaterialCode):
             batch_id=batch_id,
             status='in_progress',
         )
-    
+
         if in_progress_masters:
             count = 0
             for master, new_uuid in zip(in_progress_masters, new_uuids):
@@ -339,25 +344,29 @@ def activate_via_btach_single_product(request, batch_id, MaterialCode):
                     product_index_item.unactive_count = product_index_item.unactive_count-1
                     product_index_item.save()
                     count = count + 1
-                    
+
             if done:
                 pro = Product.objects.filter(MaterialCode=MaterialCode).first()
                 pro.active_count = pro.active_count + count
                 pro.save()
                 if product_index_item.unactive_count == 0 and all([item.unactive_count == 0 for item in ProductIndexItem.objects.filter(product_index=product_index)]):
-                    messages.info(request, 'Pls Wait For Making API Call To ERP')
+                    messages.info(
+                        request, 'Pls Wait For Making API Call To ERP')
                     product_index.status = 'complete'
                     product_index.is_complete = True
-                    if make_api_call(product_index,request):
+                    if make_api_call(product_index, request):
                         try:
                             product_index.complete_activated = timezone.now()
                             product_index.save()
                         except Exception as e:
-                            messages.error(request, f'ERROR API_V:LN:337 : {e}')
-                        messages.success(request, 'All Activation successful for the selected product.')
+                            messages.error(
+                                request, f'ERROR API_V:LN:337 : {e}')
+                        messages.success(
+                            request, 'All Activation successful for the selected product.')
                     else:
-                        messages.error(request, 'CRITICAL ERROR !!! API CALL FAILED CONTACT ADMIN IMMEDIATELY.')
-                elif product_index_item.unactive_count == 0 :
+                        messages.error(
+                            request, 'CRITICAL ERROR !!! API CALL FAILED CONTACT ADMIN IMMEDIATELY.')
+                elif product_index_item.unactive_count == 0:
                     return redirect('activate_via_batch', batch_id=batch_id)
                 messages.success(request, 'ACTIVATED')
         else:
@@ -365,29 +374,27 @@ def activate_via_btach_single_product(request, batch_id, MaterialCode):
                 request, 'No product found in progress for the specified batch and product.')
     context = {
         'product_index': product_index,
-        'product_index_item':product_index_item,
+        'product_index_item': product_index_item,
         'product': product,
-        'batch_id':batch_id,
-        'in_progress_count':in_progress_count,
-        'active_count':active_count,
-        'total_count':product_index_item.actual_quantity,
-        
+        'batch_id': batch_id,
+        'in_progress_count': in_progress_count,
+        'active_count': active_count,
+        'total_count': product_index_item.actual_quantity,
+
     }
 
     return render(request, 'activate_via_btach_single_product.html', context)
-
-
-
 
 
 def make_api_call(product_index, request):
     payload_list = []
     for item in product_index.productindexitem_set.all():
         all_master_uuids = []
-        matching_masters = Master.objects.filter(batch_id=product_index.batch_id, product=item.product)
+        matching_masters = Master.objects.filter(
+            batch_id=product_index.batch_id, product=item.product)
         for master in matching_masters:
             all_master_uuids.append(master.uuid)
-        
+
         payload = {
             "TrnNo": product_index.grn_no,
             "GrnUid": str(product_index.batch_id),
@@ -403,8 +410,7 @@ def make_api_call(product_index, request):
         return True
     else:
         return False
-        
-    
+
 
 def input_ids_page(request, product_id):
     try:
@@ -421,7 +427,7 @@ def batch_detail(request, batch_id):
     masters = Master.objects.filter(batch_id=batch_id)
     product_index = ProductIndex.objects.filter(batch_id=batch_id).first()
     print(product_index.grn_no)
-    qr_code_data = single_qr(batch_id , product_index.grn_no)
+    qr_code_data = single_qr(batch_id, product_index.grn_no)
     encoded_qr_code_data = base64.b64encode(qr_code_data).decode()
 
     context = {
@@ -464,8 +470,8 @@ def activate_multiple_masters(request, product_id):
                      for uuid in new_uuids_str.split(',') if uuid.strip()]
         if not all([UUID(new_uuid, version=4) for new_uuid in new_uuids]):
             return HttpResponse("Invalid UUIDs provided.")
-        in_progress_masters = Master.objects.filter(product__product_id=product_id, status='in_progress')
-        
+        in_progress_masters = Master.objects.filter(
+            product__product_id=product_id, status='in_progress')
 
         for master, new_uuid in zip(in_progress_masters, new_uuids):
             activate_product(request, master.uuid, new_uuid)
@@ -528,6 +534,7 @@ def create_product_indexes(request):
 
     return Response({'message': 'Product indexes created successfully'})
 
+
 def upload_reports(request):
     master = None
     if request.method == 'POST':
@@ -535,7 +542,8 @@ def upload_reports(request):
         try:
             master = Master.objects.get(uuid=master_uuid)
         except Master.DoesNotExist:
-            messages.error(request, 'Master with provided UUID does not exist.')
+            messages.error(
+                request, 'Master with provided UUID does not exist.')
             return redirect('upload_reports')
 
         form = ReportUploadForm(request.POST, request.FILES)
@@ -543,18 +551,20 @@ def upload_reports(request):
             for field_name, file_item in request.FILES.items():
                 if hasattr(master, field_name):
                     setattr(master, field_name, file_item)
-            
+
             # Check if any report needs to be removed
             for field_name in ['balancing_report', 'drawing', 'inspection_report']:
                 if request.POST.get(f'remove_{field_name}', False):
                     print("FOUND REPOST IN REQUEST")
                     setattr(master, field_name, None)
-                    messages.success(request, f'{field_name.replace("_", " ").capitalize()} removed successfully.')
-            
+                    messages.success(
+                        request, f'{field_name.replace("_", " ").capitalize()} removed successfully.')
+
             master.save()
             messages.success(request, 'Reports uploaded successfully.')
         else:
-            messages.error(request, 'Form is not valid. Please check your inputs.')
+            messages.error(
+                request, 'Form is not valid. Please check your inputs.')
     else:
         form = ReportUploadForm()
 

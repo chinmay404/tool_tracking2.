@@ -1,0 +1,1836 @@
+[
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040067",
+        "GrnDate": "04/04/2024",
+        "PartyName": "Dinesh Enterprises",
+        "PartyChallanNo": "DE-CA-7",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2425-000023",
+        "PoDate": "02/04/2024",
+        "SubGlAcNo": 1011201056,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011300336,
+                "MaterialName": "CONCRETE DRILL Dia.6mm",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011300331,
+                "MaterialName": "CONCRETE DRILL - Dia.8 MM",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040040",
+        "GrnDate": "03/04/2024",
+        "PartyName": "SMITH INDUSTRIAL AGENCIES INC",
+        "PartyChallanNo": "024922",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010849",
+        "PoDate": "22/03/2024",
+        "SubGlAcNo": 1011202639,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011304255,
+                "MaterialName": "HSS TS DRILL 8X400",
+                "MaterialUom": "NOS",
+                "ChallanQty": 4,
+                "ReceivedQty": 4
+            },
+            {
+                "MaterialCode": 1011300484,
+                "MaterialName": "HSS TS DRILL E/L 12X250",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            },
+            {
+                "MaterialCode": 1011304256,
+                "MaterialName": "HSS TS DRILL 8X450",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011324485,
+                "MaterialName": "HSS PS DRILL E/L 4 X 200 X 250",
+                "MaterialUom": "NOS",
+                "ChallanQty": 4,
+                "ReceivedQty": 4
+            },
+            {
+                "MaterialCode": 1011300375,
+                "MaterialName": "HSS PS DRILL 3.2",
+                "MaterialUom": "NOS",
+                "ChallanQty": 5,
+                "ReceivedQty": 5
+            },
+            {
+                "MaterialCode": 1011300560,
+                "MaterialName": "HSS TS DRILL 6",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040047",
+        "GrnDate": "03/04/2024",
+        "PartyName": "SMITH INDUSTRIAL AGENCIES INC",
+        "PartyChallanNo": "024907",
+        "PartyChallanDate": "20240401",
+        "GateInwardNo": null,
+        "PoNo": "2324-010775",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011202639,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011300814,
+                "MaterialName": "DRILL SLEEVE MT2-3",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040173",
+        "GrnDate": "05/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232786",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-011043",
+        "PoDate": "31/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324670,
+                "MaterialName": "CSTB-2.5",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            },
+            {
+                "MaterialCode": 1011324671,
+                "MaterialName": "CSTB-3S",
+                "MaterialUom": "NOS",
+                "ChallanQty": 5,
+                "ReceivedQty": 5
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040174",
+        "GrnDate": "05/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232778",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010925",
+        "PoDate": "26/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324670,
+                "MaterialName": "CSTB-2.5",
+                "MaterialUom": "NOS",
+                "ChallanQty": 30,
+                "ReceivedQty": 30
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040198",
+        "GrnDate": "06/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1233120",
+        "PartyChallanDate": "20240404",
+        "GateInwardNo": null,
+        "PoNo": "2324-010783",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324670,
+                "MaterialName": "CSTB-2.5",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            },
+            {
+                "MaterialCode": 1011324671,
+                "MaterialName": "CSTB-3S",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040077",
+        "GrnDate": "04/04/2024",
+        "PartyName": "EMKAY TAPS & CUTTING TOOLS LTD",
+        "PartyChallanNo": "GS24Y-00037",
+        "PartyChallanDate": "20240401",
+        "GateInwardNo": null,
+        "PoNo": "2324-010731",
+        "PoDate": "19/03/2024",
+        "SubGlAcNo": 1011203338,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011319884,
+                "MaterialName": "F D-374 HSS-E M12 X 1.5 6H  CIR TCH FUTURA F - 002655 ET",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011319844,
+                "MaterialName": "F D-376 HSS-E M12 X 1.75 6H  CIR T.C.H. FUTURA F - 002512 ET",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            },
+            {
+                "MaterialCode": 1011319901,
+                "MaterialName": "F IS-II HSS-E M8 X 1.25 6H  BOTTOMING 4 FL  FUTURA F - 028774 ET",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            },
+            {
+                "MaterialCode": 1011319888,
+                "MaterialName": "F D-371 HSS-E M10 X 1.5 6H  CIR TCH FUTURA F - 002648 ET",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011320085,
+                "MaterialName": "F D-371 HSS-E M8 X 1.25 6H CIR TIN (FORM E) F - 020321",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011319882,
+                "MaterialName": "F D-376 HSS-E M14 X 2 6H  CIR TCHFUTURA F - 028041 ET",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            },
+            {
+                "MaterialCode": 1011320311,
+                "MaterialName": "F IS-IV HSS-E M10 X 1 6H CIR FUTURA F - 028425",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040078",
+        "GrnDate": "04/04/2024",
+        "PartyName": "EMKAY TAPS & CUTTING TOOLS LTD",
+        "PartyChallanNo": "GS24Y-00038",
+        "PartyChallanDate": "20240401",
+        "GateInwardNo": null,
+        "PoNo": "2324-010779",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011203338,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011319844,
+                "MaterialName": "F D-376 HSS-E M12 X 1.75 6H  CIR T.C.H. FUTURA F - 002512 ET",
+                "MaterialUom": "NOS",
+                "ChallanQty": 9,
+                "ReceivedQty": 9
+            },
+            {
+                "MaterialCode": 1011319901,
+                "MaterialName": "F IS-II HSS-E M8 X 1.25 6H  BOTTOMING 4 FL  FUTURA F - 028774 ET",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            },
+            {
+                "MaterialCode": 1011319949,
+                "MaterialName": "TAP 1/8X27 NPTF TIN COATING OAL 152 MM",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040127",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500036",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010971",
+        "PoDate": "29/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011303176,
+                "MaterialName": "TAP M12X1.75  TY 821",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            },
+            {
+                "MaterialCode": 1011301132,
+                "MaterialName": "TAP M6X1 C TYPE TY821",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            },
+            {
+                "MaterialCode": 1011301086,
+                "MaterialName": "TAP M10X1.5 C TYPE TY 821",
+                "MaterialUom": "NOS",
+                "ChallanQty": 6,
+                "ReceivedQty": 6
+            },
+            {
+                "MaterialCode": 1011301138,
+                "MaterialName": "TAP M8X1.25 C TYPE TY821",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            },
+            {
+                "MaterialCode": 1011302434,
+                "MaterialName": "SPIRAL TAP M8X1.25 6H",
+                "MaterialUom": "NOS",
+                "ChallanQty": 12,
+                "ReceivedQty": 12
+            },
+            {
+                "MaterialCode": 1011301769,
+                "MaterialName": "TAP 1/4X18 NPTF",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            },
+            {
+                "MaterialCode": 1011301085,
+                "MaterialName": "TAP M10X1.5",
+                "MaterialUom": "NOS",
+                "ChallanQty": 6,
+                "ReceivedQty": 6
+            },
+            {
+                "MaterialCode": 1011301027,
+                "MaterialName": "SPIRAL TAP M6X1",
+                "MaterialUom": "NOS",
+                "ChallanQty": 12,
+                "ReceivedQty": 12
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040137",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500026",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-011049",
+        "PoDate": "31/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301089,
+                "MaterialName": "TAP M12X1.5",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            },
+            {
+                "MaterialCode": 1011301105,
+                "MaterialName": "TAP M16X2",
+                "MaterialUom": "NOS",
+                "ChallanQty": 5,
+                "ReceivedQty": 5
+            },
+            {
+                "MaterialCode": 1011321056,
+                "MaterialName": "SNMX INSERT SCREW M4 X 10 MILSCREWM4",
+                "MaterialUom": "NOS",
+                "ChallanQty": 40,
+                "ReceivedQty": 40
+            },
+            {
+                "MaterialCode": 1011321055,
+                "MaterialName": "ONMU INSERT SCREW M5 X 12 MILSCREWM4",
+                "MaterialUom": "NOS",
+                "ChallanQty": 40,
+                "ReceivedQty": 40
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040144",
+        "GrnDate": "05/04/2024",
+        "PartyName": "GLOBAL TOOLS PRIVATE LIMITED - 27AAKCG6117B1ZU",
+        "PartyChallanNo": "GTPL/24-25/00018",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2425-000033",
+        "PoDate": "02/04/2024",
+        "SubGlAcNo": 1011203802,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011323319,
+                "MaterialName": "SOLID CARBIDE NTC FINISHFORM TOOL DIA18.022 X 15 SL X DIA20.826 X 5.1 X 20°X DIA24 X 50 FLX 100 OAL X DIA20 SH",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011323313,
+                "MaterialName": "SOLID CARBIDE NTC ROUGHFORM TOOL DIA17.522 X 15SL X DIA20.326 X 5.1 X 20°X DIA23.5 X 50FL X 100 OAL X DIA20SH",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011323318,
+                "MaterialName": "SOLID CARBIDE TC FINISHFORM TOOL DIA18.425 X 35°X 65°X 30 FL X 80 OALX DIA20SH",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040155",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500062",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010719",
+        "PoDate": "19/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011302091,
+                "MaterialName": "TAP M10X1.5 FUTURA COATED",
+                "MaterialUom": "NOS",
+                "ChallanQty": 8,
+                "ReceivedQty": 8
+            },
+            {
+                "MaterialCode": 1011302096,
+                "MaterialName": "TAP 1/2X13 UNC FUTURA COATED",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            },
+            {
+                "MaterialCode": 1011302092,
+                "MaterialName": "TAP M12X1.75 FUTURA COATED",
+                "MaterialUom": "NOS",
+                "ChallanQty": 8,
+                "ReceivedQty": 8
+            },
+            {
+                "MaterialCode": 1011301637,
+                "MaterialName": "TAP M16X2 FUTURA COATED",
+                "MaterialUom": "NOS",
+                "ChallanQty": 6,
+                "ReceivedQty": 6
+            },
+            {
+                "MaterialCode": 1011303707,
+                "MaterialName": "TAP 1/4X18 NPTF T7528408 TIN COATED",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            },
+            {
+                "MaterialCode": 1011302089,
+                "MaterialName": "TAP M6X1 FUTURA COATED",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040158",
+        "GrnDate": "05/04/2024",
+        "PartyName": "J. S. ENGINEERING",
+        "PartyChallanNo": "JSE/24-25/1",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010535",
+        "PoDate": "13/03/2024",
+        "SubGlAcNo": 1011203374,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324650,
+                "MaterialName": "CORE DRILL DIA 35.4 X FL 150 X OL 390 - DRG. NO JSE/CAD/AD764",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040165",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500031",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010735",
+        "PoDate": "19/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301043,
+                "MaterialName": "TAP 1/4X18 NPT",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040166",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500025",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010842",
+        "PoDate": "21/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324046,
+                "MaterialName": "TAP M10X1.5 6H 80 OAL HSS-E TIALN COATED TY7317428",
+                "MaterialUom": "NOS",
+                "ChallanQty": 4,
+                "ReceivedQty": 4
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040130",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500024",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010769",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011302629,
+                "MaterialName": "INSERTS – CNMA120412 - 22000011",
+                "MaterialUom": "NOS",
+                "ChallanQty": 50,
+                "ReceivedQty": 50
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040176",
+        "GrnDate": "05/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232781",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010930",
+        "PoDate": "26/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011323934,
+                "MaterialName": "FBM080408L-G–C AH725 - 4818349",
+                "MaterialUom": "NOS",
+                "ChallanQty": 60,
+                "ReceivedQty": 60
+            },
+            {
+                "MaterialCode": 1011324667,
+                "MaterialName": "INSERT INNER FBM070404R-G-I AH725 - 4818345",
+                "MaterialUom": "NOS",
+                "ChallanQty": 60,
+                "ReceivedQty": 60
+            },
+            {
+                "MaterialCode": 1011304221,
+                "MaterialName": "ONMU 0705 ANPN-ML AH120",
+                "MaterialUom": "NOS",
+                "ChallanQty": 15,
+                "ReceivedQty": 15
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040180",
+        "GrnDate": "05/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232776",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010744",
+        "PoDate": "19/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011322351,
+                "MaterialName": "3QP-TPGW 090204 BX480",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040201",
+        "GrnDate": "06/04/2024",
+        "PartyName": "TECHNOMECH ENGINEERING PRIVATE LIMITED",
+        "PartyChallanNo": "10006",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010808",
+        "PoDate": "21/03/2024",
+        "SubGlAcNo": 1011203392,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011320296,
+                "MaterialName": "IDI 2628 INSERT",
+                "MaterialUom": "NOS",
+                "ChallanQty": 30,
+                "ReceivedQty": 30
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040129",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500037",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010632",
+        "PoDate": "15/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011302626,
+                "MaterialName": "TURNING INSERTS – TNMA160412 - 22000036",
+                "MaterialUom": "NOS",
+                "ChallanQty": 150,
+                "ReceivedQty": 150
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040132",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500022",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010848",
+        "PoDate": "22/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301135,
+                "MaterialName": "TAP M8X1.25",
+                "MaterialUom": "NOS",
+                "ChallanQty": 5,
+                "ReceivedQty": 5
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040161",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500039",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010802",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011302626,
+                "MaterialName": "TURNING INSERTS – TNMA160412 - 22000036",
+                "MaterialUom": "NOS",
+                "ChallanQty": 50,
+                "ReceivedQty": 50
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040164",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500038",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010703",
+        "PoDate": "17/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011302626,
+                "MaterialName": "TURNING INSERTS – TNMA160412 - 22000036",
+                "MaterialUom": "NOS",
+                "ChallanQty": 60,
+                "ReceivedQty": 60
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040167",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500032",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-011004",
+        "PoDate": "29/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011302626,
+                "MaterialName": "TURNING INSERTS – TNMA160412 - 22000036",
+                "MaterialUom": "NOS",
+                "ChallanQty": 90,
+                "ReceivedQty": 90
+            },
+            {
+                "MaterialCode": 1011303527,
+                "MaterialName": "TURNING INSERTS – SPMG 110408 - 32000009",
+                "MaterialUom": "NOS",
+                "ChallanQty": 140,
+                "ReceivedQty": 140
+            },
+            {
+                "MaterialCode": 1011302630,
+                "MaterialName": "INSERTS – CNMA120408 - 22000010",
+                "MaterialUom": "NOS",
+                "ChallanQty": 60,
+                "ReceivedQty": 60
+            },
+            {
+                "MaterialCode": 1011303526,
+                "MaterialName": "TURNING INSERTS – TCMT 16T308 - 22000156",
+                "MaterialUom": "NOS",
+                "ChallanQty": 70,
+                "ReceivedQty": 70
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040170",
+        "GrnDate": "05/04/2024",
+        "PartyName": "HARIOM ENTERPRISES KOLHAPUR SUPPLIER",
+        "PartyChallanNo": "394",
+        "PartyChallanDate": "20240404",
+        "GateInwardNo": null,
+        "PoNo": "2425-000119",
+        "PoDate": "04/04/2024",
+        "SubGlAcNo": 1011200872,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011321498,
+                "MaterialName": "NNMU 200608 ZEN HK MC5020",
+                "MaterialUom": "NOS",
+                "ChallanQty": 100,
+                "ReceivedQty": 100
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040189",
+        "GrnDate": "06/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500027",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-011065",
+        "PoDate": "31/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301135,
+                "MaterialName": "TAP M8X1.25",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            },
+            {
+                "MaterialCode": 1011301074,
+                "MaterialName": "TAP 7/8X14 UNF",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040196",
+        "GrnDate": "06/04/2024",
+        "PartyName": "ISCAR INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "237788",
+        "PartyChallanDate": "20240404",
+        "GateInwardNo": null,
+        "PoNo": "2425-000078",
+        "PoDate": "03/04/2024",
+        "SubGlAcNo": 1011203614,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011322792,
+                "MaterialName": "ONHU 0505 AN-R-W/C 808",
+                "MaterialUom": "NOS",
+                "ChallanQty": 20,
+                "ReceivedQty": 20
+            },
+            {
+                "MaterialCode": 1011304612,
+                "MaterialName": "S890 SNMU 1305 PNTR IC 5100",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040029",
+        "GrnDate": "03/04/2024",
+        "PartyName": "AKSHATA TOOLS",
+        "PartyChallanNo": "02",
+        "PartyChallanDate": "20240403",
+        "GateInwardNo": null,
+        "PoNo": "2324-010984",
+        "PoDate": "29/03/2024",
+        "SubGlAcNo": 1011203393,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324781,
+                "MaterialName": "HSS TS REAMER DIA 12.5± 0.20 X 20 MM X FL 75 X OL 175 MT 2",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011324780,
+                "MaterialName": "HSS TS REAMER DIA 10 ± 0.20 X 20 MM X FL 75 X OL 175 MT 2",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011324782,
+                "MaterialName": "HSS TS REAMER DIA 14.2± 0.20 X 20 MM X FL 75 X OL 175 MT 2",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040197",
+        "GrnDate": "06/04/2024",
+        "PartyName": "ISCAR INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "237789",
+        "PartyChallanDate": "20240404",
+        "GateInwardNo": null,
+        "PoNo": "2425-000048",
+        "PoDate": "03/04/2024",
+        "SubGlAcNo": 1011203614,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011322345,
+                "MaterialName": "SPARE SR 11800745",
+                "MaterialUom": "NOS",
+                "ChallanQty": 20,
+                "ReceivedQty": 20
+            },
+            {
+                "MaterialCode": 1011322344,
+                "MaterialName": "SPARE SR 10505427",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040136",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500028",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010739",
+        "PoDate": "19/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011303527,
+                "MaterialName": "TURNING INSERTS – SPMG 110408 - 32000009",
+                "MaterialUom": "NOS",
+                "ChallanQty": 150,
+                "ReceivedQty": 150
+            },
+            {
+                "MaterialCode": 1011303052,
+                "MaterialName": "TURNING INSERTS – SPMG 090408 - 32000008",
+                "MaterialUom": "NOS",
+                "ChallanQty": 20,
+                "ReceivedQty": 20
+            },
+            {
+                "MaterialCode": 1011323598,
+                "MaterialName": "ONMU 080612 YG 012 12000773",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040151",
+        "GrnDate": "05/04/2024",
+        "PartyName": "VALENCY INDUSTRIES",
+        "PartyChallanNo": "VI/24-25/2",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-009090",
+        "PoDate": "30/01/2024",
+        "SubGlAcNo": 1011203333,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011300175,
+                "MaterialName": "DRILL CHUCK SOCKET QCDA 4/MT 3",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040169",
+        "GrnDate": "05/04/2024",
+        "PartyName": "HARIOM ENTERPRISES KOLHAPUR SUPPLIER",
+        "PartyChallanNo": "393",
+        "PartyChallanDate": "20240404",
+        "GateInwardNo": null,
+        "PoNo": "2425-000119",
+        "PoDate": "04/04/2024",
+        "SubGlAcNo": 1011200872,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011304612,
+                "MaterialName": "S890 SNMU 1305 PNTR IC 5100",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040209",
+        "GrnDate": "06/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500030",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-005527",
+        "PoDate": "01/10/2023",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011303527,
+                "MaterialName": "TURNING INSERTS – SPMG 110408 - 32000009",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040123",
+        "GrnDate": "05/04/2024",
+        "PartyName": "SIDDHI PRECISION TOOLING PVT LTD",
+        "PartyChallanNo": "GST/12/23-24",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010847",
+        "PoDate": "21/03/2024",
+        "SubGlAcNo": 1011203337,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324706,
+                "MaterialName": "ADAPTOR BT 50 ER 25 400",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040124",
+        "GrnDate": "05/04/2024",
+        "PartyName": "FALCON TOOLINGS",
+        "PartyChallanNo": "2410008",
+        "PartyChallanDate": "20240401",
+        "GateInwardNo": null,
+        "PoNo": "2324-010718",
+        "PoDate": "19/03/2024",
+        "SubGlAcNo": 1011203640,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011323217,
+                "MaterialName": "ADAPTOR BT 50 SLA 32090",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            },
+            {
+                "MaterialCode": 1011322290,
+                "MaterialName": "ADAPTOR BT 50 SLA 25090",
+                "MaterialUom": "NOS",
+                "ChallanQty": 4,
+                "ReceivedQty": 4
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040126",
+        "GrnDate": "05/04/2024",
+        "PartyName": "FALCON TOOLINGS",
+        "PartyChallanNo": "2410009",
+        "PartyChallanDate": "20240401",
+        "GateInwardNo": null,
+        "PoNo": "2324-010778",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011203640,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011320559,
+                "MaterialName": "ADAPTOR BT 50 ER 32200 AD/B",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040131",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500035",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": "",
+        "PoNo": "2324-011005",
+        "PoDate": "29/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011303052,
+                "MaterialName": "TURNING INSERTS – SPMG 090408 - 32000008",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040135",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500020",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010802",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011302628,
+                "MaterialName": "TURNING INSERTS – TNMA160408 - 22000035",
+                "MaterialUom": "NOS",
+                "ChallanQty": 50,
+                "ReceivedQty": 50
+            },
+            {
+                "MaterialCode": 1011302627,
+                "MaterialName": "TURNING INSERTS – WNMA080412 - 22000054",
+                "MaterialUom": "NOS",
+                "ChallanQty": 30,
+                "ReceivedQty": 30
+            },
+            {
+                "MaterialCode": 1011302630,
+                "MaterialName": "INSERTS – CNMA120408 - 22000010",
+                "MaterialUom": "NOS",
+                "ChallanQty": 50,
+                "ReceivedQty": 50
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040162",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500040",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010867",
+        "PoDate": "22/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011302628,
+                "MaterialName": "TURNING INSERTS – TNMA160408 - 22000035",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040168",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500033",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010997",
+        "PoDate": "29/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011302305,
+                "MaterialName": "G945306002 CARBIDE 4FL 6x6x25x75",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040179",
+        "GrnDate": "05/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232787",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-011067",
+        "PoDate": "31/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011320304,
+                "MaterialName": "SRM5X0.8IP20X+ACROLYTE",
+                "MaterialUom": "NOS",
+                "ChallanQty": 40,
+                "ReceivedQty": 40
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040210",
+        "GrnDate": "06/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500021",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010095",
+        "PoDate": "29/02/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011303052,
+                "MaterialName": "TURNING INSERTS – SPMG 090408 - 32000008",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040026",
+        "GrnDate": "03/04/2024",
+        "PartyName": "Dinesh Enterprises",
+        "PartyChallanNo": "DE-CA-6",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010949",
+        "PoDate": "28/03/2024",
+        "SubGlAcNo": 1011201056,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011303432,
+                "MaterialName": "HAMMER DRILL 12 X 210",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040039",
+        "GrnDate": "03/04/2024",
+        "PartyName": "SMITH INDUSTRIAL AGENCIES INC",
+        "PartyChallanNo": "024921",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010866",
+        "PoDate": "22/03/2024",
+        "SubGlAcNo": 1011202639,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011300747,
+                "MaterialName": "HSS TS REAMER 1/2",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040143",
+        "GrnDate": "05/04/2024",
+        "PartyName": "GLOBAL TOOLS PRIVATE LIMITED - 27AAKCG6117B1ZU",
+        "PartyChallanNo": "GTPL/24-25/00017",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010918",
+        "PoDate": "26/03/2024",
+        "SubGlAcNo": 1011203802,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011321050,
+                "MaterialName": "PS SC STEP DRILL DIA 15 X DIA20.5 X DIA23 X 100 X 150 X DIA25 (GT-S109-9187)",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040146",
+        "GrnDate": "05/04/2024",
+        "PartyName": "M/S SUPERB TOOLS",
+        "PartyChallanNo": "24-25/012",
+        "PartyChallanDate": "20240403",
+        "GateInwardNo": null,
+        "PoNo": "2324-010333",
+        "PoDate": "06/03/2024",
+        "SubGlAcNo": 1011203330,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011322573,
+                "MaterialName": "HSS TS REAMER DIA16.3 X 250 X MT-2 (M42)",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            },
+            {
+                "MaterialCode": 1011320521,
+                "MaterialName": "HSS TS DRILL DIA 19 X 350 X 450 Oal",
+                "MaterialUom": "NOS",
+                "ChallanQty": 4,
+                "ReceivedQty": 4
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040199",
+        "GrnDate": "06/04/2024",
+        "PartyName": "VALENCY INDUSTRIES",
+        "PartyChallanNo": "VI/24-25/9",
+        "PartyChallanDate": "20240403",
+        "GateInwardNo": null,
+        "PoNo": "2324-009954",
+        "PoDate": "25/02/2024",
+        "SubGlAcNo": 1011203333,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301643,
+                "MaterialName": "IMI Q.C.TAPPING Chucks QCF 1 TR 20X2",
+                "MaterialUom": "NOS",
+                "ChallanQty": 4,
+                "ReceivedQty": 4
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040152",
+        "GrnDate": "05/04/2024",
+        "PartyName": "VALENCY INDUSTRIES",
+        "PartyChallanNo": "VI/24-25/4",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010921",
+        "PoDate": "26/03/2024",
+        "SubGlAcNo": 1011203333,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301806,
+                "MaterialName": "SPANNER ER 32",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040153",
+        "GrnDate": "05/04/2024",
+        "PartyName": "VALENCY INDUSTRIES",
+        "PartyChallanNo": "VI/24-25/3",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010887",
+        "PoDate": "23/03/2024",
+        "SubGlAcNo": 1011203333,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301806,
+                "MaterialName": "SPANNER ER 32",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040157",
+        "GrnDate": "05/04/2024",
+        "PartyName": "KENNAMETAL INDIA LIMITED",
+        "PartyChallanNo": "BN2401000595",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-011042",
+        "PoDate": "31/03/2024",
+        "SubGlAcNo": 1011203601,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011323091,
+                "MaterialName": "SPARE SCREW VSM17H (QSK 60)",
+                "MaterialUom": "NOS",
+                "ChallanQty": 30,
+                "ReceivedQty": 30
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040142",
+        "GrnDate": "05/04/2024",
+        "PartyName": "GLOBAL TOOLS PRIVATE LIMITED - 27AAKCG6117B1ZU",
+        "PartyChallanNo": "gtpl/24-25/00021",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010851",
+        "PoDate": "22/03/2024",
+        "SubGlAcNo": 1011203802,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011321139,
+                "MaterialName": "PS SC STEP DRILL DIA 13.2 X SL 34 X DIA 18.5 X FL 65 X OAL 110 X SH 20 TCH RAH ILC",
+                "MaterialUom": "NOS",
+                "ChallanQty": 5,
+                "ReceivedQty": 5
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040145",
+        "GrnDate": "05/04/2024",
+        "PartyName": "M/S SUPERB TOOLS",
+        "PartyChallanNo": "24-25/014",
+        "PartyChallanDate": "20240403",
+        "GateInwardNo": null,
+        "PoNo": "2324-010715",
+        "PoDate": "17/03/2024",
+        "SubGlAcNo": 1011203330,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011319868,
+                "MaterialName": "SPOT FACE CUTTER 22.5X24.5",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040159",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500061",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010781",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301803,
+                "MaterialName": "TAP 5/8X11 UNC FUTURA COATED",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040177",
+        "GrnDate": "05/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232782",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010945",
+        "PoDate": "27/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011323409,
+                "MaterialName": "TCMT 110308-CM T5115",
+                "MaterialUom": "NOS",
+                "ChallanQty": 100,
+                "ReceivedQty": 100
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040178",
+        "GrnDate": "05/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232785",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-011001",
+        "PoDate": "29/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011323409,
+                "MaterialName": "TCMT 110308-CM T5115",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            },
+            {
+                "MaterialCode": 1011323720,
+                "MaterialName": "CNMG 120412 CM T515",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1490,
+                "ReceivedQty": 1490
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040181",
+        "GrnDate": "05/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232775",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010696",
+        "PoDate": "17/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011320309,
+                "MaterialName": "FMB 090404R-G-P AH725",
+                "MaterialUom": "NOS",
+                "ChallanQty": 5,
+                "ReceivedQty": 5
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040202",
+        "GrnDate": "06/04/2024",
+        "PartyName": "RENUKA TECH TOOLS",
+        "PartyChallanNo": "24-25/005",
+        "PartyChallanDate": "20240403",
+        "GateInwardNo": null,
+        "PoNo": "2324-010903",
+        "PoDate": "24/03/2024",
+        "SubGlAcNo": 1011203342,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324757,
+                "MaterialName": "SPL FINE BORING BAR DIA 28 X 50 MM",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040204",
+        "GrnDate": "06/04/2024",
+        "PartyName": "GLOBAL TOOLS PRIVATE LIMITED - 27AAKCG6117B1ZU",
+        "PartyChallanNo": "GTPL/24-25/00024",
+        "PartyChallanDate": "20240403",
+        "GateInwardNo": null,
+        "PoNo": "2324-010851",
+        "PoDate": "22/03/2024",
+        "SubGlAcNo": 1011203802,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011321139,
+                "MaterialName": "PS SC STEP DRILL DIA 13.2 X SL 34 X DIA 18.5 X FL 65 X OAL 110 X SH 20 TCH RAH ILC",
+                "MaterialUom": "NOS",
+                "ChallanQty": 1,
+                "ReceivedQty": 1
+            },
+            {
+                "MaterialCode": 1011324642,
+                "MaterialName": "SC DRILL CUM REAMER DIA 13.8 X DIA 14.2 X FL 65 X OAL 132.51 X SD",
+                "MaterialUom": "NOS",
+                "ChallanQty": 4,
+                "ReceivedQty": 4
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040171",
+        "GrnDate": "05/04/2024",
+        "PartyName": "SIDDHI PRECISION TOOLING PVT LTD",
+        "PartyChallanNo": "GST/13/23-24",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010820",
+        "PoDate": "21/03/2024",
+        "SubGlAcNo": 1011203337,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011321897,
+                "MaterialName": "COLLET NUT ER 16",
+                "MaterialUom": "NOS",
+                "ChallanQty": 5,
+                "ReceivedQty": 5
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040125",
+        "GrnDate": "05/04/2024",
+        "PartyName": "FALCON TOOLINGS",
+        "PartyChallanNo": "2410007",
+        "PartyChallanDate": "20240401",
+        "GateInwardNo": null,
+        "PoNo": "2324-010646",
+        "PoDate": "16/03/2024",
+        "SubGlAcNo": 1011203640,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324679,
+                "MaterialName": "ADAPTOR BT40 FMH22200",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040133",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500023",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010781",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301070,
+                "MaterialName": "TAP 5/8X18 UNF",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            },
+            {
+                "MaterialCode": 1011324745,
+                "MaterialName": "SPARE TP205013 EDP NO-18000007 ONMU 08 YG",
+                "MaterialUom": "NOS",
+                "ChallanQty": 20,
+                "ReceivedQty": 20
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040134",
+        "GrnDate": "05/04/2024",
+        "PartyName": "SIDDHI PRECISION TOOLING PVT LTD",
+        "PartyChallanNo": "GST/06/24-25",
+        "PartyChallanDate": "20240401",
+        "GateInwardNo": null,
+        "PoNo": "2324-010893",
+        "PoDate": "24/03/2024",
+        "SubGlAcNo": 1011203337,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324751,
+                "MaterialName": "BABY CHUCK ER 25 X GPL 300 MM",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040207",
+        "GrnDate": "06/04/2024",
+        "PartyName": "NANDINI ENTERPRISES",
+        "PartyChallanNo": "NEO11/2024-25",
+        "PartyChallanDate": "20240403",
+        "GateInwardNo": null,
+        "PoNo": "2324-010821",
+        "PoDate": "21/03/2024",
+        "SubGlAcNo": 1011203339,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011301213,
+                "MaterialName": "COLLET ER 25 12 MM",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040160",
+        "GrnDate": "05/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500043",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-011051",
+        "PoDate": "31/03/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011320712,
+                "MaterialName": "ONMU 080612 YG 5020 12000542",
+                "MaterialUom": "NOS",
+                "ChallanQty": 50,
+                "ReceivedQty": 50
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040172",
+        "GrnDate": "05/04/2024",
+        "PartyName": "GLOBAL TOOLS PRIVATE LIMITED - 27AAKCG6117B1ZU",
+        "PartyChallanNo": "GTPL/24-25/0009",
+        "PartyChallanDate": "20240401",
+        "GateInwardNo": null,
+        "PoNo": "2324-010296",
+        "PoDate": "05/03/2024",
+        "SubGlAcNo": 1011203802,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011320563,
+                "MaterialName": "BC SPOT FACE CUTTER LH DIA 41.5 X 45° X DIA 92 X OAL72.1",
+                "MaterialUom": "NOS",
+                "ChallanQty": 3,
+                "ReceivedQty": 3
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040175",
+        "GrnDate": "05/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232788",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-011021",
+        "PoDate": "30/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011304221,
+                "MaterialName": "ONMU 0705 ANPN-ML AH120",
+                "MaterialUom": "NOS",
+                "ChallanQty": 40,
+                "ReceivedQty": 40
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040200",
+        "GrnDate": "06/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1233273",
+        "PartyChallanDate": "20240404",
+        "GateInwardNo": null,
+        "PoNo": "2324-010637",
+        "PoDate": "16/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324668,
+                "MaterialName": "INSERT OUTER FBH090404R-G-P AH725",
+                "MaterialUom": "NOS",
+                "ChallanQty": 10,
+                "ReceivedQty": 10
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040208",
+        "GrnDate": "06/04/2024",
+        "PartyName": "TUNGALOY INDIA PRIVATE LIMITED",
+        "PartyChallanNo": "1232774",
+        "PartyChallanDate": "20240402",
+        "GateInwardNo": null,
+        "PoNo": "2324-010930",
+        "PoDate": "26/03/2024",
+        "SubGlAcNo": 1011203362,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324668,
+                "MaterialName": "INSERT OUTER FBH090404R-G-P AH725",
+                "MaterialUom": "NOS",
+                "ChallanQty": 20,
+                "ReceivedQty": 20
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040038",
+        "GrnDate": "03/04/2024",
+        "PartyName": "SMITH INDUSTRIAL AGENCIES INC",
+        "PartyChallanNo": "024903",
+        "PartyChallanDate": "20240401",
+        "GateInwardNo": null,
+        "PoNo": "2324-010766",
+        "PoDate": "20/03/2024",
+        "SubGlAcNo": 1011202639,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011324121,
+                "MaterialName": "HSS TS DRILL 9 X 250 MM",
+                "MaterialUom": "NOS",
+                "ChallanQty": 2,
+                "ReceivedQty": 2
+            }
+        ]
+    },
+    {
+        "CompanyShortName": "HTECH",
+        "GrnNo": "102242540411040206",
+        "GrnDate": "06/04/2024",
+        "PartyName": "MLA SALES CORPORATION",
+        "PartyChallanNo": "GB2B124500158",
+        "PartyChallanDate": "20240403",
+        "GateInwardNo": null,
+        "PoNo": "2425-000052",
+        "PoDate": "03/04/2024",
+        "SubGlAcNo": 1011200663,
+        "ItemSummary": [
+            {
+                "MaterialCode": 1011321055,
+                "MaterialName": "ONMU INSERT SCREW M5 X 12 MILSCREWM4",
+                "MaterialUom": "NOS",
+                "ChallanQty": 30,
+                "ReceivedQty": 30
+            }
+        ]
+    }
+]

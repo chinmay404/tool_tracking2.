@@ -24,7 +24,7 @@ from django.http import HttpResponseRedirect
 import datetime
 import qrcode
 import re
-
+from urllib.parse import unquote
 
 @login_required(login_url='managment/login/')
 @allowed_users(allowed_roles=['admins', 'outlet_user',])
@@ -95,10 +95,10 @@ def is_valid_short_uuid(id_str):
     else:
         return False
 
-
 @login_required(login_url='managment/login/')
 def claim_empty_box(request, product_id):
-    product = get_object_or_404(Product, product_id=product_id)
+    decoded_product_id = unquote(product_id)  # Decode the product_id using unquote
+    product = get_object_or_404(Product, product_id=decoded_product_id)
     order_no = request.POST.get('order_no')
     MaterialCode = request.POST.get('MaterialCode')
 
@@ -109,11 +109,9 @@ def claim_empty_box(request, product_id):
 
             # Check if the provided UUID is valid
             if not is_valid_short_uuid(uuid_input):
-                messages.error(
-                    request, f'Provided Box ID is Invalid : {uuid_input}')
+                messages.error(request, f'Provided Box ID is Invalid : {uuid_input}')
             elif Master.objects.filter(uuid=uuid_input).exists():
-                messages.error(
-                    request, f'Error: A master with UUID {uuid_input} already exists.')
+                messages.error(request, f'Error: A master with UUID {uuid_input} already exists.')
             else:
                 try:
                     new_master = Master.objects.create(
@@ -137,7 +135,6 @@ def claim_empty_box(request, product_id):
         return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
 
     return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
-
 
 @login_required(login_url='managment/login/')
 @allowed_users(allowed_roles=['admins', 'outlet_user',])

@@ -384,3 +384,24 @@ def manage_users_unit(request):
     unit_users = CustomUser.objects.filter(unit=request.user.unit)
     context = {'users': unit_users}
     return render(request, 'manage_users.html', context)
+
+
+@allowed_users(allowed_roles=['admins', 'managment_user'])
+@login_required(login_url='managment/login/')
+def undo_view(request):
+    if request.method == 'POST':
+        old_uuid = request.POST.get('old_uuid')
+        new_uuid = request.POST.get('new_uuid')
+        try:
+            master_record = Master.objects.get(uuid=old_uuid)
+            master_record.uuid = new_uuid
+            master_record.save()
+            messages.success(request, "UUID successfully updated.")
+            return redirect('undo_view')
+        except Master.DoesNotExist:
+            messages.error(
+                request, "Old UUID not found. Please check and try again.")
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
+
+    return render(request, 'undo_uuid.html')

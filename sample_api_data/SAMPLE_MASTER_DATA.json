@@ -1,0 +1,27 @@
+{
+    "Inlet": {
+        "INLET - None": {
+            "po_no": "2425-001256",
+            "Insert": true,
+            "status": "unverified",
+            "batch_id": "7e27f7a6-8d39-4d59-8f01-25b88ec536e1",
+            "product_id": "HNCF 100610 KCK 15",
+            "arrive_date": "2024-07-17 08:45:06",
+            "received_by": "admin2",
+            "part_bill_no": null,
+            "supplier_gstn": null,
+            "supplier_name": "KENNAMETAL INDIA LIMITED",
+            "gate_inward_No": null,
+            "party_challan_no": "BN2401050195",
+            "quantity_per_box": 5,
+            "quantity_received": 40,
+            "quantity_requested": 198
+        }
+    },
+    "activation": {
+        "activator_ip": "",
+        "activator_name": "admin2",
+        "activation_date": "2024-07-17 08:54:27",
+        "status_changedstatus_changed_to_to": "active"
+    }
+}

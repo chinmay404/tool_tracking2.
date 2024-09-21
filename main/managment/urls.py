@@ -2,7 +2,7 @@
 from django.urls import path,include
 from . import views
 from . import veichal_update
-from AI import ai
+# from AI import ai
 
 
 
@@ -24,7 +24,9 @@ urlpatterns = [
     path('sale_orders/', views.sale_orders, name='sale_orders'),
     path('vehicle_list/', veichal_update.vehicle_list, name='vehicle_list'),
     path('chat/', views.chat, name='chat'),
+    # path('chat/', views.vehicle_detail, name='chat'),
     path('vehicles/<str:vehicle_number>/', veichal_update.vehicle_detail, name='vehicle_detail'),
     path('live_location/<str:vehicle_number>/', veichal_update.live_location, name='live_location'),
+    path('undo/', views.undo_view, name='undo_view'),
     
 ]
