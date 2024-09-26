@@ -163,7 +163,11 @@
             {{ sale_order_product.product.name }}
           </a>
         </td>
+        {% if sale_order_product.material_UOM != "NOS" %}
+        <td>{{ sale_order_product.total_weight }} {{sale_order_product.product.material_UOM}}</td>
+        {% else %}
         <td>{{ sale_order_product.quantity }}</td>
+        {% endif %}
         <td class="{% if sale_order_product.status == 'complete' %}table-success{% else %}table-danger{% endif %}">
           {{ sale_order_product.status }}
         </td>

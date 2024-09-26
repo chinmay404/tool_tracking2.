@@ -26,10 +26,12 @@ import qrcode
 import re
 from urllib.parse import unquote
 
+
 @login_required(login_url='managment/login/')
 @allowed_users(allowed_roles=['admins', 'outlet_user',])
 def outlet_home(request):
-    sale_order_groups = SaleOrderGroup.objects.filter(status='created').order_by('-group_id')
+    sale_order_groups = SaleOrderGroup.objects.filter(
+        status='created').order_by('-group_id')
     return render(request, 'outlet_home.html', {'sale_order_groups': sale_order_groups})
 
 
@@ -95,9 +97,11 @@ def is_valid_short_uuid(id_str):
     else:
         return False
 
+
 @login_required(login_url='managment/login/')
 def claim_empty_box(request, product_id):
-    decoded_product_id = unquote(product_id)  # Decode the product_id using unquote
+    # Decode the product_id using unquote
+    decoded_product_id = unquote(product_id)
     product = get_object_or_404(Product, product_id=decoded_product_id)
     order_no = request.POST.get('order_no')
     MaterialCode = request.POST.get('MaterialCode')
@@ -109,9 +113,11 @@ def claim_empty_box(request, product_id):
 
             # Check if the provided UUID is valid
             if not is_valid_short_uuid(uuid_input):
-                messages.error(request, f'Provided Box ID is Invalid : {uuid_input}')
+                messages.error(
+                    request, f'Provided Box ID is Invalid : {uuid_input}')
             elif Master.objects.filter(uuid=uuid_input).exists():
-                messages.error(request, f'Error: A master with UUID {uuid_input} already exists.')
+                messages.error(
+                    request, f'Error: A master with UUID {uuid_input} already exists.')
             else:
                 try:
                     new_master = Master.objects.create(
@@ -136,12 +142,14 @@ def claim_empty_box(request, product_id):
 
     return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
 
+
 @login_required(login_url='managment/login/')
 @allowed_users(allowed_roles=['admins', 'outlet_user',])
 def add_uuid(request, order_no, MaterialCode):
     if request.method == 'POST':
         new_uuid = request.POST.get('new_uuid')
-        print(f"NEW UUID : {new_uuid}")
+        entered_weight = request.POST.get('entered_weight', 0.0)
+        print(f"NEW UUID : {new_uuid} . ENTERD WEIGHT : {entered_weight}")
         sale_order = get_object_or_404(SaleOrder, order_no=order_no)
         sale_order_product = get_object_or_404(
             SaleOrderProduct, product__MaterialCode=MaterialCode, sale_order=sale_order)
@@ -150,28 +158,100 @@ def add_uuid(request, order_no, MaterialCode):
         print('SALE ORDERPRODUCT ID : {sale_order_product_id}')
         print(f"SALE ORDER PRODUCT : {sale_order_product}")
         print(f"SOP QUANTITY : {sale_order_product.quantity}")
-
-        if sale_order_product.remaining_quantity == 0 and sale_order_product.product.is_insert:
-            print("IN HOLDING UUIDS")
-            add_holding_uuid(request, order_no, sale_order_product_id,
-                             new_uuid, sale_order_product, sale_order)
-            return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
-        else:
-            if sale_order_product.product.is_insert and sale_order_product.remaining_quantity > 0:
-                add_uuid_is_insert(
-                    request, order_no, sale_order_product_id, new_uuid, sale_order_product, sale_order)
+        if sale_order_product.product.material_UOM == "NOS":
+            if sale_order_product.remaining_quantity == 0 and sale_order_product.product.is_insert:
+                print("IN HOLDING UUIDS")
+                add_holding_uuid(request, order_no, sale_order_product_id,
+                                 new_uuid, sale_order_product, sale_order)
                 return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
             else:
-                try:
-                    add_uuid_not_insert(
-                        request, order_no, sale_order_product_id, sale_order_product, new_uuid)
+                if sale_order_product.product.is_insert and sale_order_product.remaining_quantity > 0:
+                    add_uuid_is_insert(
+                        request, order_no, sale_order_product_id, new_uuid, sale_order_product, sale_order)
                     return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
+                else:
+                    try:
+                        add_uuid_not_insert(
+                            request, order_no, sale_order_product_id, sale_order_product, new_uuid)
+                        return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
 
-                except Exception as e:
-                    messages.error(request, f"Error in ADD UUID : {e}")
-                    return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
-                    print(e)
+                    except Exception as e:
+                        messages.error(request, f"Error in ADD UUID : {e}")
+                        return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
+                        print(e)
+        else:
+            try:
+                handle_weight_based_product(
+                    request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order)
+            except Exception as e:
+                messages.error(request, f"Error in ADD UUID : {e}")
+                print(e)
+                return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
+        return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
 
+def handle_weight_based_product(request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order):
+    try:
+        entered_weight = float(entered_weight)
+        remaining_weight = sale_order_product.remaning_weight
+        print(entered_weight  , remaining_weight)
+        masters = Master.objects.filter(
+            product=sale_order_product.product, status='active' , initial_weight = True
+        ).order_by('added_date')
+        deductions = []  
+
+        for master in masters:
+            if remaining_weight <= 0.0:
+                break
+            if master.weight > 0.0:
+                deductable_weight = min(master.weight, remaining_weight) 
+                print(deductable_weight,remaining_weight)
+                deductions.append((master, deductable_weight))  
+                print(remaining_weight)
+                remaining_weight =remaining_weight - deductable_weight
+                print(deductable_weight,remaining_weight)
+                messages.info(request, f"Deducted {deductable_weight}  {sale_order_product.product.material_UOM}  from master {master.uuid} Out of {master.weight}  {sale_order_product.product.material_UOM}")
+            print(deductions)
+        if remaining_weight < 0:
+            raise ValueError("Not enough weight available to fulfill the sale order  requirement.")
+        total_deductable_weight = 0.0
+        for master, deductable_weight in deductions:
+            master.weight -= deductable_weight
+            total_deductable_weight = total_deductable_weight+deductable_weight
+            master.save()
+            
+        
+        sale_order_product.product.total_weight = sale_order_product.product.total_weight - total_deductable_weight
+        sale_order_product.product.save()
+        sale_order_product.remaning_weight = remaining_weight
+        sale_order_product.added_weight = sale_order_product.total_weight - remaining_weight
+        sale_order_product.save()
+
+        if sale_order_product.remaning_weight == 0.0:
+            # sale_order_product.status = 'complete'
+            sale_order_product.remaining_quantity = 0
+            sale_order_product.save()
+            messages.success(request, 'Sale order product marked as complete.')
+
+        new_master = Master.objects.create(
+            product=sale_order_product.product,
+            uuid=new_uuid,
+            weight=entered_weight,
+            status='active',
+            received_by=request.user
+        )
+        new_master.save()
+        # sale_order.uuids[MaterialCode] = sale_order.uuids.get(MaterialCode, [])
+        # sale_order.uuids[MaterialCode].append({new_uuid: entered_weight})
+        sale_order_product.uuids.append({new_uuid: entered_weight})
+        sale_order.save()
+
+        messages.success(
+            request, f"New master created with UUID {new_uuid} and weight {entered_weight}.")
+
+    except ValueError as ve:
+        messages.error(request, f"Error: {ve}")
+    except Exception as e:
+        messages.error(request, f"Error handling weight-based product: {e}")
 
 def add_holding_uuid(request, order_no, MaterialCode, new_uuid, sale_order_product, sale_order):
     print("IN HOLDING")
@@ -284,6 +364,12 @@ def add_uuid_is_insert(request, order_no, sale_order_product_id, new_uuid, sale_
 
 def add_uuid_not_insert(request, order_no, sale_order_product_id, sale_order_product, new_uuid):
     sale_order = get_object_or_404(SaleOrder, order_no=order_no)
+    # if sale_order_product.product.material_UOM != "NOS":
+    #     not_nos = True
+    #     remaining_weight = sale_order_product.remaning_weight
+    #     total_weight = sale_order_product.total_weight
+    #     added_weight = sale_order_product.added_weight
+    #     print("Weights : ", remaining_weight, total_weight, added_weight)
     remaining_quantity = sale_order_product.remaining_quantity
     print(f"REMAIN QUANTITY : {remaining_quantity}")
     uuid_set = {uuid for d in sale_order_product.uuids for uuid in d}
@@ -291,20 +377,23 @@ def add_uuid_not_insert(request, order_no, sale_order_product_id, sale_order_pro
     if new_uuid in uuid_set:
         messages.error(
             request, f"Product is already scanned and added to the list.")
-        return  # Exit early if UUID is already in the list
+        return
 
     matching_master = Master.objects.filter(
         product=sale_order_product.product, uuid=new_uuid).first()
 
     if not matching_master:
         messages.error(
-            request, f"ID: {new_uuid} does not match the product in the sale order product: {sale_order_product.product}.")
+            request, f"ID: {new_uuid} does not match the product in the sale order product: {sale_order_product.product}. Or Dose Not exist Pls Check Again.")
     elif matching_master.status != 'active':
         messages.error(
             request, f"UUID '{new_uuid}' is not in an allocation state.")
     elif matching_master.status == 'allocated':
         messages.error(
             request, f"UUID {new_uuid} is already allocated elsewhere.")
+    # elif not_nos:
+    #     if matching_master.weight <= 0.0:
+    #         messages.error(request, f"Bag '{new_uuid}' Its Already empty")
     else:
         try:
             if new_uuid not in sale_order_product.uuids and new_uuid not in sale_order.uuids:

@@ -5,8 +5,17 @@ from .forms import SaleOrderForm
 
 class SaleOrderProductInline(admin.TabularInline):
     model = SaleOrderProduct
-    fields = ['product', 'quantity', 'uuids', 'status','remaining_quantity','holding_quantity']
-
+    fields = [
+        'product', 
+        'quantity', 
+        'uuids', 
+        'status',
+        'remaining_quantity',
+        'holding_quantity',
+        'total_weight',       # Add this line
+        'added_weight',       # Add this line
+        'remaning_weight'     # Add this line
+    ]
 
 class SaleOrderAdmin(admin.ModelAdmin):
     list_display = ( 'order_no','po_number',

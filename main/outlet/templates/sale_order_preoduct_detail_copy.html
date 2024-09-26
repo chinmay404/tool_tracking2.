@@ -1,0 +1,247 @@
+{% extends 'base1.html' %}
+{% block content %}
+<div class="container my-4">
+  <div class="card mb-4 shadow-sm border-0 rounded">
+    <div class="card-body">
+      <div class="row justify-content-between">
+        <div class="col-md-6">
+          <p><strong>Product ID:</strong> {{ product.product_id }}</p>
+          <p><strong>Description:</strong> {{ product.description }}</p>
+          <p><strong class="highlight">Inventory Count:</strong> {{ inventory_count }} </p>
+        </div>
+        <div class="col-md-6 text-right">
+          <p><strong>Added Product:</strong> {{ selected_master_uuids_count }} </p>
+          <p><strong>Sale Order Status:</strong> {{ sale_order_status }} </p>
+          <p><strong class="highlight">Is Insert:</strong> <span>{{ product.is_insert }}</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if product.material_UOM != "NOS" %}
+  <div class="card mb-4 shadow-sm border-0 rounded">
+    <div class="card-body">
+      <div class="row justify-content-around text-center">
+        <div class="col-md-3">
+          <p><strong>Total Weight:</strong></p>
+          <p class="total-quantity">{{ sale_order_product.total_weight }}</p>
+        </div>
+        <div class="col-md-3">
+          <p><strong>Remaining Weight:</strong></p>
+          <p class="remaining-quantity">{{ sale_order_product.remaning_weight }}</p>
+        </div>
+        <div class="col-md-3">
+          <p><strong>Added Weight:</strong></p>
+          <p class="added-quantity">{{ sale_order_product.added_weight }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="card mb-4 shadow-sm border-0 rounded">
+    <div class="card-body">
+      <div class="row justify-content-around text-center">
+        <div class="col-md-3">
+          <p><strong>Total Quantity:</strong></p>
+          <p class="total-quantity">{{ sale_order_product.quantity }}</p>
+        </div>
+        <div class="col-md-3">
+          <p><strong>Remaining Quantity:</strong></p>
+          <p class="remaining-quantity">{{ sale_order_product.remaining_quantity }}</p>
+        </div>
+        {% if product.is_insert %}
+        <div class="col-md-3">
+          <p><strong>Hold Quantity:</strong></p>
+          <p class="hold-quantity">{{ sale_order_product.holding_quantity }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if product.is_insert %}
+  <div class="text-center mb-4">
+    <button type="button" class="btn btn-outline-info rounded-pill" data-toggle="modal" data-target="#claimBoxModal">Claim Empty Box</button>
+  </div>
+  <hr>
+  {% endif %}
+
+  <!-- Modal Form -->
+  <div class="modal fade" id="claimBoxModal" tabindex="-1" role="dialog" aria-labelledby="claimBoxModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="claimBoxModalLabel">Claim Empty Box</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post" action="{% url 'claim_empty_box' sale_order_product.product.product_id|urlencode %}">
+          {% csrf_token %}
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="uuid">UUID:</label>
+              <input type="text" class="form-control" id="uuid" name="uuid" placeholder="Scan Id Here" required>
+              <label for="box_capacity">Box Capacity:</label>
+              <select class="form-control" id="box_capacity" name="box_capacity" required>
+                <option value="10">10</option>
+                <option value="5">5</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+          </div>
+          <input type="hidden" name="order_no" value="{{ sale_order.order_no }}">
+          <input type="hidden" name="MaterialCode" value="{{ sale_order_product.product.MaterialCode }}">
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Claim</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Handling product.is_insert condition -->
+  {% if product.is_insert %}
+  {% if sale_order_product.quantity == 0 and sale_order_product.holding_quantity == 0 %}
+  <div class="alert alert-success" role="alert">
+    All Material Added
+  </div>
+  {% else %}
+  <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
+    {% csrf_token %}
+    <div class="form-group">
+      {% if sale_order_product.quantity %}
+      <label for="new_uuid">Add a UUID:</label>
+      <input type="text" class="form-control" id="new_uuid" name="new_uuid" placeholder="Scan Box To Add Hold quantity In Box">
+      <button type="submit" class="btn btn-primary mt-2 rounded-pill">Add Hold quantity In Box</button>
+    </div>
+    {% elif sale_order_product.holding_quantity or sale_order_product.quantity == 0 %}
+    <input type="text" class="form-control" id="new_uuid" name="new_uuid" placeholder="Scan Box To Add Quantity In box">
+    <button type="submit" class="btn btn-primary mt-2 rounded-pill">Add UUID</button>
+    </div>
+    {% endif %}
+  </form>
+  {% endif %}
+  
+  {% else %}
+  <!-- No product.is_insert condition -->
+  {% if inventory_count == 0 %}
+  <div class="alert alert-danger" role="alert">
+    No Material In Inventory
+  </div>
+  {% else %}
+  <p style="color: red;">TEMP FIELD</p>
+  <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="new_uuid">Add a UUID:</label>
+      <input type="text" class="form-control" id="new_uuid" name="new_uuid">
+    </div>
+    <button type="submit" class="btn btn-primary rounded-pill">Add UUID</button>
+  </form>
+  {% endif %}
+  {% endif %}
+
+  <!-- Save and Return Button -->
+  {% if product.is_insert == True and sale_order_product.holding_quantity == 0 %}
+  <form method="post" action="{% url 'save_and_return' sale_order.order_no sale_order_product.product.MaterialCode %}">
+    {% csrf_token %}
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-success rounded-pill">Save and Return</button>
+    </div>
+  </form>
+  
+  {% else %}
+  <form method="post" action="{% url 'save_and_return' sale_order.order_no sale_order_product.product.MaterialCode %}">
+    {% csrf_token %}
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-success rounded-pill">Save and Return</button>
+    </div>
+  </form>
+  {% endif %}
+
+</div>
+
+<!-- Custom CSS -->
+<style>
+  .highlight {
+    font-size: 1.5em;
+    color: #007bff;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+  }
+
+  .btn-outline-info {
+    border-color: #17a2b8;
+  }
+
+  .alert {
+    border-radius: 10px;
+  }
+
+  .card {
+    border-radius: 10px;
+  }
+
+  .form-control {
+    padding: 10px;
+    font-size: 1rem;
+  }
+
+  .rounded-pill {
+    border-radius: 50px;
+  }
+  .highlight {
+      font-size: 1.5em;
+      color: #007bff;
+    }
+
+    .total-quantity,
+    .remaining-quantity,
+    .added-quantity,
+    .hold-quantity {
+      font-size: 2.5em;
+    }
+
+    .total-quantity {
+      color: #28a745;
+    }
+
+    .remaining-quantity {
+      color: #ff0707;
+    }
+    .added-quantity{
+      color: #000000;
+    }
+
+    .hold-quantity {
+      color: #dc3545;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+    }
+
+    .btn-outline-info {
+      border-color: #17a2b8;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+</style>
+
+<!-- Custom JavaScript -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("new_uuid").focus();
+  });
+</script>
+
+{% endblock %}

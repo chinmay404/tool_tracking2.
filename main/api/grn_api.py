@@ -130,6 +130,7 @@ def create_product_index(item,logger):
 def create_product_index_item(product_index, product_item, logger):
     material_code = product_item['MaterialCode']
     material_name = product_item['MaterialName']
+    material_UOM = product_item['MaterialUom']
     is_insert = False
     if product_item.get('StockGroupType') == 102:
         is_insert = True
@@ -138,25 +139,28 @@ def create_product_index_item(product_index, product_item, logger):
         log_to_file(f"Wrong Material Code  : {material_code}")
     else:
         try:
-            product, created = Product.objects.get_or_create(
-                product_id=product_item['MaterialName'],
-                MaterialCode=material_code,
-                defaults={'name': product_item['MaterialName'], 'is_insert': is_insert}
-            )
-            if created:
-                logger.info(f"[API] Product Created : {material_name}")
-            else:
-                logger.info(f"[API] Product already exists: {material_name}")
-
-            ProductIndexItem.objects.create(
+            if material_UOM == "NOS":
+                ProductIndexItem.objects.create(
                 UOM=product_item['MaterialUom'],
                 product_index=product_index,
                 product=product,
                 quantity_requested=product_item['ChallanQty'],
-                quantity_received=product_item['ReceivedQty']
+                quantity_received=product_item['ReceivedQty'],
+                recived_weight=0.0,
+                requested_weight=0.0
             )
+            else:
+                ProductIndexItem.objects.create(
+                    UOM=product_item['MaterialUom'],
+                    product_index=product_index,
+                    product=product,
+                    quantity_requested=1,
+                    quantity_received=0,
+                    recived_weight=product_item['ChallanQty'],
+                    requested_weight=product_item['ReceivedQty']
+                )
         except Exception as e:
-            logger.error(f"[ERROR] Creating Product : {e}")
+            logger.error(f"[API] Error creating ProductIndexItem: {e}")
 
 def log_to_file(message):
     with open("material_code_errors.txt", "a") as file:

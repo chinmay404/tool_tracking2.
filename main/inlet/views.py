@@ -507,60 +507,73 @@ def batch_verification_history(request):
         
     
 
+
 @login_required(login_url='managment/login/')
 @allowed_users(['admins', 'inlet_user', 'managment_user', 'activators'])
 def batch_activation(request, batch_id):
     product_index = get_object_or_404(ProductIndex, batch_id=batch_id)
-
+    print(request)
     if request.method == 'POST':
         all_checkboxes_checked = True
         # short_quantity_reported = short_quantity_report(request,product_index)
         # print(short_quantity_reported)
-        
 
         for item in product_index.productindexitem_set.all():
-            received_quantity_key = f'received_quantities_{ item.id }'
-            value_received_quantity = int(request.POST.get(received_quantity_key))
-            print(f"Enetrd Quantity : { value_received_quantity }")
-            short_quantity = item.quantity_received - int(request.POST.get(received_quantity_key))
-            print(f'SHORT QUNATITY asdasd: {short_quantity}')
-            key = f'quantity_per_box_select_{ item.id }'
-            quantity_per_box_key = int(request.POST.get(key, '0'))
+            product_uom = item.product.material_UOM
+            if product_uom != "NOS":
+                received_quantity_key = f'received_quantities_{ item.id }'
+                value_received_quantity = request.POST.get(
+                    received_quantity_key)
+                requested_weight = item.requested_weight
+                print(f"requested_weight : { requested_weight }")
+                print(f"value_received_quantity : { value_received_quantity }")
+                print(f"received_quantity_key : { float(request.POST.get(received_quantity_key)) }")
+                print(f" item.quantity_received  : { item.quantity_received }")
+                short_quantity = float(requested_weight) - float(request.POST.get(received_quantity_key))
+                print(f'short_quantity : {short_quantity}')
+                key = f'quantity_per_box_select_{ item.id }'
+                quantity_per_box_key = int(request.POST.get(key, '0'))
+            else:
+                received_quantity_key = f'received_quantities_{ item.id }'
+                value_received_quantity = int(
+                    request.POST.get(received_quantity_key))
+                print(f"Enetrd Quantity : { value_received_quantity }")
+                short_quantity = item.quantity_received - \
+                    int(request.POST.get(received_quantity_key))
+                print(f'quantity_received : {item.quantity_received}')
+                print(f'SHORT QUNATITY : {short_quantity}')
+                key = f'quantity_per_box_select_{ item.id }'
+                quantity_per_box_key = int(request.POST.get(key, '0'))
 
-            print(f"QUANTITY PER BOX : {quantity_per_box_key} \n IS INSERT : {item.product.is_insert}")
+            print(
+                f"QUANTITY PER BOX : {quantity_per_box_key} \n IS INSERT : {item.product.is_insert}")
 
             if True:
-                try:
+                if product_uom != "NOS":
+                    print("KG LOOP")
+                    # try:
                     received_quantity = item.quantity_received
-                    print(received_quantity)
-                    received_quantity -= short_quantity
-                    print(received_quantity)
-                    # balancing_report = request.FILES.get(f'balancing_report_{item.id}')
-                    # drawing = request.FILES.get(f'drawing_{item.id}')
-                    # inspection_report = request.FILES.get(f'inspection_report_{item.id}')
-                    # num_boxes = ceil(received_quantity / quantity_per_box_key)
-                    
+                    received_weight = float(value_received_quantity)
+
+                    print(received_quantity,received_weight, requested_weight)
+                    # received_quantity -= short_quantity
                     if received_quantity < 1:
-                        messages.success(request, f'Zero Quantity : No Product Created')
+                        messages.error(
+                            request, f'Zero Quantity : No Product Created')
                         item.short_quantity = short_quantity
                         item.save()
                     else:
                         product = item.product
-                        product.in_progress_masters_count = F('in_progress_masters_count') + received_quantity
+                        product.in_progress_masters_count = F(
+                            'in_progress_masters_count') + item.actual_quantity
+                        product.total_weight = product.total_weight + received_weight
                         product.save()
-                        if product.is_insert:
-                            remaining_quantity = received_quantity
-                            try:
-                                received_quantity = ceil(remaining_quantity / quantity_per_box_key)
-                            except Exception as e:
-                                print(f"Error occurred during division: {e}")
-                                                
-                        for _ in range(received_quantity):
-                            if product.is_insert:
-                                quantity_in_this_box = min(quantity_per_box_key, remaining_quantity)
+                        print("RECIVED WEIGHTS : ", received_weight)
+                        for _ in range(item.actual_quantity):
                             b_name = f"INLET - {product_index.part_bill_no}"
                             master_data = {
                                 'product': item.product,
+                                'weight': received_weight,
                                 'batch_id': batch_id,
                                 'received_by': request.user,
                                 'data_json': {
@@ -578,69 +591,152 @@ def batch_activation(request, batch_id):
                                             'arrive_date': product_index.arrive_date.strftime('%Y-%m-%d %H:%M:%S'),
                                             'party_challan_no': product_index.party_challan_no,
                                             'part_bill_no': product_index.part_bill_no,
-                                            # 'part_date': product_index.part_date.strftime('%Y-%m-%d'),
-
                                             'po_no': product_index.po_no,
                                             'Insert': product.is_insert,
-                                            # 'quantity_per_box': quantity_in_this_box ,
                                         }
                                     }
                                 }
                             }
-                            if product.is_insert:
-                                master_data['data_json']['Inlet'][b_name]['quantity_per_box'] = quantity_in_this_box
-                                print(f"INSERTS QUANTITY ADDED TO BOX : {quantity_in_this_box}")
-                                remaining_quantity -= quantity_in_this_box
-                            instance = Master.objects.create(**master_data)
-                            if item.product.is_insert:
-                                instance.is_insert = product.is_insert
-                                instance.quantity_per_box = quantity_in_this_box
-                                instance.box_capacity = quantity_per_box_key
-                                print(f"INSER QUANTITY ADDED TO BOX : {instance.quantity_per_box}")
+                            try:
+                                instance = Master.objects.create(**master_data)
                                 instance.save()
-                        try:
-                            if uploaded_file:
-                                if balancing_report:
-                                    item.balancing_report = balancing_report
-                                if drawing:
-                                    item.drawing = drawing
-                                if inspection_report:
-                                    item.inspection_report = inspection_report
-                                # item.quantity_received = received_quantity
+                                instance.refresh_from_db()
+                                instance.weight = received_weight
+                                instance.save()
+                            except Exception as e:  
+                                print("ERROR AT ACTIVATTON : " , e)
+                            print("INSATCE_WEIGHT",instance.weight)
+                            print("instance",instance)
+                            # item.short_quantity = short_quantity
+                            item.short_quantity = requested_weight - received_weight    
+                            item.recived_weight =  received_weight    
+                            item.actual_quantity = item.quantity_received
+                            item.unactive_count = item.quantity_received
+                            item.save()
+                    # except Exception as e:
+                    #     messages.error(
+                    #          request, f'{item.product.name}. Error : {e}')
+                else:
+                    print("INSDE NOS LOOP")
+                    try:
+                        received_quantity = item.quantity_received
+                        print(received_quantity)
+                        received_quantity -= short_quantity
+                        print(received_quantity)
+                        # balancing_report = request.FILES.get(f'balancing_report_{item.id}')
+                        # drawing = request.FILES.get(f'drawing_{item.id}')
+                        # inspection_report = request.FILES.get(f'inspection_report_{item.id}')
+                        # num_boxes = ceil(received_quantity / quantity_per_box_key)
+
+                        if received_quantity < 1:
+                            messages.error(
+                                request, f'Zero Quantity : No Product Created')
+                            item.short_quantity = short_quantity
+                            item.save()
+                        else:
+                            product = item.product
+                            product.in_progress_masters_count = F(
+                                'in_progress_masters_count') + received_quantity
+                            product.save()
+                            if product.is_insert:
+                                remaining_quantity = received_quantity
+                                try:
+                                    received_quantity = ceil(
+                                        remaining_quantity / quantity_per_box_key)
+                                except Exception as e:
+                                    print(
+                                        f"Error occurred during division: {e}")
+
+                            for _ in range(received_quantity):
+                                if product.is_insert:
+                                    quantity_in_this_box = min(
+                                        quantity_per_box_key, remaining_quantity)
+                                b_name = f"INLET - {product_index.part_bill_no}"
+                                master_data = {
+                                    'product': item.product,
+                                    'batch_id': batch_id,
+                                    'received_by': request.user,
+                                    'data_json': {
+                                        'Inlet': {
+                                            b_name: {
+                                                'gate_inward_No': product_index.gate_inward_No,
+                                                'supplier_name': product_index.supplier_name,
+                                                'supplier_gstn': product_index.supplier_gstin,
+                                                'product_id': item.product.product_id,
+                                                'status': product_index.status,
+                                                'batch_id': str(batch_id),
+                                                'quantity_requested': item.quantity_requested,
+                                                'quantity_received': received_quantity,
+                                                'received_by': str(request.user),
+                                                'arrive_date': product_index.arrive_date.strftime('%Y-%m-%d %H:%M:%S'),
+                                                'party_challan_no': product_index.party_challan_no,
+                                                'part_bill_no': product_index.part_bill_no,
+                                                # 'part_date': product_index.part_date.strftime('%Y-%m-%d'),
+
+                                                'po_no': product_index.po_no,
+                                                'Insert': product.is_insert,
+                                                # 'quantity_per_box': quantity_in_this_box ,
+                                            }
+                                        }
+                                    }
+                                }
+                                if product.is_insert:
+                                    master_data['data_json']['Inlet'][b_name]['quantity_per_box'] = quantity_in_this_box
+                                    print(
+                                        f"INSERTS QUANTITY ADDED TO BOX : {quantity_in_this_box}")
+                                    remaining_quantity -= quantity_in_this_box
+                                instance = Master.objects.create(**master_data)
+                                if item.product.is_insert:
+                                    instance.is_insert = product.is_insert
+                                    instance.quantity_per_box = quantity_in_this_box
+                                    instance.box_capacity = quantity_per_box_key
+                                    print(
+                                        f"INSER QUANTITY ADDED TO BOX : {instance.quantity_per_box}")
+                                    instance.save()
+                            try:
+                                if uploaded_file:
+                                    if balancing_report:
+                                        item.balancing_report = balancing_report
+                                    if drawing:
+                                        item.drawing = drawing
+                                    if inspection_report:
+                                        item.inspection_report = inspection_report
+                                    # item.quantity_received = received_quantity
+                                    item.short_quantity = short_quantity
+                                    item.actual_quantity = received_quantity
+                                    item.unactive_count = received_quantity
+                                    item.save()
+
+                                else:
+                                    # item.quantity_received = received_quantity
+                                    item.short_quantity = short_quantity
+                                    item.actual_quantity = received_quantity
+                                    item.unactive_count = received_quantity
+                                    item.save()
+
+                            except Exception as e:
                                 item.short_quantity = short_quantity
-                                item.actual_quantity= received_quantity
-                                item.unactive_count= received_quantity
-                                item.save()
-                                
-                            else:
-                                # item.quantity_received = received_quantity
-                                item.short_quantity = short_quantity
-                                item.actual_quantity= received_quantity
+                                item.actual_quantity = received_quantity
                                 item.unactive_count = received_quantity
                                 item.save()
-                                
-                        except Exception as e :
-                            item.short_quantity = short_quantity
-                            item.actual_quantity= received_quantity
-                            item.unactive_count = received_quantity
-                            item.save()
-                            print("SAVED")
-                            print(e)
-                            # messages.error(request, f'File Upload Error \n{e}')
-                        
-                except Exception as e:
-                    messages.error(request, f'Invalid received quantity for {item.product.name}. Please enter a valid number.\n Error : {e}')
-                    print(f"batcH VERIFICTION : Please enter a valid number")
-                    all_checkboxes_checked = True
-        
-        if all_checkboxes_checked :
+                                print("SAVED")
+                                print(e)
+                                # messages.error(request, f'File Upload Error \n{e}')
+                    except Exception as e:
+                        messages.error(
+                            request, f'Invalid received quantity for {item.product.name}. Please enter a valid number.\n Error : {e}')
+                        print(f"batcH VERIFICTION : Please enter a valid number")
+                        all_checkboxes_checked = True
+
+        if all_checkboxes_checked:
             product_index.status = 'verified'
             product_index.save()
             print(f" VERIFICTION : successfull")
             messages.success(request, 'Batch activated successfully!')
             return redirect('batch_detail', batch_id=batch_id)
         else:
-            messages.error(request, 'Please correct above issues and try again.')
+            messages.error(
+                request, 'Please correct above issues and try again.')
     return redirect('batch_detail', batch_id=batch_id)
 
 def generate_restore_id(product_name):

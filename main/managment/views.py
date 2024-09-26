@@ -17,7 +17,7 @@ from django.utils import timezone
 import json
 from django.contrib.sessions.models import Session
 from datetime import datetime, timedelta
-from AI import ai
+# from AI import ai
 from django.contrib import messages
 from main.settings import ALLOW_AI
 from datetime import datetime

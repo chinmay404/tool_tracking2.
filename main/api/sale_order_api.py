@@ -12,6 +12,7 @@ from main import settings
 # Get logger instance
 logger = logging.getLogger('utility_api')
 
+
 @csrf_exempt
 def create_sale_order(data):
     try:
@@ -24,7 +25,7 @@ def create_sale_order(data):
             if existing_order:
                 logger.debug(
                     f"Order with order number {order_no} already exists. Skipping...")
-                continue 
+                continue
             else:
                 so_creat(order_data)
                 # Pass order_data to the function
@@ -33,7 +34,8 @@ def create_sale_order(data):
         return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse(response_data, safe=False)
 
-def so_creat(order_data):  
+
+def so_creat(order_data):
     sale_order = None
     try:
         order_no = order_data.get('OrderNo')
@@ -60,22 +62,39 @@ def so_creat(order_data):
         for item in order_data.get("ItemSummary", []):
             try:
                 material_name = item.get('MaterialName')
-                po_qty = item.get('PoQty')
-                product_instance, created = Product.objects.get_or_create(name=material_name,
-                                                                          product_id=material_name)
-                if product_instance:
-                    sale_order_product, created = SaleOrderProduct.objects.get_or_create(
-                        sale_order=sale_order,
-                        product=product_instance,
-                        remaining_quantity=po_qty,
-                        defaults={'quantity': po_qty}
-                    )
-                    if not created:
-                        sale_order_product.quantity = po_qty
-                        sale_order_product.save()
+                material_UOM = item.get('MaterialUom')
+                if material_UOM != "NOS":
+                    po_qty = item.get('PoQty')
+                    product_instance, created = Product.objects.get_or_create(
+                        name=material_name, product_id=material_name, material_UOM=material_UOM)
+                    if product_instance:
+                        sale_order_product, created = SaleOrderProduct.objects.get_or_create(
+                            sale_order=sale_order,
+                            product=product_instance,
+                            defaults={'quantity': 1, 'total_weight': po_qty}
+                        )
+                        if not created:
+                            sale_order_product.quantity = po_qty
+                            sale_order_product.save()
+                    else:
+                        logger.debug(
+                            f"No Product instance created for {material_name}")
                 else:
-                    logger.debug(
-                        f"No Product instance created for {material_name}")
+                    po_qty = item.get('PoQty')
+                    product_instance, created = Product.objects.get_or_create(
+                        name=material_name, product_id=material_name, material_UOM=material_UOM)
+                    if product_instance:
+                        sale_order_product, created = SaleOrderProduct.objects.get_or_create(
+                            sale_order=sale_order,
+                            product=product_instance,
+                            defaults={'quantity': po_qty}
+                        )
+                        if not created:
+                            sale_order_product.quantity = po_qty
+                            sale_order_product.save()
+                    else:
+                        logger.debug(
+                            f"No Product instance created for {material_name}")
             except Exception as e:
                 logger.error(
                     f"Error creating/updating SaleOrderProduct: {e}")

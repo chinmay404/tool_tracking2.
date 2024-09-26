@@ -22,12 +22,14 @@ class SaleOrderProduct(models.Model):
         max_length=20, choices=STATUS_CHOICES, default='pending')
     uuids = models.JSONField(default=list, null=True, blank=True)
     verified_uuids = models.JSONField(default=list, null=True, blank=True)
+    total_weight = models.FloatField(default=0.0 , null=True, blank=True )
+    added_weight = models.FloatField(default=0.0 ,  null=True, blank=True)
+    remaning_weight = models.FloatField(default=0.0 ,  null=True, blank=True)
     checked_by = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, null=True, editable=False, related_name='sale_order_product_checked')
     verified = models.BooleanField(default=False)
     verified_by = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, null=True, editable=False, related_name='sale_order_product_verified')
-    
     
     
     def save(self, *args, **kwargs):

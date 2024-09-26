@@ -60,34 +60,46 @@ def get_product_details(request, uuid):
 #     return False
 
 
+# PRODUCTS GETS ACTIVATED BELOW !!!!
+
 @login_required(login_url='managment/login/')
 @allowed_users(['admins', 'inlet_user'])
 def activate_product(request, old_uuid, new_uuid):
     try:
-        id_is_valid = is_valid_short_uuid(new_uuid)
         print(f"NEW ID : {new_uuid} {old_uuid}")
-        if Master.objects.filter(uuid=new_uuid).exists():
+        if Master.objects.filter(uuid=new_uuid).exists() and is_valid_id(new_uuid):
             messages.error(
-                request, f'ID is already in use. Please scan another qr code.')
-        elif id_is_valid != True:
-            messages.error(
-                request, f'ID is in Invalid Format. Please scan another qr code.')
+                request, f'UUID {new_uuid} is already in use. Please scan another qr code.')
         else:
             master_product = get_object_or_404(Master, uuid=old_uuid)
-            master_product.save()
-            print(master_product.status)
+            print(f"REQUESTE : {request}")
             # if request.user.has_perm('inlet.change_master'):
             if True:
-                if master_product.status != "in_progress":
-                    messages.error(
-                        request, f' Not Complete Request \nProduct with UUID {new_uuid} state : {master_product.status} can Not Complete Request')
+                if master_product.status == 'active' and 'activation' in master_product.data_json:
+                    message.error(
+                        request, f'Product with UUID {new_uuid} is already active.')
                 else:
                     activator_name = request.user.username
                     activation_date = timezone.now()
                     activator_ip = request.META.get(
                         'REMOTE_ADDR', 'Unknown IP')
                     product = master_product.product
-                    if product.UOM == "NOS":
+                    if product.material_UOM != "NOS":
+                        new_master = Master(
+                            product=product,
+                            uuid=new_uuid,
+                            batch_id=master_product.batch_id,
+                            status='active',
+                            added_date=master_product.added_date,
+                            received_by=master_product.received_by,
+                            data_json=master_product.data_json,
+                            is_insert=product.is_insert,
+                            quantity_per_box=master_product.quantity_per_box,
+                            box_capacity=master_product.box_capacity,
+                            weight = master_product.weight , 
+                            initial_weight = True
+                        )
+                    else : 
                         new_master = Master(
                             product=product,
                             uuid=new_uuid,
@@ -100,43 +112,36 @@ def activate_product(request, old_uuid, new_uuid):
                             quantity_per_box=master_product.quantity_per_box,
                             box_capacity=master_product.box_capacity
                         )
-                        new_data = {
-                            'activator_name': activator_name,
-                            'activator_ip': activator_ip,
-                            'activation_date': activation_date.strftime('%Y-%m-%d %H:%M:%S'),
-                            'status_changedstatus_changed_to_to': 'active'
-                        }
-                        if 'activation' not in new_master.data_json:
-                            new_master.data_json['activation'] = new_data
-                        else:
-                            new_master.data_json['activation'].update(new_data)
 
-                        try:
-                            if product.is_insert:
-                                product.in_progress_masters_count = max(
-                                    0, product.in_progress_masters_count - 1)
-                            else:
-                                product.active_count = + 1
-                                if product.in_progress_masters_count == 0:
-                                    print(f"Count COUNT REACHED TO 0")
-                                    messages.info(
-                                        request, f'Count Already To 0')
-                                else:
-                                    product.in_progress_masters_count = product.in_progress_masters_count - 1
-                                print(
-                                    f"ACTIVAE COUNT : {product.active_count}")
-                                print(
-                                    f"IN PROGRESS COUNT : {product.in_progress_masters_count}")
-                            print(f"ACTIVATED : {old_uuid} ::TO:: {new_uuid}")
-                            product.save()
-                            new_master.save()
-                            master_product.delete()
-                            return True
-                        except Exception as e:
-                            messages.error(
-                                request, f'ERROR IN ACTIVATION ERROR  : {e}')
+                    new_data = {
+                        'activator_name': activator_name,
+                        'activator_ip': activator_ip,
+                        'activation_date': activation_date.strftime('%Y-%m-%d %H:%M:%S'),
+                        'status_changedstatus_changed_to_to': 'active'
+                    }
+                    if 'activation' not in new_master.data_json:
+                        new_master.data_json['activation'] = new_data
                     else:
-                        pass
+                        new_master.data_json['activation'].update(new_data)
+
+                    try:
+                        if product.is_insert:
+                            product.in_progress_masters_count = max(
+                                0, product.in_progress_masters_count - 1)
+                        else:
+                            product.active_count = + 1
+                            product.in_progress_masters_count -= 1
+                            print(f"ACTIVAE COUNT : {product.active_count}")
+                            print(
+                                f"IN PROGRESS COUNT : {product.in_progress_masters_count}")
+                        print(f"ACTIVATED : {old_uuid} ::TO:: {new_uuid}")
+                        product.save()
+                        new_master.save()
+                        master_product.delete()
+                        return True
+                    except Exception as e:
+                        messages.error(
+                            request, f'ERROR IN ACTIVATION ERROR  : {e}')
             else:
                 messages.error(
                     request, f'Error In Activation: UUID: {new_uuid} ')
@@ -144,7 +149,6 @@ def activate_product(request, old_uuid, new_uuid):
     except Master.DoesNotExist as e:
         messages.error(
             request, f'Error In Activation: UUID: {new_uuid}\nError: {e}')
-
 
 # from django.http import JsonResponse
 
@@ -311,7 +315,6 @@ def activate_via_batch(request, batch_id):
             request, 'No Product Index Found. Check For Correct Input.')
         return redirect('activate_via_batch', batch_id=batch_id)
 
-
 @never_cache
 @login_required(login_url='managment/login/')
 @allowed_users(['admins', 'inlet_user'])
@@ -321,6 +324,7 @@ def activate_via_btach_single_product(request, batch_id, MaterialCode):
     product_index_item = ProductIndexItem.objects.filter(
         product_index=product_index, product=product).first()
     in_progress_count = product_index_item.unactive_count
+    print(in_progress_count)
     active_count = Master.objects.filter(
         status='active', batch_id=batch_id, product=product).count()
     if request.method == 'POST':
@@ -344,31 +348,25 @@ def activate_via_btach_single_product(request, batch_id, MaterialCode):
                     product_index_item.unactive_count = product_index_item.unactive_count-1
                     product_index_item.save()
                     count = count + 1
-
             if done:
                 pro = Product.objects.filter(MaterialCode=MaterialCode).first()
                 pro.active_count = pro.active_count + count
                 pro.save()
                 if product_index_item.unactive_count == 0 and all([item.unactive_count == 0 for item in ProductIndexItem.objects.filter(product_index=product_index)]):
-                    messages.info(
-                        request, 'Pls Wait For Making API Call To ERP')
                     product_index.status = 'complete'
                     product_index.is_complete = True
+                    messages.info(request, 'Making API Call To ERP')
                     if make_api_call(product_index, request):
-                        try:
-                            product_index.complete_activated = timezone.now()
-                            product_index.save()
-                        except Exception as e:
-                            messages.error(
-                                request, f'ERROR API_V:LN:337 : {e}')
-                        messages.success(
-                            request, 'All Activation successful for the selected product.')
+                        product_index.complete_activated = timezone.now()
+                        product_index.save()
                     else:
                         messages.error(
                             request, 'CRITICAL ERROR !!! API CALL FAILED CONTACT ADMIN IMMEDIATELY.')
-                elif product_index_item.unactive_count == 0:
-                    return redirect('activate_via_batch', batch_id=batch_id)
-                messages.success(request, 'ACTIVATED')
+
+                messages.success(
+                    request, 'All Activation successful for the selected product.')
+
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
             messages.error(
                 request, 'No product found in progress for the specified batch and product.')
