@@ -146,6 +146,9 @@
 <!-- <p style="color: red;">TEMP FIELD</p>
   -->
 {% if sale_order_product.product.material_UOM != "NOS" %}
+{% if sale_order_product.remaning_weight == 0.0 and sale_order_product.added_weight ==  sale_order_product.total_weight %}
+ <p>All Material Added </p>
+{% else %}
   <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
   {% csrf_token %}
   <div class="incontainer" style = "display: flex; justify-content: space-evenly; ">
@@ -160,6 +163,7 @@
   </div>
   <center><button type="submit" class="btn btn-primary rounded-pill" >Add UUID</button></center>
 </form>
+{% endif %}
 {% else %}
 <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}"></form>
   {% csrf_token %}
