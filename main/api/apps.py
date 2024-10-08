@@ -70,6 +70,7 @@ class ApiConfig(AppConfig):
         from api.grn_api import parse_and_store_product_data
 
         url = 'http://10.10.1.18:8400/api/matservices/gettoolgrnlist'
+        mock_server_local_url = "http://127.0.0.1:8400/api/matservices/gettoolgrnlist"
         response = requests.get(url)
         if response.status_code == 200:
             # logger.info(f'[API] GRN API RESPONSE STATUS CODE: {response.status_code}')

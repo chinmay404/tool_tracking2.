@@ -16,7 +16,7 @@
 #             time.sleep(2)
 #             if ProductIndex.objects.filter(grn_no=item.get('GrnNo')).exists():
 #                 GRN_NO = item.get('GrnNo')
-#                 # print(f'[API] Grn ALready Exist Skip : GRN_NO {GRN_NO}') 
+#                 # print(f'[API] Grn ALready Exist Skip : GRN_NO {GRN_NO}')
 #             else:
 
 #                 product_index = ProductIndex.objects.create(
@@ -74,8 +74,6 @@
 # # t.start()
 
 
-
-
 import json
 import requests
 import schedule
@@ -85,8 +83,6 @@ from django.http import JsonResponse
 from inlet.models import Product, ProductIndex, ProductIndexItem
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
-
-
 
 
 @csrf_exempt
@@ -99,16 +95,19 @@ def parse_and_store_product_data(data, logger):
             if ProductIndex.objects.filter(grn_no=grn_no).exists():
                 logger.info(f'[API] GRN {grn_no} already exists. Skipping...')
             else:
-                product_index = create_product_index(item,logger)
+                product_index = create_product_index(item, logger)
                 logger.info(f'[API] Created product index: {product_index}')
                 for product_item in item['ItemSummary']:
-                    create_product_index_item(product_index, product_item, logger)
+                    create_product_index_item(
+                        product_index, product_item, logger)
                 logger.info('[API] Call Complete')
         logger.info('[API] GRN data parsed and stored successfully')
     except Exception as e:
-        logger.error(f"[API] Error while parsing and storing product data: {e}")
+        logger.error(
+            f"[API] Error while parsing and storing product data: {e}")
 
-def create_product_index(item,logger):
+
+def create_product_index(item, logger):
     return ProductIndex.objects.create(
         supplier_name=item.get('PartyName'),
         compny_name=item.get('CompanyShortName'),
@@ -132,6 +131,7 @@ def create_product_index_item(product_index, product_item, logger):
     material_name = product_item['MaterialName']
     material_UOM = product_item['MaterialUom']
     is_insert = False
+
     if product_item.get('StockGroupType') == 102:
         is_insert = True
     if material_code == 0 or not material_code:
@@ -139,28 +139,53 @@ def create_product_index_item(product_index, product_item, logger):
         log_to_file(f"Wrong Material Code  : {material_code}")
     else:
         try:
+            product, created = Product.objects.get_or_create(
+                product_id=product_item['MaterialName'],
+                name=product_item['MaterialName'],
+                material_UOM=material_UOM,
+                MaterialCode=str(material_code),
+                defaults={
+                    'name': product_item['MaterialName'], 'is_insert': is_insert}
+            )
+            if created:
+                logger.info(f"[API] Product Created : {material_name}")
+            else:
+                logger.info(f"[API] Product already exists: {material_name}")
+                
+            try:
+                existing_uom = product.material_UOM
+                if existing_uom : 
+                    pass
+                else : 
+                    product.material_UOM = material_UOM
+                    product.save()
+                    logger.info(f"[API] Updated Missing UOM : {material_name} from  {existing_uom} To  {material_UOM}")
+            except :
+                pass
             if material_UOM == "NOS":
                 ProductIndexItem.objects.create(
-                UOM=product_item['MaterialUom'],
-                product_index=product_index,
-                product=product,
-                quantity_requested=product_item['ChallanQty'],
-                quantity_received=product_item['ReceivedQty'],
-                recived_weight=0.0,
-                requested_weight=0.0
-            )
+                    UOM=product_item['MaterialUom'],
+                    product_index=product_index,
+                    product=product,
+                    quantity_requested=product_item['ChallanQty'],
+                    quantity_received=product_item['ReceivedQty'],
+                    recived_weight=0.0,
+                    requested_weight=0.0
+                )
             else:
                 ProductIndexItem.objects.create(
                     UOM=product_item['MaterialUom'],
                     product_index=product_index,
                     product=product,
                     quantity_requested=1,
-                    quantity_received=0,
-                    recived_weight=product_item['ChallanQty'],
-                    requested_weight=product_item['ReceivedQty']
+                    quantity_received=1,
+                    requested_weight=product_item['ChallanQty'],
+                    recived_weight=product_item['ReceivedQty']
                 )
+
         except Exception as e:
             logger.error(f"[API] Error creating ProductIndexItem: {e}")
+
 
 def log_to_file(message):
     with open("material_code_errors.txt", "a") as file:

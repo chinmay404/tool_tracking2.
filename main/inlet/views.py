@@ -563,13 +563,14 @@ def batch_activation(request, batch_id):
                         item.short_quantity = short_quantity
                         item.save()
                     else:
+                        print(item.actual_quantity)
                         product = item.product
-                        product.in_progress_masters_count = F(
-                            'in_progress_masters_count') + item.actual_quantity
+                        product.in_progress_masters_count = F('in_progress_masters_count') + received_quantity
                         product.total_weight = product.total_weight + received_weight
                         product.save()
-                        print("RECIVED WEIGHTS : ", received_weight)
-                        for _ in range(item.actual_quantity):
+                        print("RECIVED WEIGHTS : ", received_weight , item.actual_quantity)
+                        for _ in range(received_quantity):
+                            print(_)
                             b_name = f"INLET - {product_index.part_bill_no}"
                             master_data = {
                                 'product': item.product,
@@ -600,9 +601,7 @@ def batch_activation(request, batch_id):
                             try:
                                 instance = Master.objects.create(**master_data)
                                 instance.save()
-                                instance.refresh_from_db()
-                                instance.weight = received_weight
-                                instance.save()
+                                print(f"INSATANCE CREATED WITH : {insatnce}")
                             except Exception as e:  
                                 print("ERROR AT ACTIVATTON : " , e)
                             print("INSATCE_WEIGHT",instance.weight)
