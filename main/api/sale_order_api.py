@@ -23,8 +23,8 @@ def create_sale_order(data):
                 order_no=order_no).first()
             logger.debug(existing_order)
             if existing_order:
-                logger.debug(
-                    f"Order with order number {order_no} already exists. Skipping...")
+                # logger.debug(
+                #     f"Order with order number {order_no} already exists. Skipping...")
                 continue
             else:
                 so_creat(order_data)
@@ -45,8 +45,8 @@ def so_creat(order_data):
         customer_name = order_data.get('CustomerName')
         customer, created = Unit.objects.get_or_create(
             name=customer_name, address="Default")
-        if created:
-            logger.debug("UNIT CREATED")
+        # if created:
+        #     logger.debug("UNIT CREATED")
         sale_order = SaleOrder.objects.create(
             order_no=order_no,
             order_date=order_date,
@@ -54,7 +54,7 @@ def so_creat(order_data):
             party_po_date=party_po_date,
             unit=customer_name
         )
-        logger.debug("SO created")
+        # logger.debug("SO created")
     except Exception as e:
         logger.error(f"SO ERROR : {e}")
 

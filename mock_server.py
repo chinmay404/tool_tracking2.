@@ -5,11 +5,11 @@ app = Flask(__name__)
 grn_data =[
     {
         "CompanyShortName": "HTECH",
-        "GrnNo": "102242540411040853",
+        "GrnNo": "102242540411040153",
         "GrnDate": "26/04/2024",
         "PartyName": "ALFA TOOLINGS",
         "PartyChallanNo": "107",
-        "PartyChallanDate": "20240425",
+        "PartyChallanDate": "20240125",
         "GateInwardNo": None,
         "PoNo": "2425-000137",
         "PoDate": "05/04/2024",
@@ -51,7 +51,7 @@ grn_data =[
     }
 ]
 
-so_data = 
+# so_data = 
 
 @app.route('/api/matservices/gettoolgrnlist', methods=['GET'])
 def get_grn_list():

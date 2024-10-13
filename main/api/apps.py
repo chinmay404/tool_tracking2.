@@ -35,7 +35,7 @@ class ApiConfig(AppConfig):
         while True:
             try:
                 # Run parsing GRN task
-                logger.info('[API] GRN API CALL ...')
+                # logger.info('[API] GRN API CALL ...')
                 # self.schedule_parsing_grn_file()       #USE THIS FOR API CALLS FROM FILE
                 self.schedule_parsing_grn()
 
@@ -44,11 +44,11 @@ class ApiConfig(AppConfig):
                 time.sleep(10)
 
                 # Run sale order task
-                logger.info('[API] Sale Order API REQUEST ...')
+                # logger.info('[API] Sale Order API REQUEST ...')
                 self.schedule_sale_order()
 
                 # Sleep for specified time
-                logger.info(f'[API] Sleep Time: {API_CALLS_TIME} Seconds')
+                # logger.info(f'[API] Sleep Time: {API_CALLS_TIME} Seconds')
                 time.sleep(10)
 
             except Exception as e:
