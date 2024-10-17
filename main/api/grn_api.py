@@ -157,9 +157,7 @@ def create_product_index_item(product_index, product_item, logger):
                     name=product_item['MaterialName'],
                     material_UOM=material_UOM,
                     MaterialCode=material_code,
-                    is_insert=is_insert,
-                    defaults={
-                        'name': product_item['MaterialName'], 'is_insert': is_insert}
+                    is_insert=is_insert
                 )
                 created = True
                 print(product.material_UOM)
