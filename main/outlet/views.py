@@ -146,50 +146,55 @@ def claim_empty_box(request, product_id):
 @login_required(login_url='managment/login/')
 @allowed_users(allowed_roles=['admins', 'outlet_user',])
 def add_uuid(request, order_no, MaterialCode):
+    print(request)
     if request.method == 'POST':
         new_uuid = request.POST.get('new_uuid')
         entered_weight = request.POST.get('entered_weight', 0.0)
-        print(f"NEW UUID : {new_uuid} . ENTERD WEIGHT : {entered_weight}")
-        sale_order = get_object_or_404(SaleOrder, order_no=order_no)
-        sale_order_product = get_object_or_404(
-            SaleOrderProduct, product__MaterialCode=MaterialCode, sale_order=sale_order)
-        sale_order_product_id = Product.objects.filter(
-            MaterialCode=MaterialCode)
-        print('SALE ORDERPRODUCT ID : {sale_order_product_id}')
-        print(f"SALE ORDER PRODUCT : {sale_order_product}")
-        print(f"SOP QUANTITY : {sale_order_product.quantity}")
-        if sale_order_product.product.material_UOM == "NOS":
-            if sale_order_product.remaining_quantity == 0 and sale_order_product.product.is_insert:
-                print("IN HOLDING UUIDS")
-                add_holding_uuid(request, order_no, sale_order_product_id,
-                                 new_uuid, sale_order_product, sale_order)
-                return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
-            else:
-                if sale_order_product.product.is_insert and sale_order_product.remaining_quantity > 0:
-                    add_uuid_is_insert(
-                        request, order_no, sale_order_product_id, new_uuid, sale_order_product, sale_order)
+        if Master.objects.filter(uuid=new_uuid).exists():
+            messages.error(request, f"Error: The UUID '{new_uuid}' already exists.")
+            return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
+        else : 
+            print(f"NEW UUID : {new_uuid} . ENTERD WEIGHT : {entered_weight}")
+            sale_order = get_object_or_404(SaleOrder, order_no=order_no)
+            sale_order_product = get_object_or_404(
+                SaleOrderProduct, product__MaterialCode=MaterialCode, sale_order=sale_order)
+            sale_order_product_id = Product.objects.filter(
+                MaterialCode=MaterialCode)
+            print('SALE ORDERPRODUCT ID : {sale_order_product_id}')
+            print(f"SALE ORDER PRODUCT : {sale_order_product}")
+            print(f"SOP QUANTITY : {sale_order_product.quantity}")
+            if sale_order_product.product.material_UOM == "NOS":
+                if sale_order_product.remaining_quantity == 0 and sale_order_product.product.is_insert:
+                    print("IN HOLDING UUIDS")
+                    add_holding_uuid(request, order_no, sale_order_product_id,
+                                    new_uuid, sale_order_product, sale_order)
                     return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
                 else:
-                    try:
-                        add_uuid_not_insert(
-                            request, order_no, sale_order_product_id, sale_order_product, new_uuid)
+                    if sale_order_product.product.is_insert and sale_order_product.remaining_quantity > 0:
+                        add_uuid_is_insert(
+                            request, order_no, sale_order_product_id, new_uuid, sale_order_product, sale_order)
                         return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
+                    else:
+                        try:
+                            add_uuid_not_insert(
+                                request, order_no, sale_order_product_id, sale_order_product, new_uuid)
+                            return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
 
-                    except Exception as e:
-                        messages.error(request, f"Error in ADD UUID : {e}")
-                        return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
-                        print(e)
-        else:
-            try:
-                sack_weight = request.POST.get('sack_weight')
-                print(sack_weight)
-                handle_weight_based_product(
-                    request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order, sack_weight)
-            except Exception as e:
-                messages.error(request, f"Error in ADD UUID : {e}")
-                print(e)
-                return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
-        return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
+                        except Exception as e:
+                            messages.error(request, f"Error in ADD UUID : {e}")
+                            return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
+                            print(e)
+            else:
+                try:
+                    sack_weight = request.POST.get('sack_weight')
+                    print(sack_weight)
+                    handle_weight_based_product(
+                        request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order, sack_weight)
+                except Exception as e:
+                    messages.error(request, f"Error in ADD UUID : {e}")
+                    print(e)
+                    return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
+            return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
 
 
 def handle_weight_based_product(request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order, sack_weight):

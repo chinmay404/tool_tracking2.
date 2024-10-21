@@ -71,7 +71,7 @@ def so_creat(order_data):
                         sale_order_product, created = SaleOrderProduct.objects.get_or_create(
                             sale_order=sale_order,
                             product=product_instance,
-                            defaults={'quantity': 1, 'total_weight': po_qty}
+                            defaults={'quantity': 1, 'total_weight': po_qty , 'remaning_weight': po_qty, 'remaining_quantity' : 1}
                         )
                         if not created:
                             sale_order_product.quantity = po_qty
@@ -87,7 +87,7 @@ def so_creat(order_data):
                         sale_order_product, created = SaleOrderProduct.objects.get_or_create(
                             sale_order=sale_order,
                             product=product_instance,
-                            defaults={'quantity': po_qty}
+                            defaults={'quantity': po_qty , 'remaining_quantity' : po_qty}
                         )
                         if not created:
                             sale_order_product.quantity = po_qty

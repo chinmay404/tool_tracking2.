@@ -141,7 +141,7 @@
 
 {% else %}
 <!-- No product.is_insert condition -->
-{% if inventory_count == 0 %}
+{% if inventory_count == 0 or inventory_count == None %}
 <div class="alert alert-danger" role="alert">
   No Material In Inventory
 </div>
@@ -181,7 +181,7 @@
 </form>
 {% endif %}
 {% else %}
-<form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}"></form>
+<form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
   {% csrf_token %}
   <div class="form-group">
     <label for="new_uuid">Add a UUID:</label>
