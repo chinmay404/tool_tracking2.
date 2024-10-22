@@ -67,7 +67,8 @@ def get_product_details(request, uuid):
 def activate_product(request, old_uuid, new_uuid):
     try:
         print(f"NEW ID : {new_uuid} {old_uuid}")
-        if Master.objects.filter(uuid=new_uuid).exists() and is_valid_id(new_uuid):
+        # if Master.objects.filter(uuid=new_uuid).exists() and is_valid_id(new_uuid):
+        if Master.objects.filter(uuid=new_uuid).exists() :
             messages.error(
                 request, f'UUID {new_uuid} is already in use. Please scan another qr code.')
         else:

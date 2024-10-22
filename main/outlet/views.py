@@ -150,7 +150,8 @@ def add_uuid(request, order_no, MaterialCode):
     if request.method == 'POST':
         new_uuid = request.POST.get('new_uuid')
         entered_weight = request.POST.get('entered_weight', 0.0)
-        if Master.objects.filter(uuid=new_uuid).exists():
+        x = False
+        if x :
             messages.error(request, f"Error: The UUID '{new_uuid}' already exists.")
             return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
         else : 
