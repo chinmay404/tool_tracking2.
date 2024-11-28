@@ -115,10 +115,12 @@ def master_detail(request, uuid):
 
 def group_details(request, group_id):
     group_id_numeric = group_id.split('-')[1]
+    print(group_id_numeric)
     group = get_object_or_404(SaleOrderGroup, group_id=group_id_numeric)
     sale_orders = SaleOrder.objects.filter(group_id=group_id_numeric)
 
     tracking_id = group.tracking_id
+    print(tracking_id)
     vehicle_group = None
 
     try:
@@ -148,9 +150,10 @@ def group_details(request, group_id):
                         'Quantity': 0,
                         'UIds': [],
                     }
-
-                products_summary[material_code]['Quantity'] += product.quantity
-
+                if product.product.material_UOM == "NOS":
+                    products_summary[material_code]['Quantity'] += product.quantity
+                
+                uid_count = 0
                 for uid in product.uuids:
                     for uid_key, quantity in uid.items():
                         uid_info = {
@@ -159,8 +162,12 @@ def group_details(request, group_id):
                         }
                         products_summary[material_code]['UIds'].append(
                             uid_info)
-
+                        uid_count = uid_count +1 
+                if product.product.material_UOM != "NOS":
+                    products_summary[material_code]['Quantity'] += uid_count
+                    
             for product_summary in products_summary.values():
+                print(f"Product Summury : {product_summary}")
                 data['OrderSummary'].append(product_summary)
 
         return JsonResponse(data)

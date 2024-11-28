@@ -151,10 +151,11 @@ def add_uuid(request, order_no, MaterialCode):
         new_uuid = request.POST.get('new_uuid')
         entered_weight = request.POST.get('entered_weight', 0.0)
         x = False
-        if x :
-            messages.error(request, f"Error: The UUID '{new_uuid}' already exists.")
+        if x:
+            messages.error(
+                request, f"Error: The UUID '{new_uuid}' already exists.")
             return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
-        else : 
+        else:
             print(f"NEW UUID : {new_uuid} . ENTERD WEIGHT : {entered_weight}")
             sale_order = get_object_or_404(SaleOrder, order_no=order_no)
             sale_order_product = get_object_or_404(
@@ -168,7 +169,7 @@ def add_uuid(request, order_no, MaterialCode):
                 if sale_order_product.remaining_quantity == 0 and sale_order_product.product.is_insert:
                     print("IN HOLDING UUIDS")
                     add_holding_uuid(request, order_no, sale_order_product_id,
-                                    new_uuid, sale_order_product, sale_order)
+                                     new_uuid, sale_order_product, sale_order)
                     return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
                 else:
                     if sale_order_product.product.is_insert and sale_order_product.remaining_quantity > 0:
@@ -202,12 +203,13 @@ def handle_weight_based_product(request, order_no, MaterialCode, new_uuid, enter
     try:
         remaining_weight = sale_order_product.remaning_weight
         print(f"REMAINING WEIGHT : {remaining_weight}")
-        if 0.9 > remaining_weight > 0:
+        if 0.5 > remaining_weight >= 0:
             sale_order_product.remaining_quantity = 0
             sale_order_product.status = 'complete'
+            sale_order.status = 'complete'
             sale_order_product.save()
             messages.success(
-                request, 'Sale order product marked as complete. With Some Very Minor Buffer ')
+                request, 'Sale order product marked as complete. With Some Very Minor Buffer In Case buffer is below 0.5 ')
 
         else:
             print(entered_weight)
@@ -222,12 +224,14 @@ def handle_weight_based_product(request, order_no, MaterialCode, new_uuid, enter
                 print("PRINT 1 : ", entered_weight, remaining_weight)
                 masters = Master.objects.filter(
                     product=sale_order_product.product, status='active', initial_weight=True
-                ).order_by('added_date')
+                ).order_by('added_date').first()
+                master = masters
                 deductions = []
 
-                for master in masters:
+                if master:
                     if remaining_weight <= 0.0:
-                        break
+                        messages.info(
+                            request, "Weight Already reached to 0.0 ")
                     if master.weight > 0.0:
                         deductable_weight = min(
                             master.weight, remaining_weight, entered_weight)
