@@ -161,7 +161,9 @@ def create_product_index_item(product_index, product_item, logger):
                 )
                 created = True
                 print(product.material_UOM)
-
+            else : 
+                product.is_insert = is_insert
+                product.save()
             if created:
                 logger.info(f"[API] Product Created : {material_name}")
             else:
