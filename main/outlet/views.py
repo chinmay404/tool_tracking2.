@@ -189,7 +189,8 @@ def add_uuid(request, order_no, MaterialCode):
             else:
                 try:
                     sack_weight = request.POST.get('sack_weight')
-                    print(sack_weight)
+                    if sack_weight == '':
+                        sack_weight = 0.0
                     handle_weight_based_product(
                         request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order, sack_weight)
                 except Exception as e:

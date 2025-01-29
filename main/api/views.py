@@ -77,7 +77,7 @@ def activate_product(request, old_uuid, new_uuid):
             # if request.user.has_perm('inlet.change_master'):
             if True:
                 if master_product.status == 'active' and 'activation' in master_product.data_json:
-                    message.error(
+                    messages.error(
                         request, f'Product with UUID {new_uuid} is already active.')
                 else:
                     activator_name = request.user.username
@@ -130,8 +130,16 @@ def activate_product(request, old_uuid, new_uuid):
                             product.in_progress_masters_count = max(
                                 0, product.in_progress_masters_count - 1)
                         else:
-                            product.active_count = + 1
-                            product.in_progress_masters_count -= 1
+                            product.active_count = product.active_count + 1
+                            print( product.in_progress_masters_count )
+                            if product.in_progress_masters_count == 0: 
+                                pass
+                            else: 
+                                try:
+                                    product.in_progress_masters_count = product.in_progress_masters_count - 1
+                                except Exception as e:
+                                    print(f"ERROR IN IN PROGRESS COUNT : {e}")
+                                    product.in_progress_masters_count = 0
                             print(f"ACTIVAE COUNT : {product.active_count}")
                             print(
                                 f"IN PROGRESS COUNT : {product.in_progress_masters_count}")
@@ -346,6 +354,9 @@ def activate_via_btach_single_product(request, batch_id, MaterialCode):
                 print(f"OLD UUID : {master.uuid}  NEW UUID : {new_uuid} ")
                 done = activate_product(request, master.uuid, new_uuid)
                 if done:
+                    # if product_index_item.unactive_count < 0:
+                    #     product_index_item.unactive_count = 0
+                    #     product_index_item.save()
                     product_index_item.unactive_count = product_index_item.unactive_count-1
                     product_index_item.save()
                     count = count + 1

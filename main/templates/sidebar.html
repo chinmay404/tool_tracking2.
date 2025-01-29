@@ -6,39 +6,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Sidebar</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-bg: #1e2a38;
+            --sidebar-hover: #2c3e50;
+            --text-color: #ecf0f1;
+            --border-color: #34495e;
+            --scrollbar-bg: #2c3e50;
+            --scrollbar-thumb: #3498db;
+        }
+
         body {
-            font-family: "Ubuntu", sans-serif;
+            font-family: 'Ubuntu', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f3f4f6;
             overflow-x: hidden;
-            /* Hide scrollbar */
         }
 
         .sidebar {
-            width: 280px;
-            /* Adjusted width */
-            background-color: #222e3c;
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
             padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             position: fixed;
             top: 0;
             left: 0;
             height: 100%;
             overflow-y: auto;
-            color: #fff;
-            /* transition: all 0.3s ease; */
+            color: var(--text-color);
+            transition: all 0.3s ease;
         }
-
-        /* .sidebar:hover {
-            width: 280px;
-        } */
 
         .sidebar img {
             max-width: 100%;
             margin-bottom: 20px;
+            border-radius: 10px;
         }
 
         .menu-group {
@@ -46,175 +51,163 @@
         }
 
         .menuheading {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            color: #fffcfc;
+            color: var(--text-color);
             margin-bottom: 10px;
-            border-bottom: 1px solid #44566c;
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .menu {
-            display: block;
-            color: #fff;
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
             text-decoration: none;
             margin-bottom: 5px;
             padding: 10px;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
             border-radius: 5px;
         }
 
         .menu i {
             margin-right: 10px;
+            width: 20px;
+            text-align: center;
         }
 
         .menu:hover {
-            background-color: #1e2b38;
+            background-color: var(--sidebar-hover);
+            transform: translateX(5px);
         }
 
         hr {
             margin: 20px 0;
             border: 0;
-            border-top: 1px solid #44566c;
+            border-top: 1px solid var(--border-color);
         }
 
-        #style-2::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            background-color: #534d4d;
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
         }
 
-        #style-2::-webkit-scrollbar {
-            width: 12px;
-            background-color: #F5F5F5;
+        .sidebar::-webkit-scrollbar-track {
+            background-color: var(--scrollbar-bg);
         }
 
-        #style-2::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-            background-color: #D62929;
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background-color: #2980b9;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .sidebar:hover {
+                width: var(--sidebar-width);
+            }
+
+            .menu span {
+                display: none;
+            }
+
+            .sidebar:hover .menu span {
+                display: inline;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="sidebar">
-        <div class="scrollbar" id="style-2">
-            <div class="force-overflow">
-                <img src="{% static 'managment/src/image.png' %}" alt="ZanvarLogo">
-                {% if user.groups.first.name == 'gate_user' %}
-                <div class="menu-group">
-                    <p class="menuheading">Links</p>
-                    <a class="menu" href="{% url 'batch_verification' %}"><i class="fas fa-file-alt"></i> Batch
-                        Verification</a>
-                    <!-- <a class="menu" href="{% url 'printing' %}"><i class="fas fa-print"></i> QR Printing</a>
-                    <a class="menu" href="{% url 'api_home' %}"><i class="fas fa-cogs"></i> Activation</a>
-                    <a class="menu" href="{% url 'inlet_home' %}"><i class="fas fa-home"></i> Inlet Home</a>
-                    <a class="menu" href="{% url 'list_product_index' %}"><i class="fas fa-list-alt"></i> GRN and
-                        Individual Products</a>
-                    <a class="menu" href="{% url 'list_products' %}"><i class="fas fa-shopping-cart"></i> Products</a> -->
-                </div>
-                {% endif %}
-                {% if user.groups.first.name == 'inspection' %}
-                <div class="menu-group">
-                    <p class="menuheading">Links</p>
-                    <a class="menu" href="{% url 'printing' %}"><i class="fas fa-print"></i> QR Printing</a>
-                    <a class="menu" href="{% url 'batch_verification' %}"><i class="fas fa-file-alt"></i> Batch
-                        Verification</a>
-                    <!-- <a class="menu" href="{% url 'printing' %}"><i class="fas fa-print"></i> QR Printing</a>
-                    <a class="menu" href="{% url 'api_home' %}"><i class="fas fa-cogs"></i> Activation</a>
-                    <a class="menu" href="{% url 'inlet_home' %}"><i class="fas fa-home"></i> Inlet Home</a>
-                    <a class="menu" href="{% url 'list_product_index' %}"><i class="fas fa-list-alt"></i> GRN and
-                        Individual Products</a>
-                    <a class="menu" href="{% url 'list_products' %}"><i class="fas fa-shopping-cart"></i> Products</a> -->
-                </div>
-                {% endif %}
-                {% if user.groups.first.name == 'store_user' %}
-                <div class="menu-group">
-                    <p class="menuheading">Links</p>
-                    <a class="menu" href="{% url 'printing' %}"><i class="fas fa-print"></i> QR Printing</a>
-                    <!-- <a class="menu" href="{% url 'batch_verification' %}"><i class="fas fa-file-alt"></i> Batch
-                        Verification</a> -->
-                    <!-- <a class="menu" href="{% url 'printing' %}"><i class="fas fa-print"></i> QR Printing</a>
-                    <a class="menu" href="{% url 'api_home' %}"><i class="fas fa-cogs"></i> Activation</a>
-                    <a class="menu" href="{% url 'inlet_home' %}"><i class="fas fa-home"></i> Inlet Home</a>
-                    <a class="menu" href="{% url 'list_product_index' %}"><i class="fas fa-list-alt"></i> GRN and
-                        Individual Products</a>
-                    <a class="menu" href="{% url 'list_products' %}"><i class="fas fa-shopping-cart"></i> Products</a> -->
-                    <a class="menu" href="{% url 'api_home' %}"><i class="fas fa-cogs"></i> Activation</a>
-                    <!-- <a class="menu" href="{% url 'inlet_home' %}"><i class="fas fa-home"></i>Home</a> -->
-                    <a class="menu" href="{% url 'list_product_index' %}"><i class="fas fa-list-alt"></i> GRN and
-                        Individual Products</a>
-                    <a class="menu" href="{% url 'list_products' %}"><i class="fas fa-shopping-cart"></i> Products</a>
-                </div>
-                {% endif %}
+        <img src="{% static 'managment/src/image.png' %}" alt="ZanvarLogo">
 
-                {% if user.groups.first.name == 'admins' or user.groups.first.name == 'inlet_user' %}
-                <div class="menu-group">
-                    <p class="menuheading">Inlet Links</p>
-                    <a class="menu" href="{% url 'batch_verification' %}"><i class="fas fa-file-alt"></i> Batch
-                        Verification</a>
-                    <a class="menu" href="{% url 'printing' %}"><i class="fas fa-print"></i> QR Printing</a>
-                    <a class="menu" href="{% url 'api_home' %}"><i class="fas fa-cogs"></i> Activation</a>
-                    <!-- <a class="menu" href="{% url 'inlet_home' %}"><i class="fas fa-home"></i> Inlet Home</a> -->
-                    <a class="menu" href="{% url 'list_product_index' %}"><i class="fas fa-list-alt"></i> GRN and
-                        Individual Products</a>
-                    <a class="menu" href="{% url 'list_products' %}"><i class="fas fa-shopping-cart"></i> Products</a>
-                    <a class="menu" href="http://10.10.0.18:8500"><i class="fa-solid fa-file"></i> Inser QR PDF</a>
-                </div>
-                <hr>
-                {% endif %}
-
-                {% if user.groups.first.name == 'admins' or user.groups.first.name == 'managment_user' %}
-                <div class="menu-group">
-                    <p class="menuheading">Management Links</p>
-                    <a class="menu" href="{% url 'managment_home_black' %}"><i class="fas fa-home"></i> Management
-                        Home</a>
-                    <a class="menu" href="{% url 'inquiry' %}"><i class="fas fa-question-circle"></i> Inquiry</a>
-                    <a class="menu" href="{% url 'api_home' %}"><i class="fas fa-cogs"></i> Activation</a>
-                    <a class="menu" href="{% url 'sale_orders' %}"><i class="fas fa-shopping-basket"></i> Sale
-                        Orders</a>
-                    <a class="menu" href="{% url 'vehicle_list' %}"><i class="fas fa-truck"></i> Vehicle</a>
-                </div>
-                <hr>
-                {% endif %}
-
-                {% if user.groups.first.name == 'admins' or user.groups.first.name == 'outlet_user' %}
-                <div class="menu-group">
-                    <p class="menuheading">Outword</p>
-                    <a class="menu" href="{% url 'outlet_home' %}"><i class="fas fa-store"></i> Home</a>
-                    <a class="menu" href="{% url 'create_sale_order_group' %}"><i class="fas fa-clipboard"></i> Create Packing List</a>
-                    <a class="menu" href="{% url 'sale_order_group_history' %}"><i class="fas fa-clipboard"></i> All
-                        Packing
-                        List</a>
-                    
-                    <a class="menu" href="{% url 'veichal_allocation' %}"><i class="fas fa-truck"></i> Vehicle
-                        Allocation</a>
-                        <a class="menu" href="{% url 'veichal_allocation_history' %}"><i class="fas fa-truck"></i> Tracking ID</a>
-                        <a class="menu" href="{% url 'out_verification' %}"><i class="fas fa-check-circle"></i> Outword
-                            Verification</a>
-                    </div>
-                <hr>
-                {% endif %}
-
-                {% if user.groups.first.name == 'activators' %}
-                <div class="menu-group">
-                    <p class="menuheading">Other Links</p>
-                    <a class="menu" href="{% url 'list_batch' %}"><i class="fas fa-list"></i> List Batches</a>
-                </div>
-                {% endif %}
-                {% if user.groups.first.name == 'admins' %}
-                <div class="menu-group">
-                    <p class="menuheading">Admin Links</p>
-                    <a class="menu" href="{% url 'admin_only' %}"><i class="fas fa-cogs"></i> Admin Only</a>
-                    <a class="menu" href="{% url 'chat' %}"><i class="fas fa-cogs"></i> AI Chat</a>
-                    <a class="menu" href="{% url 'undo_view' %}"><i class="fa-solid fa-rotate-left"></i> UNDO </a>
-                </div>
-                <hr>
-                {% endif %}
-
-            </div>
+        {% if user.groups.first.name == 'gate_user' %}
+        <div class="menu-group">
+            <p class="menuheading">Links</p>
+            <a class="menu" href="{% url 'batch_verification' %}"><i class="fas fa-file-alt"></i> <span>Batch Verification</span></a>
         </div>
+        {% endif %}
+
+        {% if user.groups.first.name == 'inspection' %}
+        <div class="menu-group">
+            <p class="menuheading">Links</p>
+            <a class="menu" href="{% url 'printing' %}"><i class="fas fa-print"></i> <span>QR Printing</span></a>
+            <a class="menu" href="{% url 'batch_verification' %}"><i class="fas fa-file-alt"></i> <span>Batch Verification</span></a>
+        </div>
+        {% endif %}
+
+        {% if user.groups.first.name == 'store_user' %}
+        <div class="menu-group">
+            <p class="menuheading">Links</p>
+            <a class="menu" href="{% url 'printing' %}"><i class="fas fa-print"></i> <span>QR Printing</span></a>
+            <a class="menu" href="{% url 'api_home' %}"><i class="fas fa-cogs"></i> <span>Activation</span></a>
+            <a class="menu" href="{% url 'list_product_index' %}"><i class="fas fa-list-alt"></i> <span>GRN and Individual Products</span></a>
+            <a class="menu" href="{% url 'list_products' %}"><i class="fas fa-shopping-cart"></i> <span>Products</span></a>
+        </div>
+        {% endif %}
+
+        {% if user.groups.first.name == 'admins' or user.groups.first.name == 'inlet_user' %}
+        <div class="menu-group">
+            <p class="menuheading">Inlet Links</p>
+            <a class="menu" href="{% url 'batch_verification' %}"><i class="fas fa-file-alt"></i> <span>Batch Verification</span></a>
+            <a class="menu" href="{% url 'printing' %}"><i class="fas fa-print"></i> <span>QR Printing</span></a>
+            <a class="menu" href="{% url 'api_home' %}"><i class="fas fa-cogs"></i> <span>Activation</span></a>
+            <a class="menu" href="{% url 'list_product_index' %}"><i class="fas fa-list-alt"></i> <span>GRN and Individual Products</span></a>
+            <a class="menu" href="{% url 'list_products' %}"><i class="fas fa-shopping-cart"></i> <span>Products</span></a>
+            <a class="menu" href="http://10.10.0.18:8500"><i class="fas fa-file"></i> <span>Insert QR PDF</span></a>
+        </div>
+        <hr>
+        {% endif %}
+
+        {% if user.groups.first.name == 'admins' or user.groups.first.name == 'managment_user' %}
+        <div class="menu-group">
+            <p class="menuheading">Management Links</p>
+            <a class="menu" href="{% url 'managment_home_black' %}"><i class="fas fa-home"></i> <span>Management Home</span></a>
+            <a class="menu" href="{% url 'inquiry' %}"><i class="fas fa-question-circle"></i> <span>Inquiry</span></a>
+            <a class="menu" href="{% url 'api_home' %}"><i class="fas fa-cogs"></i> <span>Activation</span></a>
+            <a class="menu" href="{% url 'sale_orders' %}"><i class="fas fa-shopping-basket"></i> <span>Sale Orders</span></a>
+            <a class="menu" href="{% url 'vehicle_list' %}"><i class="fas fa-truck"></i> <span>Vehicle</span></a>
+        </div>
+        <hr>
+        {% endif %}
+
+        {% if user.groups.first.name == 'admins' or user.groups.first.name == 'outlet_user' %}
+        <div class="menu-group">
+            <p class="menuheading">Outward</p>
+            <a class="menu" href="{% url 'outlet_home' %}"><i class="fas fa-store"></i> <span>Home</span></a>
+            <a class="menu" href="{% url 'create_sale_order_group' %}"><i class="fas fa-clipboard"></i> <span>Create Packing List</span></a>
+            <a class="menu" href="{% url 'sale_order_group_history' %}"><i class="fas fa-clipboard"></i> <span>All Packing List</span></a>
+            <a class="menu" href="{% url 'veichal_allocation' %}"><i class="fas fa-truck"></i> <span>Vehicle Allocation</span></a>
+            <a class="menu" href="{% url 'veichal_allocation_history' %}"><i class="fas fa-truck"></i> <span>Tracking ID</span></a>
+            <a class="menu" href="{% url 'out_verification' %}"><i class="fas fa-check-circle"></i> <span>Outward Verification</span></a>
+        </div>
+        <hr>
+        {% endif %}
+
+        {% if user.groups.first.name == 'activators' %}
+        <div class="menu-group">
+            <p class="menuheading">Other Links</p>
+            <a class="menu" href="{% url 'list_batch' %}"><i class="fas fa-list"></i> <span>List Batches</span></a>
+        </div>
+        {% endif %}
+
+        {% if user.groups.first.name == 'admins' %}
+        <div class="menu-group">
+            <p class="menuheading">Admin Links</p>
+            <a class="menu" href="{% url 'admin_only' %}"><i class="fas fa-cogs"></i> <span>Admin Only</span></a>
+            <a class="menu" href="{% url 'chat' %}"><i class="fas fa-comments"></i> <span>AI Chat</span></a>
+            <a class="menu" href="{% url 'undo_view' %}"><i class="fas fa-undo"></i> <span>UNDO</span></a>
+        </div>
+        {% endif %}
     </div>
 </body>
 
