@@ -54,10 +54,26 @@ def get_product_details(request, uuid):
         return Response({"message": "Master object not found"}, status=404)
 
 
-# def is_valid_id(id_str):
-#     if re.match("^[0-9a-fA-F]{16}$", id_str):
-#         return True
-#     return False
+def is_valid_id(id_str):
+        pattern = r'^[A-Za-z0-9]{12}(\d{4})$'
+
+        match = re.match(pattern, id_str)
+        
+        if not match:
+            return False, "Identifier must be 16 characters: 12 alphanumeric followed by 4 digits."
+
+        year_code = match.group(1)  
+        
+        current_year_int = datetime.datetime.now().year
+        current_year = str(current_year_int)[2:]
+        prev_year = str(current_year_int - 1)[2:]  
+        valid_year_code = current_year+prev_year
+        print(valid_year_code)
+        if year_code == valid_year_code:
+            print(year_code , valid_year_code)
+            return True, "ID is valid."
+        else:
+            return False, f"ID is not valid."
 
 
 # PRODUCTS GETS ACTIVATED BELOW !!!!
@@ -71,6 +87,8 @@ def activate_product(request, old_uuid, new_uuid):
         if Master.objects.filter(uuid=new_uuid).exists() :
             messages.error(
                 request, f'UUID {new_uuid} is already in use. Please scan another qr code.')
+        elif not is_valid_id(new_uuid):
+            messages.error(request, f'UUID {new_uuid} is in InValid Format  ')
         else:
             master_product = get_object_or_404(Master, uuid=old_uuid)
             print(f"REQUESTE : {request}")
