@@ -67,15 +67,20 @@ def is_valid_id(id_str):
     current_year_int = datetime.now().year
     current_month = datetime.now().month
     
-    if current_month >= 5:  # May to December
+    if current_month >= 5:  # May to December (Financial Year: "2425")
         current_fin_year = f"{str(current_year_int)[2:]}{str(current_year_int + 1)[2:]}"
-    else:  # January to April
-        current_fin_year = f"{str(current_year_int + 1)[2:]}{str(current_year_int + 2)[2:]}"
+    else:  # January to April (Financial Year: "2526")
+        current_fin_year = f"{str(current_year_int - 1)[2:]}{str(current_year_int)[2:]}"
+
 
     if year_code == current_fin_year:
+        print("ID is valid.")
         return True, "ID is valid."
     else:
+        print(f"ID is not valid. Year code '{year_code}' is incorrect (Expected: {current_fin_year}).")
         return False, f"ID is not valid. Year code '{year_code}' is incorrect (Expected: {current_fin_year})."
+
+
 
 
 
@@ -91,8 +96,10 @@ def activate_product(request, old_uuid, new_uuid):
         if Master.objects.filter(uuid=new_uuid).exists() :
             messages.error(
                 request, f'UUID {new_uuid} is already in use. Please scan another qr code.')
-        elif not is_valid_id(new_uuid):
-            messages.error(request, f'UUID {new_uuid} is in InValid Format  ')
+        is_valid, message = is_valid_id(new_uuid)
+        print(f"IS VALID : {is_valid} {message}")
+        if not is_valid:
+            messages.error(request, f'UUID {new_uuid} is in Invalid Format: {message}')
         else:
             master_product = get_object_or_404(Master, uuid=old_uuid)
             print(f"REQUESTE : {request}")
