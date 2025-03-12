@@ -69,7 +69,7 @@ def is_valid_id(id_str):
         previous_fin_year = f"{str(current_year_int - 1)[2:]}{str(current_year_int)[2:]}"
     else: 
         current_fin_year = f"{str(current_year_int - 1)[2:]}{str(current_year_int)[2:]}"
-        previous_fin_year = f"{str(current_year_int - 2)[2:]}{str(current_year_int - 1)[2:]}"
+        previous_fin_year = f"{str(current_year_int)[2:]}{str(current_year_int - 1)[2:]}"
     if year_code in [current_fin_year, previous_fin_year]:
         return True, "ID is valid."
     else:
