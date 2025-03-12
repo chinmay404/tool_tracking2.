@@ -53,36 +53,27 @@ def get_product_details(request, uuid):
     except Master.DoesNotExist:
         return Response({"message": "Master object not found"}, status=404)
 
+
 def is_valid_id(id_str):
     # Ensure the ID is exactly 16 characters long
     if len(id_str) != 16:
         return False, "Identifier must be exactly 16 characters long."
 
-    # Extract first 12 alphanumeric characters
     id_main = id_str[:12]
-    # Extract last 4 characters (which should be the financial year)
     year_code = id_str[-4:]
-
-    # Determine the current financial year
     current_year_int = datetime.now().year
     current_month = datetime.now().month
-    
-    if current_month >= 5:  # May to December (Financial Year: "2425")
+
+    if current_month >= 5:  
         current_fin_year = f"{str(current_year_int)[2:]}{str(current_year_int + 1)[2:]}"
-    else:  # January to April (Financial Year: "2526")
+        previous_fin_year = f"{str(current_year_int - 1)[2:]}{str(current_year_int)[2:]}"
+    else: 
         current_fin_year = f"{str(current_year_int - 1)[2:]}{str(current_year_int)[2:]}"
-
-
-    if year_code == current_fin_year:
-        print("ID is valid.")
+        previous_fin_year = f"{str(current_year_int - 2)[2:]}{str(current_year_int - 1)[2:]}"
+    if year_code in [current_fin_year, previous_fin_year]:
         return True, "ID is valid."
     else:
-        print(f"ID is not valid. Year code '{year_code}' is incorrect (Expected: {current_fin_year}).")
-        return False, f"ID is not valid. Year code '{year_code}' is incorrect (Expected: {current_fin_year})."
-
-
-
-
+        return False, f"ID is not valid. Year code '{year_code}' is incorrect (Expected: {current_fin_year} or {previous_fin_year})."
 
 
 # PRODUCTS GETS ACTIVATED BELOW !!!!
@@ -93,13 +84,14 @@ def activate_product(request, old_uuid, new_uuid):
     try:
         print(f"NEW ID : {new_uuid} {old_uuid}")
         # if Master.objects.filter(uuid=new_uuid).exists() and is_valid_id(new_uuid):
-        if Master.objects.filter(uuid=new_uuid).exists() :
+        if Master.objects.filter(uuid=new_uuid).exists():
             messages.error(
                 request, f'UUID {new_uuid} is already in use. Please scan another qr code.')
         is_valid, message = is_valid_id(new_uuid)
         print(f"IS VALID : {is_valid} {message}")
         if not is_valid:
-            messages.error(request, f'UUID {new_uuid} is in Invalid Format: {message}')
+            messages.error(
+                request, f'UUID {new_uuid} is in Invalid Format: {message}')
         else:
             master_product = get_object_or_404(Master, uuid=old_uuid)
             print(f"REQUESTE : {request}")
@@ -126,10 +118,10 @@ def activate_product(request, old_uuid, new_uuid):
                             is_insert=product.is_insert,
                             quantity_per_box=master_product.quantity_per_box,
                             box_capacity=master_product.box_capacity,
-                            weight = master_product.weight , 
-                            initial_weight = True
+                            weight=master_product.weight,
+                            initial_weight=True
                         )
-                    else : 
+                    else:
                         new_master = Master(
                             product=product,
                             uuid=new_uuid,
@@ -160,10 +152,10 @@ def activate_product(request, old_uuid, new_uuid):
                                 0, product.in_progress_masters_count - 1)
                         else:
                             product.active_count = product.active_count + 1
-                            print( product.in_progress_masters_count )
-                            if product.in_progress_masters_count == 0: 
+                            print(product.in_progress_masters_count)
+                            if product.in_progress_masters_count == 0:
                                 pass
-                            else: 
+                            else:
                                 try:
                                     product.in_progress_masters_count = product.in_progress_masters_count - 1
                                 except Exception as e:
@@ -352,6 +344,7 @@ def activate_via_batch(request, batch_id):
         messages.error(
             request, 'No Product Index Found. Check For Correct Input.')
         return redirect('activate_via_batch', batch_id=batch_id)
+
 
 @never_cache
 @login_required(login_url='managment/login/')
