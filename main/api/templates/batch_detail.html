@@ -219,8 +219,8 @@
           <tr>
             <td>{{ item.product.name }}</td>
             {% if item.product.material_UOM != "NOS" %}
-            <td>{{ item.requested_weight }} {{item.product.material_UOM}}</td>
-            <td>{{ item.recived_weight }} {{item.product.material_UOM}}</td>
+            <td>{{ item.requested_weight }} - {{item.product.material_UOM}}</td>
+                                                                                                                                                              <td>{{ item.recived_weight }} -                                                                                                                                                          {{item.product.material_UOM}}</td>
             {% else %}
             <td>{{ item.quantity_requested }}</td>
             <td>{{ item.quantity_received }}</td>
