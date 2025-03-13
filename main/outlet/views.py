@@ -316,6 +316,7 @@ def handle_weight_based_product(request, order_no, MaterialCode, new_uuid, enter
                             {new_uuid: entered_weight})
                         sale_order_product.uuids.append({new_uuid: entered_weight})
                         sale_order.save()
+                        sale_order_product.save()
 
                         messages.success(
                             request, f"New master created with UUID {new_uuid} and weight {entered_weight}.")

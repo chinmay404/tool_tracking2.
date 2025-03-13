@@ -1,329 +1,422 @@
 {% extends 'base1.html' %}
 {% block content %}
 <div class="container my-4">
-  <div class="card mb-4 shadow-sm border-0 rounded">
-    <h1><p style="    margin-top: 0;
-      margin-bottom: 1rem;
-      text-align: center;">{{ product.product_id }}</p></h1>
-      <hr>
+  <!-- Product Header Card -->
+  <div class="card mb-4 shadow border-0 rounded">
+    <div class="card-header bg-primary text-white py-3" style="background-color: aliceblue;">
+      <h1 class="text-center mb-0 fw-bold">{{ product.product_id }}</h1>
+    </div>
     <div class="card-body">
       <div class="row justify-content-between">
         <div class="col-md-6">
-          <p><strong>Description:</strong> {{ product.description }}</p>
-          <p><strong class="highlight">Inventory Count:</strong> {{ inventory_count }} </p>
+          <div class="mb-3">
+            <span class="text-muted">Description:</span>
+            <p class="fw-bold fs-5">{{ product.description }}</p>
+          </div>
+          <div class="mb-3">
+            <span class="text-muted">Inventory Count:</span>
+            <p class="fw-bold fs-4 text-primary">{{ inventory_count }}</p>
+          </div>
         </div>
-        <div class="col-md-6 text-right">
-          <p><strong>Added Product:</strong> {{ selected_master_uuids_count }} </p>
-          <p><strong>Sale Order Status:</strong> {{ sale_order_status }} </p>
-          <p><strong class="highlight">Is Insert:</strong> <span>{{ product.is_insert }}</span></p>
+        <div class="col-md-6">
+          <div class="mb-3">
+            <span class="text-muted">Added Product:</span>
+            <p class="fw-bold fs-5">{{ selected_master_uuids_count }}</p>
+          </div>
+          <div class="mb-3">
+            <span class="text-muted">Sale Order Status:</span>
+            <p class="fw-bold fs-5 {% if sale_order_status == 'Completed' %}text-success{% elif sale_order_status == 'Pending' %}text-warning{% else %}text-info{% endif %}">
+              {{ sale_order_status }}
+            </p>
+          </div>
+          <div class="mb-3">
+            <span class="text-muted">Is Insert:</span>
+            <p class="fw-bold fs-4 text-primary">{{ product.is_insert }}</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Product Quantities Card -->
   {% if product.material_UOM != "NOS" %}
-  <div class="card mb-4 shadow-sm border-0 rounded">
-    <center>
-      <div class="col-md-3"></div>
-      <p><strong>Available :</strong></p>
-      <p class="total-quantity">{{ sale_order_product.product.total_weight }} {{ sale_order_product.product.material_UOM}}</p>
-  
-  </center>
-  <div class="card-body">
-    <div class="row justify-content-around text-center">
-      <div class="col-md-3">
-        <p><strong>Requested Weight:</strong></p>
-        <p class="total-quantity">{{ sale_order_product.total_weight }} {{ sale_order_product.product.material_UOM}}</p>
-      </div>
-      <div class="col-md-3">
-        <p><strong>Remaining Weight:</strong></p>
-        <p class="remaining-quantity">{{ sale_order_product.remaning_weight }} {{ sale_order_product.product.material_UOM}}</p>
-      </div>
-      <div class="col-md-3">
-        <p><strong>Added Weight:</strong></p>
-        <p class="added-quantity">{{ sale_order_product.added_weight }} {{ sale_order_product.product.material_UOM}}</p>
+  <div class="card mb-4 shadow border-0 rounded">
+    <div class="card-header bg-secondary text-white py-3 text-center">
+      <h5 class="mb-0">Available: <span class="fw-bold fs-4">{{ sale_order_product.product.total_weight }} {{ sale_order_product.product.material_UOM}}</span></h5>
+    </div>
+    <div class="card-body py-4">
+      <div class="row justify-content-around text-center">
+        <div class="col-md-4 mb-3 mb-md-0">
+          <div class="p-3 border rounded bg-light h-100">
+            <h5 class="text-muted">Requested Weight</h5>
+            <p class="total-quantity mt-3">{{ sale_order_product.total_weight }} {{ sale_order_product.product.material_UOM}}</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3 mb-md-0">
+          <div class="p-3 border rounded bg-light h-100">
+            <h5 class="text-muted">Remaining Weight</h5>
+            <p class="remaining-quantity mt-3">{{ sale_order_product.remaning_weight }} {{ sale_order_product.product.material_UOM}}</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 border rounded bg-light h-100">
+            <h5 class="text-muted">Added Weight</h5>
+            <p class="added-quantity mt-3">{{ sale_order_product.added_weight }} {{ sale_order_product.product.material_UOM}}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-{% else %}
-<div class="card mb-4 shadow-sm border-0 rounded">
-  <div class="card-body">
-    <div class="row justify-content-around text-center">
-      <div class="col-md-3">
-        <p><strong>Total Quantity:</strong></p>
-        <p class="total-quantity">{{ sale_order_product.quantity }}</p>
+  {% else %}
+  <div class="card mb-4 shadow border-0 rounded">
+    <div class="card-body py-4">
+      <div class="row justify-content-around text-center">
+        <div class="col-md-4 mb-3 mb-md-0">
+          <div class="p-3 border rounded bg-light h-100">
+            <h5 class="text-muted">Total Quantity</h5>
+            <p class="total-quantity mt-3">{{ sale_order_product.quantity }}</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3 mb-md-0">
+          <div class="p-3 border rounded bg-light h-100">
+            <h5 class="text-muted">Remaining Quantity</h5>
+            <p class="remaining-quantity mt-3">{{ sale_order_product.remaining_quantity }}</p>
+          </div>
+        </div>
+        {% if product.is_insert %}
+        <div class="col-md-4">
+          <div class="p-3 border rounded bg-light h-100">
+            <h5 class="text-muted">Hold Quantity</h5>
+            <p class="hold-quantity mt-3">{{ sale_order_product.holding_quantity }}</p>
+          </div>
+        </div>
+        {% endif %}
       </div>
-      <div class="col-md-3">
-        <p><strong>Remaining Quantity:</strong></p>
-        <p class="remaining-quantity">{{ sale_order_product.remaining_quantity }}</p>
-      </div>
-      {% if product.is_insert %}
-      <div class="col-md-3">
-        <p><strong>Hold Quantity:</strong></p>
-        <p class="hold-quantity">{{ sale_order_product.holding_quantity }}</p>
-      </div>
-      {% endif %}
     </div>
   </div>
-</div>
-{% endif %}
+  {% endif %}
 
-{% if product.is_insert %}
-<center>
-  <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#claimBoxModal">
-    Claim Empty Box
-  </button>
-</center>
-{% endif %}
+  <!-- Claim Empty Box Button -->
+  {% if product.is_insert %}
+  <div class="text-center mb-4">
+    <button type="button" class="btn btn-info fw-bold" data-bs-toggle="modal" data-bs-target="#claimBoxModal">
+      <i class="bi bi-box"></i> Claim Empty Box
+    </button>
+  </div>
+  {% endif %}
 
-<!-- Modal Form -->
-<div class="modal fade" id="claimBoxModal" tabindex="-1" role="dialog" aria-labelledby="claimBoxModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="claimBoxModalLabel">Claim Empty Box</h5>
-        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button> -->
+  <!-- Modal Form -->
+  <div class="modal fade" id="claimBoxModal" tabindex="-1" role="dialog" aria-labelledby="claimBoxModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title" id="claimBoxModalLabel">Claim Empty Box</h5>
+        </div>
+        <form method="post" action="{% url 'claim_empty_box' sale_order_product.product.product_id|urlencode %}">
+          {% csrf_token %}
+          <div class="modal-body">
+            <div class="form-group mb-3">
+              <label for="uuid" class="form-label">UUID:</label>
+              <input type="text" class="form-control form-control-lg" id="uuid" name="uuid" placeholder="Scan ID Here" required>
+            </div>
+            <div class="form-group">
+              <label for="box_capacity" class="form-label">Box Capacity:</label>
+              <select class="form-select form-select-lg" id="box_capacity" name="box_capacity" required>
+                <option value="10">10</option>
+                <option value="5">5</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+          </div>
+          <input type="hidden" name="order_no" value="{{ sale_order.order_no }}">
+          <input type="hidden" name="MaterialCode" value="{{ sale_order_product.product.MaterialCode }}">
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Claim</button>
+          </div>
+        </form>
       </div>
-      <form method="post" action="{% url 'claim_empty_box' sale_order_product.product.product_id|urlencode %}">
+    </div>
+  </div>
+
+  <!-- Handling product.is_insert condition -->
+  {% if product.is_insert %}
+    {% if sale_order_product.quantity == 0 and sale_order_product.holding_quantity == 0 %}
+    <div class="alert alert-success shadow-sm" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i> All Material Added
+    </div>
+    {% else %}
+    <div class="card mb-4 shadow border-0 rounded">
+      <div class="card-body">
+        <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
+          {% csrf_token %}
+          <div class="form-group mb-3">
+            {% if sale_order_product.quantity %}
+            <label for="new_uuid" class="form-label">Add a UUID:</label>
+            <input type="text" class="form-control form-control-lg" id="new_uuid" name="new_uuid"
+              placeholder="Scan Box To Add Hold quantity In Box">
+            <div class="text-center mt-3">
+              <button type="submit" class="btn btn-primary rounded-pill fw-bold">
+                <i class="bi bi-plus-circle me-2"></i> Add Hold quantity In Box
+              </button>
+            </div>
+          </div>
+          {% elif sale_order_product.holding_quantity or sale_order_product.quantity == 0 %}
+          <label for="new_uuid" class="form-label">Add a UUID:</label>
+          <input type="text" class="form-control form-control-lg" id="new_uuid" name="new_uuid" placeholder="Scan Box To Add Quantity In box">
+          <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary rounded-pill fw-bold">
+              <i class="bi bi-plus-circle me-2"></i> Add UUID
+            </button>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+    {% endif %}
+  {% else %}
+  <!-- No product.is_insert condition -->
+  {% if inventory_count == 0 or inventory_count == None %}
+  <div class="alert alert-danger shadow-sm" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> No Material In Inventory
+  </div>
+  {% else %}
+  {% if sale_order_product.product.material_UOM != "NOS" %}
+  {% if sale_order_product.remaning_weight == 0.0 and sale_order_product.added_weight == sale_order_product.total_weight %}
+  <div class="alert alert-success shadow-sm" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i> All Material Added
+  </div>
+  {% else %}
+  <div class="card mb-4 shadow border-0 rounded">
+    <div class="card-body">
+      <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
         {% csrf_token %}
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="uuid">UUID:</label>
-            <input type="text" class="form-control" id="uuid" name="uuid" placeholder="Scan Id Here" required>
-            <label for="box_capacity">Box Capacity:</label>
-            <select class="form-control" id="box_capacity" name="box_capacity" required>
-              <option value="10">10</option>
-              <option value="5">5</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="12">12</option>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="new_uuid" class="form-label">Add a UUID:</label>
+            <input type="text" class="form-control form-control-lg" id="new_uuid" name="new_uuid">
+          </div>
+          <div class="col-md-4">
+            <label for="entered_weight" class="form-label">Enter Weight:</label>
+            <input type="text" class="form-control form-control-lg" id="entered_weight" name="entered_weight">
+          </div>
+          <div class="col-md-4">
+            <label for="sack_weight" class="form-label">Sack Weight:</label>
+            <select class="form-select form-select-lg" id="sack_weight" name="sack_weight" required>
+              <option value="0.0">0 g</option>
+              <option value="0.025">25 g</option>
+              <option value="0.050">50 g</option>
+              <option value="0.075">75 g</option>
+              <option value="0.100">100 g</option>
+              <option value="0.125">125 g</option>
+              <option value="0.150">150 g</option>
+              <option value="0.175">175 g</option>
+              <option value="0.200">200 g</option>
             </select>
           </div>
         </div>
-        <input type="hidden" name="order_no" value="{{ sale_order.order_no }}">
-        <input type="hidden" name="MaterialCode" value="{{ sale_order_product.product.MaterialCode }}">
-        <div class="modal-footer">
-          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-          <button type="submit" class="btn btn-primary">Claim</button>
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-primary rounded-pill fw-bold">
+            <i class="bi bi-plus-circle me-2"></i> Add UUID
+          </button>
         </div>
       </form>
     </div>
   </div>
-</div>
-
-<!-- Handling product.is_insert condition -->
-{% if product.is_insert %}
-{% if sale_order_product.quantity == 0 and sale_order_product.holding_quantity == 0 %}
-<div class="alert alert-success" role="alert">
-  All Material Added
-</div>
-{% else %}
-<form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
-  {% csrf_token %}
-  <div class="form-group">
-    {% if sale_order_product.quantity %}
-    <label for="new_uuid">Add a UUID:</label>
-    <input type="text" class="form-control" id="new_uuid" name="new_uuid"
-      placeholder="Scan Box To Add Hold quantity In Box">
-    <button type="submit" class="btn btn-primary mt-2 rounded-pill">Add Hold quantity In Box</button>
-  </div>
-  {% elif sale_order_product.holding_quantity or sale_order_product.quantity == 0 %}
-  <input type="text" class="form-control" id="new_uuid" name="new_uuid" placeholder="Scan Box To Add Quantity In box">
-  <button type="submit" class="btn btn-primary mt-2 rounded-pill">Add UUID</button>
+  {% endif %}
+  {% else %}
+  <div class="card mb-4 shadow border-0 rounded">
+    <div class="card-body">
+      <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+          <label for="new_uuid" class="form-label">Add a UUID:</label>
+          <input type="text" class="form-control form-control-lg" id="new_uuid" name="new_uuid" placeholder="Scan UUID here">
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary rounded-pill fw-bold">
+            <i class="bi bi-plus-circle me-2"></i> Add UUID
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
   {% endif %}
-</form>
-{% endif %}
+  {% endif %}
+  {% endif %}
 
-{% else %}
-<!-- No product.is_insert condition -->
-{% if inventory_count == 0 or inventory_count == None %}
-<div class="alert alert-danger" role="alert">
-  No Material In Inventory
-</div>
-{% else %}
-<!-- <p style="color: red;">TEMP FIELD</p>
-  -->
-{% if sale_order_product.product.material_UOM != "NOS" %}
-{% if sale_order_product.remaning_weight == 0.0 and sale_order_product.added_weight ==  sale_order_product.total_weight %}
- <p>All Material Added </p>
-{% else %}
-  <form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
-  {% csrf_token %}
-  <div class="incontainer" style = "display: flex; justify-content: space-evenly; ">
-    <div class="form-group" style = " width : 35vw;">
-      <label for="new_uuid">Add a UUID:</label>
-      <input type="text" class="form-control" id="new_uuid" name="new_uuid">
+  <!-- Save and Return Button -->
+  <form method="post" action="{% url 'save_and_return' sale_order.order_no sale_order_product.product.MaterialCode %}">
+    {% csrf_token %}
+    <div class="text-center my-4">
+      <button type="submit" class="btn btn-success rounded-pill fw-bold">
+        <i class="bi bi-check2-circle me-2"></i> Save and Return
+      </button>
     </div>
-    <div class="form-group"  style = " width : 35vw;">
-      <label for="entered_weight">Enter Weight:</label>
-      <input type="text" class="form-control" id="entered_weight" name="entered_weight">
+  </form>
+
+  <!-- Added Products Table -->
+  <div class="card mb-4 shadow border-0 rounded">
+    <div class="card-header bg-light">
+      <h5 class="mb-0 fw-bold">Added Products</h5>
     </div>
-    <div class="col-md-3">
-      <label for="sack_weight">Sack Weight:</label>
-          <select class="form-control" id="sack_weight" name="sack_weight" required>
-            <option value="0.0">0 g</option>
-            <option value="0.25">25 g</option>
-            <option value="0.50">50 g</option>
-            <option value="0.75">75 g</option>
-            <option value="0.100">100 g</option>
-            <option value="0.125">125 g</option>
-            <option value="0.150">150 g</option>
-            <option value="0.175">175 g</option>
-            <option value="0.200">200 g</option>
-          </select>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>UUID</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for uuid in selected_master_uuids %}
+            <tr>
+              <td>
+                <a href="{% url 'view_product' uuid %}" class="text-decoration-none fw-bold">{{ uuid }}</a>
+              </td>
+              <td class="text-end">
+                {% if uuid_info.status != 'deactivate' %}
+                <form method="post"
+                  action="{% url 'remove_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="removed_uuid" value="{{ uuid_info.uuid }}">
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash me-1"></i> Remove
+                  </button>
+                </form>
+                {% else %}
+                <button class="btn btn-danger btn-sm" style="display: none;">Remove</button>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-  <center><button type="submit" class="btn btn-primary rounded-pill" style="margin-top: 50px;">Add UUID</button></center>
-</form>
-{% endif %}
-{% else %}
-<form method="post" action="{% url 'add_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
-  {% csrf_token %}
-  <div class="form-group">
-    <label for="new_uuid">Add a UUID:</label>
-    <input type="text" class="form-control" id="new_uuid" name="new_uuid">
-  </div>
-  <button type="submit" class="btn btn-primary rounded-pill">Add UUID</button>
-</form>
-{% endif %}
-{% endif %}
-{% endif %}
-
-<!-- Save and Return Button -->
-{% if product.is_insert == True and sale_order_product.holding_quantity == 0 %}
-<form method="post" action="{% url 'save_and_return' sale_order.order_no sale_order_product.product.MaterialCode %}">
-  {% csrf_token %}
-  <div class="text-center mt-4">
-    <button type="submit" class="btn btn-success rounded-pill">Save and Return</button>
-  </div>
-</form>
-
-{% else %}
-<form method="post" action="{% url 'save_and_return' sale_order.order_no sale_order_product.product.MaterialCode %}">
-  {% csrf_token %}
-  <div class="text-center mt-4">
-    <button type="submit" class="btn btn-success rounded-pill">Save and Return</button>
-  </div>
-</form>
-{% endif %}
-
-</div>
-<div class="container table-responsive">
-  <h5 class="mt-3">Added Products:</h5>
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>UUID</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for uuid in selected_master_uuids %}
-      <tr>
-        <td>
-          <a href="{% url 'view_product' uuid %}">{{ uuid }}</a>
-        </td>
-        <td>
-          {% if uuid_info.status != 'deactivate' %}
-          <form method="post"
-            action="{% url 'remove_uuid' sale_order.order_no sale_order_product.product.MaterialCode %}">
-            {% csrf_token %}
-            <input type="hidden" name="removed_uuid" value="{{ uuid_info.uuid }}">
-            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-          </form>
-          {% else %}
-          <button class="btn btn-danger btn-sm" style="display: none;">Remove</button>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
 </div>
 
 <!-- Custom CSS -->
 <style>
-  .highlight {
-    font-size: 1.5em;
-    color: #007bff;
+  /* Card and UI element styling */
+  .card {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease;
+    border: none !important;
+    overflow: hidden;
   }
-
+  
+  .card-header {
+    border-bottom: none;
+  }
+  
   .btn {
     padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
   }
-
-  .btn-outline-info {
-    border-color: #17a2b8;
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
   }
-
-  .alert {
-    border-radius: 10px;
-  }
-
-  .card {
-    border-radius: 10px;
-  }
-
-  .form-control {
-    padding: 10px;
-    font-size: 1rem;
-  }
-
+  
   .rounded-pill {
     border-radius: 50px;
   }
-
-  .highlight {
-    font-size: 1.5em;
-    color: #007bff;
+  
+  .alert {
+    border-radius: 10px;
+    padding: 1rem;
+    font-weight: 500;
   }
-
+  
+  .form-control, .form-select {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #dee2e6;
+  }
+  
+  .form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+  }
+  
+  /* Quantity displays */
   .total-quantity,
   .remaining-quantity,
   .added-quantity,
   .hold-quantity {
-    font-size: 2.5em;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
   }
-
+  
   .total-quantity {
     color: #28a745;
   }
-
+  
   .remaining-quantity {
-    color: #ff0707;
+    color: #dc3545;
   }
-
+  
   .added-quantity {
     color: #000000;
   }
-
+  
   .hold-quantity {
     color: #dc3545;
   }
-
-  .btn {
-    padding: 0.75rem 1.5rem;
+  
+  /* Table styling */
+  .table {
+    margin-bottom: 0;
   }
-
-  .btn-outline-info {
-    border-color: #17a2b8;
+  
+  .table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
   }
-
+  
   .table-hover tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: rgba(0, 123, 255, 0.05);
+  }
+  
+  .table a {
+    color: #007bff;
+  }
+  
+  .table a:hover {
+    color: #0056b3;
   }
 </style>
+
+<!-- Bootstrap Icons CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
 <!-- Custom JavaScript -->
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("new_uuid").focus();
+    // Focus on UUID input when page loads
+    const uuidInput = document.getElementById("new_uuid");
+    if (uuidInput) {
+      uuidInput.focus();
+    }
+    
+    // Initialize tooltips
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    }
   });
 </script>
-
 {% endblock %}

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Tracking</title>
+    <link rel="icon" type="image/png" href="{% static 'managment/src/hariom_logo.jpg' %}">
+
+    <!-- <link rel="stylesheet" href="data_table.css"> -->
+    <!-- MAP CSS -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> -->
+    <link href="/static/bootstrap-5.3.3-dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- Bootstrap JavaScript -->
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+    <!-- DataTables Bootstrap JavaScript -->
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://kit.fontawesome.com/8c921053b9.js" crossorigin="anonymous"></script>
+    {% load static %}
+    <style>
+            .container {
+        min-width: 80vw;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+        /* Dark Mode Styles */
+        .dark-mode body {
+            background-color: #222;
+            color: #ddd;
+        }
+
+        .dark-mode .topnav {
+            background-color: #333;
+        }
+
+        .dark-mode .content {
+            background-color: #333;
+        }
+
+        .dark-mode a {
+            color: #ddd;
+        }
+
+        .dark-mode a:hover {
+            color: #fff;
+        }
+
+        /* Add transitions for smoother dark mode switch */
+        .dark-mode body,
+        .dark-mode .topnav,
+        .dark-mode .content,
+        .dark-mode a {
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: #222e3c;
+            color: #fff;
+        }
+
+        .sidebar a {
+            color: #e9ecef80;
+        }
+
+        .sidebar a:hover {
+            color: #ffffff;
+        }
+
+        /* Top Navigation Styles */
+        .topnav {
+            background-color: #ffffff;
+        }
+
+        .topnav input {
+            background: #f5f7fb;
+        }
+
+        /* Dropdown Styles */
+
+        .dropdown-menu a:hover {
+            color: #838383;
+        }
+
+        /* Account Image Styles */
+        .accountimg {
+            color: #ffffff;
+        }
+
+        /* Alert Styles */
+
+
+        /* Custom Alert Styles */
+
+        .dark-mode {
+            background-color: #222;
+            color: #ddd;
+        }
+
+        .dark-mode .body {
+            background-color: #404040;
+        }
+
+        .dark-mode .topnav {
+            background-color: #333;
+        }
+
+        .dark-mode .content {
+            background-color: #333;
+        }
+
+        .dark-mode a {
+            color: #ddd;
+        }
+
+        .dark-mode a:hover {
+            color: #fff;
+        }
+
+        /* Add transitions for smoother dark mode switch */
+        body,
+        .topnav,
+        .content,
+        a {
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Ubuntu", sans-serif;
+            font-size: 14px;
+        }
+
+        .dark-mode {
+            background-color: black;
+            color: white;
+        }
+
+        .sidebar {
+            position: fixed;
+            font-family: "Ubuntu", sans-serif;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #222e3c;
+            color: #fff;
+            padding-top: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .menu img {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            vertical-align: middle;
+            transition: all 0.3s ease;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: #e9ecef80;
+            font-size: 14px;
+            font-family: Verdana, serif;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            text-align: left;
+        }
+
+        .sidebar a:hover {
+            color: #ffffff;
+            /* background-color: #0a425c; */
+        }
+
+        .menu i {
+            margin-right: 10px;
+        }
+
+        .sidebar p {
+            margin: 0px;
+        }
+
+        .topnav {
+            background-color: #ffffff;
+            padding: 0px;
+            margin-left: 0px;
+        }
+
+        .topnav nav {
+            display: flex;
+            align-items: center;
+            padding: 14px 22px 14px 22px;
+        }
+
+        .topnav input {
+            background: #f5f7fb;
+            border: none;
+            border-radius: 25px;
+            height: 37px;
+            flex: 1;
+            margin-right: 10px;
+            width: 500px;
+        }
+
+        .topnav input::placeholder {
+            font-family: Verdana, sans-serif;
+            font-size: 14px;
+        }
+
+        .topnav button {
+            border: none;
+            background-color: white;
+        }
+
+        .body {
+            padding: 20px;
+            background-color: #f5f7fb;
+            
+        }
+
+        .menuheading {
+            font-size: 16px;
+            padding: 24px 24px 6px;
+            text-align: center;
+            color: #e3e4e6;
+            font-family: Verdana, serif;
+        }
+
+        .menu {
+            text-align: center;
+        }
+
+        .menu img {
+            padding: 0px;
+            margin: 0px 12px 0px 0px;
+        }
+
+        .smaller-badge {
+            font-size: 10px;
+        }
+
+        /* Custom CSS to make bg-danger darker */
+        .bg-danger {
+            background-color: #8B0000;
+            /* Dark red color, you can adjust this to your preference */
+        }
+
+        /* Optional: Make the text white for better contrast */
+        .bg-danger,
+        .bg-danger>* {
+            color: #fff;
+        }
+
+        .modal-header,
+        .modal-body {
+            font-family: Verdana, sans-serif;
+            font-size: 14px;
+        }
+
+        .dropdown-item {
+            font-family: Verdana, sans-serif;
+            font-size: 12px;
+        }
+
+        .accountimg {
+            margin-left: 20px;
+
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner-container {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        #loading-spinner {
+            width: 500px;
+            /* height: 500px; */
+        }
+
+        .sidebar a {
+            text-align: left;
+            font-size: 15px;
+            padding: 12px;
+        }
+
+        .message-container {
+            position: fixed;
+            top: 80px;
+            /* Adjust the top position as needed */
+            left: 55%;
+            transform: translateX(-50%);
+            min-width: 30vw;
+            z-index: 10;
+        }
+
+        /* .alert {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            margin-top: 10px;
+
+        } */
+
+        .alert.incoming {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .custom-alert {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .custom-alert.success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .custom-alert.info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+
+        .custom-alert.warning {
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+            color: #856404;
+        }
+
+        .custom-alert.error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        #style-2::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            background-color: #F5F5F5;
+        }
+
+        #style-2::-webkit-scrollbar {
+            width: 12px;
+            background-color: #F5F5F5;
+        }
+
+        #style-2::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            background-color: #D62929;
+        }
+
+        footer {
+            /* position: absolute; */
+            bottom: 0;
+            width: 100%;
+            background-color: rgb(236, 236, 236);
+            margin-top: 30px;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="scrollbar" id="style-2">
+        <div class="force-overflow">
+
+            <!-- <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner-container">
+            <!-- <img src="{% static 'managment/src/image.png' %}" alt="ZanvarLogo"> -->
+            <!-- 
+             
+         -->
+            {% include 'sidebar.html' %}
+            <!-- Main Content -->
+            <div class="content">
+
+                <!-- Top Navigation Bar in the content area -->
+                <div class="topnav">
+                    <nav>
+                        <form class="d-flex">
+                            {% csrf_token %}
+                            <input type="search" placeholder="  Search.." aria-label="Search" class="form-control">
+                            <button type="submit"></button>
+                        </form>
+
+                        <!-- <button onclick="Darkmode()">Toggle dark mode</button> -->
+                        <button type="button" class="position-relative ms-auto notificationbtn" data-bs-toggle="modal"
+                            data-bs-target="#notificationModal">
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger smaller-badge">
+                                0
+                                <span class="visually-hidden">Notifications</span>
+                            </span>
+                        </button>
+                        <!-- Notification Modal -->
+                        <div class="modal fade" id="notificationModal" tabindex="-1"
+                            aria-labelledby="notificationModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+                                        <button type="button" class="btn-close bg-danger" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Notification content goes here.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Updated Dropdown -->
+                        <div class="dropdown dropdown-user">
+                            <a class="dropdown-toggle accountimg" href="#" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-expanded="false" style="color: black;">
+                                {{ request.user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">Help Center</a></li>
+                                <hr class="dropdown-divider">
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+
+                <div class="message-container">
+                    {% for message in messages %}
+                    <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="body" style="min-height: 100vh;">
+                    {% block content %}{% endblock %}
+                    <!-- <footer>
+                        <div class="container text-left">
+                            <p>&copy; 2024 Harion. All rights reserved.</p>
+                        </div>
+                    </footer> -->
+                </div>
+
+            </div>
+            <!-- {% include 'footer.html' %} -->
+
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const alerts = document.querySelectorAll('.custom-alert');
+                    alerts.forEach(function (alert) {
+                        setTimeout(function () {
+                            alert.style.display = 'none';
+                        }, 3000); // 10 seconds
+                    });
+
+                    const closeButtons = document.querySelectorAll('.custom-alert .close');
+                    closeButtons.forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            this.parentElement.style.display = 'none';
+                        });
+                    });
+                });
+
+                $(document).ready(function () {
+                    $("#loading-overlay").show();
+                    $(window).on("load", function () {
+                        $("#loading-overlay").hide();
+                    });
+                });
+                function showToast(message, type) {
+                    console.log('Tosify Called ')
+                    Toastify({
+                        text: message,
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: type === "success" ? "#28a745" : "#dc3545",
+                    }).showToast();
+                }
+                document.addEventListener('DOMContentLoaded', function () {
+                    var alerts = document.querySelectorAll('.message-container .alert');
+                    alerts.forEach(function (alert, index) {
+                        setTimeout(function () {
+                            alert.classList.add('incoming');
+                        }, index * 500);
+                    });
+
+                });
+                history.pushState(null, null, window.location.href);
+                window.addEventListener('popstate', function () {
+                    history.pushState(null, null, window.location.href);
+                });
+                window.addEventListener('load', function () {
+                    var loadingOverlay = document.getElementById('loading-overlay');
+                    loadingOverlay.style.display = 'flex'; // Show the loading overlay
+                });
+
+                // Hide loading overlay when page finishes loading
+                window.addEventListener('DOMContentLoaded', function () {
+                    var loadingOverlay = document.getElementById('loading-overlay');
+                    loadingOverlay.style.display = 'none'; // Hide the loading overlay
+                });
+                window.addEventListener('load', function () {
+                    var loadingOverlay = document.getElementById('loading-overlay');
+                    loadingOverlay.style.display = 'flex'; // Show the loading overlay
+                });
+                function Darkmode() {
+                    var element = document.body;
+                    element.classList.toggle("dark-mode");
+                }
+
+                // Simulate loading delay
+                // 3000 milliseconds (3 seconds) delay
+            </script>
+
+            <!-- <footer style="background-color: rgb(236, 236, 236); padding-left: 123px;">
+            <hr>
+            <div class="container text-left">
+                <p>&copy; 2024 Harion. All rights reserved.</p>
+            </div>
+        </footer>    -->
+</body>
+
+</html>
