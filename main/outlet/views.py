@@ -1,3 +1,8 @@
+from .forms import UnitFilterForm
+from .models import SaleOrder, SaleOrderGroup, Unit
+from django.db.models import Q
+from django.shortcuts import render
+from django.core.paginator import Paginator
 from django.shortcuts import render, HttpResponse, get_object_or_404, redirect, reverse
 from .forms import *
 from managment.models import Vehicle
@@ -509,6 +514,10 @@ def save_and_return(request, order_no, MaterialCode):
             if sale_order_product.remaining_quantity == 0 and sale_order_product.holding_quantity == 0:
                 sale_order_product.status = 'complete'
                 sale_order_product.save()
+        elif sale_order_product.product.material_UOM != "NOS":
+            if sale_order_product.remaning_weight == 0:
+                sale_order_product.status = 'complete'
+                sale_order_product.save()
         else:
             if sale_order_product.quantity == len(sale_order_product.uuids):
                 sale_order_product.status = 'complete'
@@ -813,55 +822,37 @@ def done_verification(request, group_id):
 #         return render(request, 'sale_order_group.html', context)
 
 
-from django.core.paginator import Paginator
-from django.http import JsonResponse
-from django.shortcuts import render
-from django.db.models import Q
-from .models import SaleOrder, SaleOrderGroup, Unit
-from .forms import UnitFilterForm
-
 def create_sale_order_group(request):
     units = Unit.objects.all()
     form = UnitFilterForm(request.POST or None)
+
     sale_orders_without_group = SaleOrder.objects.filter(
         Q(status='complete') | Q(status='pending'), group_id=None
     )
-    sale_order_groups = SaleOrderGroup.objects.all()
 
-    # Apply filtering if a unit is selected
-    if request.method == 'POST' and form.is_valid():
-        selected_unit = form.cleaned_data['unitFilter']
+    if request.method == "POST" and form.is_valid():
+        selected_unit = form.cleaned_data["unitFilter"]
         if selected_unit:
-            sale_orders_without_group = sale_orders_without_group.filter(unit=selected_unit.name)
-    paginator = Paginator(sale_orders_without_group, 10)  
+            sale_orders_without_group = sale_orders_without_group.filter(
+                unit=selected_unit.name)
+
     page_number = request.GET.get("page", 1)
+    paginator = Paginator(sale_orders_without_group, 10)
     sale_orders_page = paginator.get_page(page_number)
 
-    # Handling AJAX request for pagination
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse({
-            "sale_orders": [
-                {
-                    "unit": order.unit.name,
-                    "po_number": order.po_number,
-                    "order_no": order.order_no,
-                    "status": order.status,
-                }
-                for order in sale_orders_page
-            ],
-            "has_next": sale_orders_page.has_next(),
-            "has_previous": sale_orders_page.has_previous(),
-            "page_number": sale_orders_page.number,
-            "total_pages": paginator.num_pages,
-        })
+    # Handle selected sale orders submission
+    selected_orders = request.POST.get("selected_sale_orders")
+    selected_orders_list = []
+    if selected_orders:
+        selected_orders_list = json.loads(selected_orders)
 
     context = {
-        'form': form,
-        'sale_orders': sale_orders_page,
-        'sale_order_groups': sale_order_groups,
-        'units': units,
+        "form": form,
+        "sale_orders": sale_orders_page,
+        "units": units,
+        "selected_orders": selected_orders_list,
     }
-    return render(request, 'sale_order_group.html', context)
+    return render(request, "sale_order_group.html", context)
 
 
 def create_group_for_selected_orders(request):
