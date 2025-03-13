@@ -163,9 +163,9 @@ def group_details(request, group_id):
                         products_summary[material_code]['UIds'].append(uid_info)
                         uid_count = uid_count + 1
                 
-                # For non-NOS materials, set the quantity as the count of UUIDs
                 if product.product.material_UOM != "NOS":
                     products_summary[material_code]['Quantity'] = uid_count
+                    products_summary["UIds"] = uid_info
 
             # Append all the product summaries
             for product_summary in products_summary.values():
