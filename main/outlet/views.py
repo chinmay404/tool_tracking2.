@@ -178,9 +178,9 @@ def add_uuid(request, order_no, MaterialCode):
     if request.method == 'POST':
         new_uuid = request.POST.get('new_uuid')
         entered_weight = request.POST.get('entered_weight', 0.0)
-        if not is_valid_id(new_uuid):
-            messages.error(
-                request, f"Error: The UUID '{new_uuid}' is not correct .")
+        x , mes = is_valid_id(new_uuid)
+        if not x:
+            messages.error(request, f"Error: The UUID '{new_uuid}' is not correct. {mes}")
             return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
         else:
             print(f"NEW UUID : {new_uuid} . ENTERD WEIGHT : {entered_weight}")
@@ -227,7 +227,8 @@ def add_uuid(request, order_no, MaterialCode):
 
 
 def handle_weight_based_product(request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order, sack_weight):
-    if is_valid_id(new_uuid):
+    x , mes = is_valid_id(new_uuid)
+    if x :
         if Master.objects.filter(uuid=new_uuid).exists():
             messages.error(request, f"Error: The UUID '{new_uuid}' already exists.")
         else:
@@ -323,7 +324,7 @@ def handle_weight_based_product(request, order_no, MaterialCode, new_uuid, enter
             except Exception as e:
                 messages.error(request, f"Error handling weight-based product: {e}")
     else:
-        messages.error(request, f"Error: The UUID '{new_uuid}' is invalid.")
+        messages.error(request, f"Error: The UUID '{new_uuid}' is invalid. {mes}")
 
 def add_holding_uuid(request, order_no, MaterialCode, new_uuid, sale_order_product, sale_order):
     print("IN HOLDING")
