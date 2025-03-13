@@ -140,7 +140,7 @@ def claim_empty_box(request, product_id):
             box_capacity = int(request.POST.get('box_capacity'))
 
             # Check if the provided UUID is valid
-            if not is_valid_short_uuid(uuid_input):
+            if not is_valid_id(uuid_input):
                 messages.error(
                     request, f'Provided Box ID is Invalid : {uuid_input}')
             elif Master.objects.filter(uuid=uuid_input).exists():
@@ -177,7 +177,7 @@ def add_uuid(request, order_no, MaterialCode):
     if request.method == 'POST':
         new_uuid = request.POST.get('new_uuid')
         entered_weight = request.POST.get('entered_weight', 0.0)
-        x = is_valid_short_uuid(new_uuid)
+        x = is_valid_id(new_uuid)
         if not x:
             messages.error(
                 request, f"Error: The UUID '{new_uuid}' already exists.")
