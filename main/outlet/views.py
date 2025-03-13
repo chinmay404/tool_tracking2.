@@ -17,6 +17,7 @@ from managment.decorators import unauth_user, allowed_users
 from django.db.models import Sum, Count, Max, F, Value, Q
 from .gen_pdf import pdf
 from django.db import IntegrityError, transaction
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import json
 import uuid
 import calendar
@@ -825,20 +826,36 @@ def done_verification(request, group_id):
 def create_sale_order_group(request):
     units = Unit.objects.all()
     form = UnitFilterForm(request.POST or None)
+    search_query = request.GET.get('search', '')
 
+    # Base queryset - orders without a group and with proper status
     sale_orders_without_group = SaleOrder.objects.filter(
         Q(status='complete') | Q(status='pending'), group_id=None
     )
 
+    # Apply unit filter if submitted
     if request.method == "POST" and form.is_valid():
         selected_unit = form.cleaned_data["unitFilter"]
         if selected_unit:
             sale_orders_without_group = sale_orders_without_group.filter(
                 unit=selected_unit.name)
+    
+    # Apply search filter if provided
+    if search_query:
+        sale_orders_without_group = sale_orders_without_group.filter(
+            Q(unit__icontains=search_query) | 
+            Q(po_number__icontains=search_query) | 
+            Q(order_no__icontains=search_query)
+        )
 
+    # Pagination
     page_number = request.GET.get("page", 1)
     paginator = Paginator(sale_orders_without_group, 10)
-    sale_orders_page = paginator.get_page(page_number)
+    
+    try:
+        sale_orders_page = paginator.get_page(page_number)
+    except (PageNotAnInteger, EmptyPage):
+        sale_orders_page = paginator.get_page(1)
 
     # Handle selected sale orders submission
     selected_orders = request.POST.get("selected_sale_orders")
@@ -851,6 +868,7 @@ def create_sale_order_group(request):
         "sale_orders": sale_orders_page,
         "units": units,
         "selected_orders": selected_orders_list,
+        "search_query": search_query,  # Pass the search query to template
     }
     return render(request, "sale_order_group.html", context)
 
