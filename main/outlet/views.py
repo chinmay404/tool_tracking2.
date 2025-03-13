@@ -27,7 +27,8 @@ from .qr_gen import single_qr
 from units.models import Unit
 from django.utils import timezone
 from django.http import HttpResponseRedirect
-import datetime
+import datetime 
+
 import qrcode
 import re
 from urllib.parse import unquote
@@ -40,8 +41,8 @@ def is_valid_id(id_str):
 
     id_main = id_str[:12]
     year_code = id_str[-4:]
-    current_year_int = datetime.now().year
-    current_month = datetime.now().month
+    current_year_int = datetime.datetime.now().year
+    current_month = datetime.datetime.now().month
 
     if current_month >= 5:  
         current_fin_year = f"{str(current_year_int)[2:]}{str(current_year_int + 1)[2:]}"
