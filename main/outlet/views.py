@@ -152,7 +152,6 @@ def claim_empty_box(request, product_id):
 @login_required(login_url='managment/login/')
 @allowed_users(allowed_roles=['admins', 'outlet_user',])
 def add_uuid(request, order_no, MaterialCode):
-    print(request)
     if request.method == 'POST':
         new_uuid = request.POST.get('new_uuid')
         entered_weight = request.POST.get('entered_weight', 0.0)
@@ -197,8 +196,7 @@ def add_uuid(request, order_no, MaterialCode):
                     sack_weight = request.POST.get('sack_weight')
                     if sack_weight == '':
                         sack_weight = 0.0
-                    handle_weight_based_product(
-                        request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order, sack_weight)
+                    handle_weight_based_product(request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order, sack_weight)
                 except Exception as e:
                     messages.error(request, f"Error in ADD UUID : {e}")
                     print(e)
@@ -207,97 +205,100 @@ def add_uuid(request, order_no, MaterialCode):
 
 
 def handle_weight_based_product(request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order, sack_weight):
-    try:
-        remaining_weight = sale_order_product.remaning_weight
-        print(f"REMAINING WEIGHT : {remaining_weight}")
-        if 0.5 > remaining_weight >= 0:
-            sale_order_product.remaining_quantity = 0
-            sale_order_product.status = 'complete'
-            sale_order.status = 'complete'
-            sale_order_product.save()
-            messages.success(
-                request, 'Sale order product marked as complete. With Some Very Minor Buffer In Case buffer is below 0.5 ')
-
-        else:
-            print(entered_weight)
-            entered_weight = float(entered_weight) - float(sack_weight)
-            final_weight = round(entered_weight, 2)
-            print(
-                f"FInal Weignt : {entered_weight} , SAck Weight : {sack_weight}")
-            print(remaining_weight)
-            if sale_order_product.product.total_weight < entered_weight:
-                messages.error(request, f"Inventory Has Not Enough Material")
-            else:
-                print("PRINT 1 : ", entered_weight, remaining_weight)
-                masters = Master.objects.filter(
-                    product=sale_order_product.product, status='active', initial_weight=True
-                ).order_by('added_date').first()
-                master = masters
-                deductions = []
-
-                if master:
-                    if remaining_weight <= 0.0:
-                        messages.info(
-                            request, "Weight Already reached to 0.0 ")
-                    if master.weight > 0.0:
-                        deductable_weight = min(
-                            master.weight, remaining_weight, entered_weight)
-                        print("PRINT 2 : ", master.weight,
-                              deductable_weight, remaining_weight)
-                        deductions.append((master, deductable_weight))
-                        print("PRINT 3 : ", remaining_weight)
-                        remaining_weight = remaining_weight - deductable_weight
-                        print(deductable_weight, remaining_weight)
-                        messages.info(
-                            request, f"Deducted {deductable_weight}  {sale_order_product.product.material_UOM}  from master {master.uuid} Out of {master.weight}  {sale_order_product.product.material_UOM}")
-
-                    for i in deductions:
-                        print(i)
-
-                if remaining_weight < 0:
-                    raise ValueError(
-                        "Not enough weight available to fulfill the sale order  requirement.")
-                total_deductable_weight = 0.0
-                for master, deductable_weight in deductions:
-                    master.weight -= deductable_weight
-                    total_deductable_weight = total_deductable_weight+deductable_weight
-                    master.save()
-
-                sale_order_product.product.total_weight = sale_order_product.product.total_weight - \
-                    total_deductable_weight
-                sale_order_product.product.save()
-                sale_order_product.remaning_weight = remaining_weight
-                sale_order_product.added_weight = sale_order_product.total_weight - remaining_weight
+    if  Master.objects.filter(uuid=new_uuid).exists():
+        messages.error(request, f"Error: The UUID '{new_uuid}' already exists.")
+    else:
+        try:
+            remaining_weight = sale_order_product.remaning_weight
+            print(f"REMAINING WEIGHT : {remaining_weight}")
+            if 0.5 > remaining_weight >= 0:
+                sale_order_product.remaining_quantity = 0
+                sale_order_product.status = 'complete'
+                sale_order.status = 'complete'
                 sale_order_product.save()
-
-                if sale_order_product.remaning_weight == 0.0:
-                    # sale_order_product.status = 'complete'
-                    sale_order_product.remaining_quantity = 0
-                    sale_order_product.save()
-                    messages.success(
-                        request, 'Sale order product marked as complete.')
-
-                new_master = Master.objects.create(
-                    product=sale_order_product.product,
-                    uuid=new_uuid,
-                    weight=entered_weight,
-                    status='active',
-                    received_by=request.user
-                )
-                new_master.save()
-                sale_order.uuids[MaterialCode] = sale_order.uuids.get(
-                    MaterialCode, [])
-                sale_order.uuids[MaterialCode].append(
-                    {new_uuid: entered_weight})
-                sale_order_product.uuids.append({new_uuid: entered_weight})
-                sale_order.save()
-
                 messages.success(
-                    request, f"New master created with UUID {new_uuid} and weight {entered_weight}.")
-    except ValueError as ve:
-        messages.error(request, f"Error: {ve}")
-    except Exception as e:
-        messages.error(request, f"Error handling weight-based product: {e}")
+                    request, 'Sale order product marked as complete. With Some Very Minor Buffer In Case buffer is below 0.5 ')
+
+            else:
+                print(entered_weight)
+                entered_weight = float(entered_weight) - float(sack_weight)
+                final_weight = round(entered_weight, 2)
+                print(
+                    f"FInal Weignt : {entered_weight} , SAck Weight : {sack_weight}")
+                print(remaining_weight)
+                if sale_order_product.product.total_weight < entered_weight:
+                    messages.error(request, f"Inventory Has Not Enough Material")
+                else:
+                    print("PRINT 1 : ", entered_weight, remaining_weight)
+                    masters = Master.objects.filter(
+                        product=sale_order_product.product, status='active', initial_weight=True
+                    ).order_by('added_date').first()
+                    master = masters
+                    deductions = []
+
+                    if master:
+                        if remaining_weight <= 0.0:
+                            messages.info(
+                                request, "Weight Already reached to 0.0 ")
+                        if master.weight > 0.0:
+                            deductable_weight = min(
+                                master.weight, remaining_weight, entered_weight)
+                            print("PRINT 2 : ", master.weight,
+                                deductable_weight, remaining_weight)
+                            deductions.append((master, deductable_weight))
+                            print("PRINT 3 : ", remaining_weight)
+                            remaining_weight = remaining_weight - deductable_weight
+                            print(deductable_weight, remaining_weight)
+                            messages.info(
+                                request, f"Deducted {deductable_weight}  {sale_order_product.product.material_UOM}  from master {master.uuid} Out of {master.weight}  {sale_order_product.product.material_UOM}")
+
+                        for i in deductions:
+                            print(i)
+
+                    if remaining_weight < 0:
+                        raise ValueError(
+                            "Not enough weight available to fulfill the sale order  requirement.")
+                    total_deductable_weight = 0.0
+                    for master, deductable_weight in deductions:
+                        master.weight -= deductable_weight
+                        total_deductable_weight = total_deductable_weight+deductable_weight
+                        master.save()
+
+                    sale_order_product.product.total_weight = sale_order_product.product.total_weight - \
+                        total_deductable_weight
+                    sale_order_product.product.save()
+                    sale_order_product.remaning_weight = remaining_weight
+                    sale_order_product.added_weight = sale_order_product.total_weight - remaining_weight
+                    sale_order_product.save()
+
+                    if sale_order_product.remaning_weight == 0.0:
+                        # sale_order_product.status = 'complete'
+                        sale_order_product.remaining_quantity = 0
+                        sale_order_product.save()
+                        messages.success(
+                            request, 'Sale order product marked as complete.')
+
+                    new_master = Master.objects.create(
+                        product=sale_order_product.product,
+                        uuid=new_uuid,
+                        weight=entered_weight,
+                        status='active',
+                        received_by=request.user
+                    )
+                    new_master.save()
+                    sale_order.uuids[MaterialCode] = sale_order.uuids.get(
+                        MaterialCode, [])
+                    sale_order.uuids[MaterialCode].append(
+                        {new_uuid: entered_weight})
+                    sale_order_product.uuids.append({new_uuid: entered_weight})
+                    sale_order.save()
+
+                    messages.success(
+                        request, f"New master created with UUID {new_uuid} and weight {entered_weight}.")
+        except ValueError as ve:
+            messages.error(request, f"Error: {ve}")
+        except Exception as e:
+            messages.error(request, f"Error handling weight-based product: {e}")
 
 
 def add_holding_uuid(request, order_no, MaterialCode, new_uuid, sale_order_product, sale_order):
