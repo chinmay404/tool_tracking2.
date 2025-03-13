@@ -33,6 +33,28 @@ import re
 from urllib.parse import unquote
 
 
+def is_valid_id(id_str):
+    # Ensure the ID is exactly 16 characters long
+    if len(id_str) != 16:
+        return False, "Identifier must be exactly 16 characters long."
+
+    id_main = id_str[:12]
+    year_code = id_str[-4:]
+    current_year_int = datetime.now().year
+    current_month = datetime.now().month
+
+    if current_month >= 5:  
+        current_fin_year = f"{str(current_year_int)[2:]}{str(current_year_int + 1)[2:]}"
+        previous_fin_year = f"{str(current_year_int - 1)[2:]}{str(current_year_int)[2:]}"
+    else: 
+        current_fin_year = f"{str(current_year_int - 1)[2:]}{str(current_year_int)[2:]}"
+        previous_fin_year = f"{str(current_year_int)[2:]}{str(current_year_int - 1)[2:]}"
+    if year_code in [current_fin_year, previous_fin_year]:
+        return True, "ID is valid."
+    else:
+        return False, f"ID is not valid. Year code '{year_code}' is incorrect (Expected: {current_fin_year} or {previous_fin_year})."
+
+
 @login_required(login_url='managment/login/')
 @allowed_users(allowed_roles=['admins', 'outlet_user',])
 def outlet_home(request):
@@ -155,8 +177,8 @@ def add_uuid(request, order_no, MaterialCode):
     if request.method == 'POST':
         new_uuid = request.POST.get('new_uuid')
         entered_weight = request.POST.get('entered_weight', 0.0)
-        x = False
-        if x:
+        x = is_valid_short_uuid(new_uuid)
+        if not x:
             messages.error(
                 request, f"Error: The UUID '{new_uuid}' already exists.")
             return redirect('sale_order_product_detail', order_no=order_no, MaterialCode=MaterialCode)
