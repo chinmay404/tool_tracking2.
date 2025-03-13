@@ -152,7 +152,7 @@ def group_details(request, group_id):
 
                 if product.product.material_UOM == "NOS":
                     products_summary[material_code]['Quantity'] += product.quantity
-                
+
                 uid_count = 0
                 for uid in product.uuids:
                     for uid_key, quantity in uid.items():
@@ -160,14 +160,13 @@ def group_details(request, group_id):
                             'Uid': uid_key,
                             'Quantity': quantity
                         }
-                        products_summary[material_code]['UIds'].append(uid_info)
-                        uid_count = uid_count + 1
-                
-                if product.product.material_UOM != "NOS":
-                    products_summary[material_code]['Quantity'] = uid_count
-                    products_summary["UIds"] = uid_info
+                        products_summary[material_code]['UIds'].append(
+                            uid_info)
+                        uid_count += 1
 
-            # Append all the product summaries
+                if product.product.material_UOM != "NOS":
+                    products_summary[material_code]['Quantity'] += uid_count
+
             for product_summary in products_summary.values():
                 print(f"Product Summary : {product_summary}")
                 data['OrderSummary'].append(product_summary)
