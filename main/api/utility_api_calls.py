@@ -115,7 +115,6 @@ def master_detail(request, uuid):
 
 def group_details(request, group_id):
     group_id_numeric = group_id.split('-')[1]
-    print(group_id_numeric)
     group = get_object_or_404(SaleOrderGroup, group_id=group_id_numeric)
     sale_orders = SaleOrder.objects.filter(group_id=group_id_numeric)
 
@@ -150,6 +149,8 @@ def group_details(request, group_id):
                         'Quantity': 0,
                         'UIds': [],
                     }
+
+                # For "NOS" material, just add the quantity
                 if product.product.material_UOM == "NOS":
                     products_summary[material_code]['Quantity'] += product.quantity
                 
@@ -160,20 +161,23 @@ def group_details(request, group_id):
                             'Uid': uid_key,
                             'Quantity': quantity
                         }
-                        products_summary[material_code]['UIds'].append(
-                            uid_info)
-                        uid_count = uid_count +1 
+                        products_summary[material_code]['UIds'].append(uid_info)
+                        uid_count += 1
+                
+                # For non-NOS materials, set the quantity as the count of UUIDs
                 if product.product.material_UOM != "NOS":
                     products_summary[material_code]['Quantity'] += uid_count
-                    
+
+            # Append all the product summaries
             for product_summary in products_summary.values():
-                print(f"Product Summury : {product_summary}")
+                print(f"Product Summary : {product_summary}")
                 data['OrderSummary'].append(product_summary)
 
         return JsonResponse(data)
     else:
         data = {"RESPONSE": "VEHICLE NOT ALLOCATED YET"}
         return JsonResponse(data)
+
 
 # {"RESPONSE": "VEICHAL NOT ALLOCATED YET"}
 
