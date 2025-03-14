@@ -448,11 +448,14 @@ def add_uuid(request, order_no, MaterialCode):
 def handle_weight_based_product(request, order_no, MaterialCode, new_uuid, entered_weight, sale_order_product, sale_order, sack_weight):
     x , mes = is_valid_id(new_uuid)
     if x :
+        remaining_weight = sale_order_product.remaning_weight
         if Master.objects.filter(uuid=new_uuid).exists():
             messages.error(request, f"Error: The UUID '{new_uuid}' already exists.")
+        elif remaining_weight < entered_weight: 
+            messages.error(request, f"Error: Enterd Weight is Greater Than Remaining Weight could not Procceed")
         else:
             try:
-                remaining_weight = sale_order_product.remaning_weight
+                
                 print(f"REMAINING WEIGHT : {remaining_weight}")
                 if 0.5 > remaining_weight >= 0:
                     sale_order_product.remaining_quantity = 0
