@@ -154,8 +154,10 @@ def group_details(request, group_id):
                     products_summary[material_code]['Quantity'] += product.quantity
 
                 uid_count = 0
+                final_quantity= 0 
                 for uid in product.uuids:
                     for uid_key, quantity in uid.items():
+                        print(f"quantity : {quantity}") 
                         uid_info = {
                             'Uid': uid_key,
                             'Quantity': quantity
@@ -163,9 +165,12 @@ def group_details(request, group_id):
                         products_summary[material_code]['UIds'].append(
                             uid_info)
                         uid_count += 1
+                        final_quantity += quantity
+                        print(f"UID Count : {uid_count}")
+                        print(f"Quantity : {final_quantity}")
 
                 if product.product.material_UOM != "NOS":
-                    products_summary[material_code]['Quantity'] += uid_count
+                    products_summary[material_code]['Quantity'] += final_quantity
 
             for product_summary in products_summary.values():
                 print(f"Product Summary : {product_summary}")
