@@ -165,7 +165,8 @@ def group_details(request, group_id):
                         products_summary[material_code]['UIds'].append(
                             uid_info)
                         uid_count += 1
-                        final_quantity += quantity
+                        if quantity != None:
+                            final_quantity += quantity
                         print(f"UID Count : {uid_count}")
                         print(f"Quantity : {final_quantity}")
 
