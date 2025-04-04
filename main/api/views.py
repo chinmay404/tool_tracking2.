@@ -60,7 +60,7 @@ def is_valid_id(id_str):
         return False, "Identifier must be exactly 16 characters long."
 
     year_code = id_str[-4:]
-    current_date = datetime.datetime.now()
+    current_date = datetime.now()
     current_year = current_date.year
     current_month = current_date.month
 
