@@ -27,8 +27,7 @@ from .qr_gen import single_qr
 from units.models import Unit
 from django.utils import timezone
 from django.http import HttpResponseRedirect
-import datetime 
-
+from datetime import datetime
 import qrcode
 import re
 from urllib.parse import unquote
