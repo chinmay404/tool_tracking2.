@@ -1260,7 +1260,7 @@ def delete_sale_order_group(request, group_id):
 def generate_short_id():
     uuid_str = str(uuid.uuid4())
     short_id = uuid_str.replace("-", "")[:7]
-    month_name = calendar.month_name[datetime.datetime.now().month][:3]
+    month_name = calendar.month_name[datetime.now().month][:3]
     final_id = f"{month_name}{short_id}"
     print(final_id)
     return final_id
